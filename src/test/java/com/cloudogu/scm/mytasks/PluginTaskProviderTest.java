@@ -89,10 +89,6 @@ class PluginTaskProviderTest {
       assertThat(updateTask.getOutdatedPlugins()).isEqualTo(3);
       assertThat(updateTask.getLastCheck()).isEqualTo(now);
     }
-
-
-
-
   }
 
   @Test
