@@ -30,8 +30,7 @@ class FavouriteRepositoryResourceTest {
   private RestDispatcher dispatcher;
 
   @BeforeEach
-  public void init() {
-    initMocks(this);
+  void init() {
     resource = new FavouriteRepositoryResource(service);
 
     dispatcher = new RestDispatcher();
