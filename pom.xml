@@ -15,6 +15,6 @@
   <name>Landingpage-Plugin</name>
   <packaging>smp</packaging>
   <url>https://github.com/scm-manager/scm-landingpage-plugin</url>
-  <description>Creates a personal landingpage for each user.</description>
+  <description>Creates a personal landingpage for each user</description>
 
 </project>
