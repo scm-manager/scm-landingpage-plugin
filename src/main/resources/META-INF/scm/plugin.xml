@@ -24,12 +24,12 @@
     SOFTWARE.
 
 -->
-<!--DOCTYPE plugin SYSTEM "https://download.scm-manager.org/dtd/plugin/2.0.0-01.dtd"-->
+<!DOCTYPE plugin SYSTEM "https://download.scm-manager.org/dtd/plugin/2.0.0-01.dtd">
 <plugin>
   <scm-version>2</scm-version>
 
   <information>
-    <displayName>Landingpage-Plugin</displayName>
+    <displayName>Landingpage</displayName>
     <author>Cloudogu GmbH</author>
     <category>Information</category>
   </information>
