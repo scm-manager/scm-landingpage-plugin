@@ -7,7 +7,7 @@ import javax.inject.Inject;
 
 public class FavouriteRepositoryStore {
 
-  private static final String FAVORITES_STORE_NAME = "repository-favorites";
+  private static final String STORE_NAME = "favourite-repositories";
 
   private final DataStoreFactory storeFactory;
 
@@ -25,6 +25,6 @@ public class FavouriteRepositoryStore {
   }
 
   private DataStore<RepositoryFavorite> createStore() {
-    return storeFactory.withType(RepositoryFavorite.class).withName(FAVORITES_STORE_NAME).build();
+    return storeFactory.withType(RepositoryFavorite.class).withName(STORE_NAME).build();
   }
 }
