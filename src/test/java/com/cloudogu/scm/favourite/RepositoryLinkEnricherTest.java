@@ -45,6 +45,7 @@ import sonia.scm.repository.RepositoryTestData;
 import java.net.URI;
 
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -52,11 +53,13 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class RepositoryLinkEnricherTest {
 
-  private Repository REPOSITORY = RepositoryTestData.createHeartOfGold();
+  private Repository REPOSITORY = new Repository();
 
   private Provider<ScmPathInfoStore> scmPathInfoStoreProvider;
   @Mock
-  private FavouriteRepositoryStore store;
+  private FavouriteRepositoryProvider storeProvider;
+  @Mock
+  private FavouriteRepositoryProvider.FavouriteRepositoryStore store;
   @Mock
   private Subject subject;
   @Mock
@@ -68,12 +71,20 @@ class RepositoryLinkEnricherTest {
   private RepositoryLinkEnricher enricher;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     ScmPathInfoStore scmPathInfoStore = new ScmPathInfoStore();
     scmPathInfoStore.set(() -> URI.create("https://scm-manager.org/scm/api/"));
     scmPathInfoStoreProvider = Providers.of(scmPathInfoStore);
-    enricher = new RepositoryLinkEnricher(scmPathInfoStoreProvider, store);
+    enricher = new RepositoryLinkEnricher(scmPathInfoStoreProvider, storeProvider);
     context = HalEnricherContext.of(REPOSITORY);
+    lenient().when(storeProvider.get()).thenReturn(store);
+  }
+
+  @BeforeEach
+  void prepareRepository() {
+    REPOSITORY.setId("HeartOfGold");
+    REPOSITORY.setNamespace("hitchhiker");
+    REPOSITORY.setName("HeartOfGold");
   }
 
   @BeforeEach
@@ -103,22 +114,22 @@ class RepositoryLinkEnricherTest {
 
     @Test
     void shouldEnrichFavorizeLink() {
-      when(store.get(REPOSITORY.getId())).thenReturn(new RepositoryFavorite(REPOSITORY.getId(), ImmutableSet.of("tricia", "dent")));
+      when(store.get()).thenReturn(new RepositoryFavorite(ImmutableSet.of("heartOfGold", "puzzle42")));
       when(subject.getPrincipal()).thenReturn("trillian");
 
       enricher.enrich(context, appender);
 
-      verify(appender).appendLink("favorize", "https://scm-manager.org/scm/api/v2/favorize/hitchhiker/HeartOfGold/trillian");
+      verify(appender).appendLink("favorize", "https://scm-manager.org/scm/api/v2/favorize/hitchhiker/HeartOfGold");
     }
 
     @Test
     void shouldEnrichUnfavorizeLink() {
-      when(store.get(REPOSITORY.getId())).thenReturn(new RepositoryFavorite(REPOSITORY.getId(), ImmutableSet.of("trillian")));
+      when(store.get()).thenReturn(new RepositoryFavorite(ImmutableSet.of("HeartOfGold")));
       when(subject.getPrincipal()).thenReturn("trillian");
 
       enricher.enrich(context, appender);
 
-      verify(appender).appendLink("unfavorize", "https://scm-manager.org/scm/api/v2/unfavorize/hitchhiker/HeartOfGold/trillian");
+      verify(appender).appendLink("unfavorize", "https://scm-manager.org/scm/api/v2/unfavorize/hitchhiker/HeartOfGold");
     }
   }
 

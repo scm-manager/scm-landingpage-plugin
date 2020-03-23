@@ -49,7 +49,7 @@ public class FavouriteRepositoryResource {
   }
 
   @POST
-  @Path("favorize/{namespace}/{name}/{userId}")
+  @Path("favorize/{namespace}/{name}")
   @Operation(
     summary = "Favorize repository",
     description = "Favorizes a repository for an user",
@@ -70,14 +70,13 @@ public class FavouriteRepositoryResource {
     )
   )
   public Response favorizeRepository(@PathParam("namespace") String namespace,
-                                     @PathParam("name") String name,
-                                     @PathParam("userId") String userId) {
-    service.favorizeRepository(new NamespaceAndName(namespace, name), userId);
+                                     @PathParam("name") String name) {
+    service.favorizeRepository(new NamespaceAndName(namespace, name));
     return Response.noContent().build();
   }
 
   @POST
-  @Path("unfavorize/{namespace}/{name}/{userId}")
+  @Path("unfavorize/{namespace}/{name}")
   @Operation(
     summary = "Unfavorize repository",
     description = "Unfavorizes a repository for an user",
@@ -98,9 +97,8 @@ public class FavouriteRepositoryResource {
     )
   )
   public Response unfavorizeRepository(@PathParam("namespace") String namespace,
-                                       @PathParam("name") String name,
-                                       @PathParam("userId") String userId) {
-    service.unfavorizeRepository(new NamespaceAndName(namespace, name), userId);
+                                       @PathParam("name") String name) {
+    service.unfavorizeRepository(new NamespaceAndName(namespace, name));
     return Response.noContent().build();
   }
 

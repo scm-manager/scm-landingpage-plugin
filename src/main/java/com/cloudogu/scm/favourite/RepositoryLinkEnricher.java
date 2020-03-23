@@ -42,22 +42,21 @@ import javax.inject.Provider;
 public class RepositoryLinkEnricher implements HalEnricher {
 
   private final Provider<ScmPathInfoStore> scmPathInfoStore;
-  private final FavouriteRepositoryStore store;
+  private final FavouriteRepositoryProvider storeProvider;
 
   @Inject
-  public RepositoryLinkEnricher(Provider<ScmPathInfoStore> scmPathInfoStore, FavouriteRepositoryStore store) {
+  public RepositoryLinkEnricher(Provider<ScmPathInfoStore> scmPathInfoStore, FavouriteRepositoryProvider storeProvider) {
     this.scmPathInfoStore = scmPathInfoStore;
-    this.store = store;
+    this.storeProvider = storeProvider;
   }
 
   @Override
   public void enrich(HalEnricherContext context, HalAppender appender) {
     Repository repository = context.oneRequireByType(Repository.class);
     if (RepositoryPermissions.read().isPermitted(repository)) {
-      RepositoryFavorite favoritesForRepository = store.get(repository.getId());
       String username = (String) SecurityUtils.getSubject().getPrincipal();
       LinkBuilder linkBuilder = new LinkBuilder(scmPathInfoStore.get().get(), FavouriteRepositoryResource.class);
-      if (favoritesForRepository.getUserIds().contains(username)) {
+      if (storeProvider.get().get().isFavorite(repository)) {
         appender.appendLink("unfavorize", linkBuilder.method("unfavorizeRepository").parameters(repository.getNamespace(), repository.getName(), username).href());
       } else {
         appender.appendLink("favorize", linkBuilder.method("favorizeRepository").parameters(repository.getNamespace(), repository.getName(), username).href());
