@@ -23,7 +23,6 @@
  */
 package com.cloudogu.scm.favourite;
 
-import org.apache.shiro.SecurityUtils;
 import sonia.scm.api.v2.resources.Enrich;
 import sonia.scm.api.v2.resources.HalAppender;
 import sonia.scm.api.v2.resources.HalEnricher;
@@ -54,13 +53,17 @@ public class RepositoryLinkEnricher implements HalEnricher {
   public void enrich(HalEnricherContext context, HalAppender appender) {
     Repository repository = context.oneRequireByType(Repository.class);
     if (RepositoryPermissions.read().isPermitted(repository)) {
-      String username = (String) SecurityUtils.getSubject().getPrincipal();
       LinkBuilder linkBuilder = new LinkBuilder(scmPathInfoStore.get().get(), FavouriteRepositoryResource.class);
-      if (storeProvider.get().get().isFavorite(repository)) {
-        appender.appendLink("unfavorize", linkBuilder.method("unfavorizeRepository").parameters(repository.getNamespace(), repository.getName(), username).href());
+      RepositoryFavorite favorites = storeProvider.get().get();
+      if (favorites != null && favorites.isFavorite(repository)) {
+        appender.appendLink("unfavorize", linkBuilder.method("unfavorizeRepository").parameters(repository.getNamespace(), repository.getName()).href());
       } else {
-        appender.appendLink("favorize", linkBuilder.method("favorizeRepository").parameters(repository.getNamespace(), repository.getName(), username).href());
+        appender.appendLink("favorize", linkBuilder.method("favorizeRepository").parameters(repository.getNamespace(), repository.getName()).href());
       }
+      appender.linkArrayBuilder("favorites")
+        .append("unfavorize", linkBuilder.method("unfavorizeRepository").parameters(repository.getNamespace(), repository.getName()).href())
+        .append("favorize", linkBuilder.method("favorizeRepository").parameters(repository.getNamespace(), repository.getName()).href())
+        .build();
     }
   }
 }

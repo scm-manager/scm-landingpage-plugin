@@ -21,35 +21,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React, {FC} from "react";
-import {apiClient} from "@scm-manager/ui-components";
+import React, { FC, useEffect, useState } from "react";
+import { apiClient } from "@scm-manager/ui-components";
 import { Repository, Link } from "@scm-manager/ui-types";
+import classNames from "classnames";
+import styled from "styled-components";
 type Props = {
   repository: Repository;
 };
 
-const FavouriteRepositoryToggleIcon: FC<Props> = ({repository}) => {
+const Icon = styled.i`
+  pointer-events: all;
+`;
+
+const FavouriteRepositoryToggleIcon: FC<Props> = ({ repository }) => {
+  const [favorite, setFavorite] = useState(false);
+
+  useEffect(() => {
+    setFavorite(!!(repository?._links?.unfavorize as Link)?.href);
+  }, []);
 
   const getLink = () => {
-    if (!!repository?._links?.favorize) {
-      return (repository._links.favorize as Link).href
-    } else {
-      return (repository._links.unfavorize as Link).href
-    }
+    return favorite
+      ? (repository?._links?.favorites as Link[])?.filter(link => link.name === "unfavorize")[0].href
+      : (repository?._links?.favorites as Link[])?.filter(link => link.name === "favorize")[0].href
   };
 
-  const getClassName = () =>{
-    if ((repository?._links?.unfavorize as Link)?.href) {
-      return "fas fa-star";
-    }
-    return "far fa-star";
+  const toggleFavoriteStatus = () => {
+    apiClient.post(getLink()).then(() => setFavorite(!favorite));
   };
 
-  const sendRequest = () => {
-    apiClient.post(getLink());
-  };
-
-  return (<i className={getClassName()} onClick={() => sendRequest()}/>);
+  return (
+    <Icon
+      className={classNames("fas fa-star", favorite ? "has-text-warning" : "has-text-dark")}
+      onClick={() => toggleFavoriteStatus()}
+    />
+  );
 };
 
 export default FavouriteRepositoryToggleIcon;

@@ -33,6 +33,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -55,7 +56,6 @@ class RepositoryLinkEnricherTest {
 
   private Repository REPOSITORY = new Repository();
 
-  private Provider<ScmPathInfoStore> scmPathInfoStoreProvider;
   @Mock
   private FavouriteRepositoryProvider storeProvider;
   @Mock
@@ -64,6 +64,8 @@ class RepositoryLinkEnricherTest {
   private Subject subject;
   @Mock
   private HalAppender appender;
+  @Mock(answer = Answers.RETURNS_SELF)
+  private HalAppender.LinkArrayBuilder linkArrayBuilder;
 
   private HalEnricherContext context;
 
@@ -74,7 +76,7 @@ class RepositoryLinkEnricherTest {
   void setUp() {
     ScmPathInfoStore scmPathInfoStore = new ScmPathInfoStore();
     scmPathInfoStore.set(() -> URI.create("https://scm-manager.org/scm/api/"));
-    scmPathInfoStoreProvider = Providers.of(scmPathInfoStore);
+    Provider<ScmPathInfoStore> scmPathInfoStoreProvider = Providers.of(scmPathInfoStore);
     enricher = new RepositoryLinkEnricher(scmPathInfoStoreProvider, storeProvider);
     context = HalEnricherContext.of(REPOSITORY);
     lenient().when(storeProvider.get()).thenReturn(store);
@@ -110,28 +112,29 @@ class RepositoryLinkEnricherTest {
     @BeforeEach
     void permitSubject() {
       when(subject.isPermitted(anyString())).thenReturn(true);
+      when(appender.linkArrayBuilder("favorites")).thenReturn(linkArrayBuilder);
     }
 
     @Test
     void shouldEnrichFavorizeLink() {
       when(store.get()).thenReturn(new RepositoryFavorite(ImmutableSet.of("heartOfGold", "puzzle42")));
-      when(subject.getPrincipal()).thenReturn("trillian");
 
       enricher.enrich(context, appender);
 
       verify(appender).appendLink("favorize", "https://scm-manager.org/scm/api/v2/favorize/hitchhiker/HeartOfGold");
+      verify(linkArrayBuilder).append("favorize", "https://scm-manager.org/scm/api/v2/favorize/hitchhiker/HeartOfGold");
+      verify(linkArrayBuilder).append("unfavorize", "https://scm-manager.org/scm/api/v2/unfavorize/hitchhiker/HeartOfGold");
     }
 
     @Test
     void shouldEnrichUnfavorizeLink() {
       when(store.get()).thenReturn(new RepositoryFavorite(ImmutableSet.of("HeartOfGold")));
-      when(subject.getPrincipal()).thenReturn("trillian");
 
       enricher.enrich(context, appender);
 
       verify(appender).appendLink("unfavorize", "https://scm-manager.org/scm/api/v2/unfavorize/hitchhiker/HeartOfGold");
+      verify(linkArrayBuilder).append("favorize", "https://scm-manager.org/scm/api/v2/favorize/hitchhiker/HeartOfGold");
+      verify(linkArrayBuilder).append("unfavorize", "https://scm-manager.org/scm/api/v2/unfavorize/hitchhiker/HeartOfGold");
     }
   }
-
-
 }
