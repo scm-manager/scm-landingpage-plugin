@@ -1,5 +1,20 @@
 {
   "scm-landingpage-plugin": {
-
+    "navigation": {
+      "home": "Landing-Page"
+    },
+    "home": {
+      "title": "Landing-Page",
+      "subtitle": "My tasks and repositories"
+    },
+    "mytasks": {
+      "title": "My tasks"
+    },
+    "tasks": {
+      "updatePlugin": {
+        "title": "Update plugins",
+        "description": "New versions for {{count}} plugins available"
+      }
+    }
   }
 }
