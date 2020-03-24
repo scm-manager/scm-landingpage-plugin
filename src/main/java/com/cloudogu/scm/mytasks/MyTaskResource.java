@@ -22,6 +22,7 @@ public class MyTaskResource {
   }
 
   @GET
+  @Path("")
   @Produces(MEDIATYPE)
   public MyTasksDto getTasks(@Context UriInfo uriInfo) {
     String self = uriInfo.getAbsolutePath().toASCIIString();
