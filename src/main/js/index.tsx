@@ -39,6 +39,7 @@ const HomeNavigation: FC = () => {
 };
 
 binder.bind("repository.card.beforeTitle", FavouriteRepositoryToggleIcon);
+binder.bind("repository.details.beforeName", FavouriteRepositoryToggleIcon);
 binder.bind("main.route", HomeRoute);
 binder.bind("main.redirect", () => "/home");
 binder.bind("primary-navigation.first-menu", HomeNavigation);
