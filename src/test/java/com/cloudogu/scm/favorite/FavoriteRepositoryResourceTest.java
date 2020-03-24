@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.cloudogu.scm.favourite;
+package com.cloudogu.scm.favorite;
 
 import org.jboss.resteasy.mock.MockHttpRequest;
 import org.jboss.resteasy.mock.MockHttpResponse;
@@ -41,18 +41,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class FavouriteRepositoryResourceTest {
+class FavoriteRepositoryResourceTest {
 
   Repository REPOSITORY = RepositoryTestData.createHeartOfGold();
 
   @Mock
-  private FavouriteRepositoryService service;
+  private FavoriteRepositoryService service;
 
   private RestDispatcher dispatcher;
 
   @BeforeEach
   void init() {
-    FavouriteRepositoryResource resource = new FavouriteRepositoryResource(service);
+    FavoriteRepositoryResource resource = new FavoriteRepositoryResource(service);
 
     dispatcher = new RestDispatcher();
     dispatcher.addSingletonResource(resource);

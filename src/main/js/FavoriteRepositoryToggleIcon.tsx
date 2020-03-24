@@ -34,7 +34,7 @@ const Icon = styled.i`
   pointer-events: all;
 `;
 
-const FavouriteRepositoryToggleIcon: FC<Props> = ({ repository }) => {
+const FavoriteRepositoryToggleIcon: FC<Props> = ({ repository }) => {
   const [favorite, setFavorite] = useState(false);
 
   useEffect(() => {
@@ -59,4 +59,4 @@ const FavouriteRepositoryToggleIcon: FC<Props> = ({ repository }) => {
   );
 };
 
-export default FavouriteRepositoryToggleIcon;
+export default FavoriteRepositoryToggleIcon;

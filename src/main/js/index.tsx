@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 import { binder } from "@scm-manager/ui-extensions";
-import FavouriteRepositoryToggleIcon from "./FavouriteRepositoryToggleIcon";
+import FavoriteRepositoryToggleIcon from "./FavoriteRepositoryToggleIcon";
 import Home from "./Home";
 import React, { FC } from "react";
 import { ProtectedRoute, PrimaryNavigationLink } from "@scm-manager/ui-components";
 import { useTranslation } from "react-i18next";
-import "./PluginUpdateTask";
+import "./tasks/PluginUpdateTask";
 
 const HomeRoute: FC = props => {
   return <ProtectedRoute {...props} path={"/home"} component={Home} />;
@@ -38,8 +38,8 @@ const HomeNavigation: FC = () => {
   return <PrimaryNavigationLink label={t("scm-landingpage-plugin.navigation.home")} to={"/home"} match={"/home"} />;
 };
 
-binder.bind("repository.card.beforeTitle", FavouriteRepositoryToggleIcon);
-binder.bind("repository.details.beforeName", FavouriteRepositoryToggleIcon);
+binder.bind("repository.card.beforeTitle", FavoriteRepositoryToggleIcon);
+binder.bind("repository.details.beforeName", FavoriteRepositoryToggleIcon);
 binder.bind("main.route", HomeRoute);
 binder.bind("main.redirect", () => "/home");
 binder.bind("primary-navigation.first-menu", HomeNavigation);

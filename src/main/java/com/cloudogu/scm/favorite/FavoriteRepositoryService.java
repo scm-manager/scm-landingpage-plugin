@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.cloudogu.scm.favourite;
+package com.cloudogu.scm.favorite;
 
 import sonia.scm.repository.NamespaceAndName;
 import sonia.scm.repository.Repository;
@@ -31,13 +31,13 @@ import sonia.scm.repository.api.RepositoryServiceFactory;
 
 import javax.inject.Inject;
 
-public class FavouriteRepositoryService {
+public class FavoriteRepositoryService {
 
-  private final FavouriteRepositoryProvider store;
+  private final FavoriteRepositoryProvider store;
   private final RepositoryServiceFactory serviceFactory;
 
   @Inject
-  public FavouriteRepositoryService(FavouriteRepositoryProvider store, RepositoryServiceFactory serviceFactory) {
+  public FavoriteRepositoryService(FavoriteRepositoryProvider store, RepositoryServiceFactory serviceFactory) {
     this.store = store;
     this.serviceFactory = serviceFactory;
   }

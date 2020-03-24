@@ -1,7 +1,7 @@
 package com.cloudogu.scm.mydata;
 
-import com.cloudogu.scm.favourite.FavouriteRepositoryProvider;
-import com.cloudogu.scm.favourite.RepositoryFavorite;
+import com.cloudogu.scm.favorite.FavoriteRepositoryProvider;
+import com.cloudogu.scm.favorite.FavoriteRepository;
 import com.google.common.collect.ImmutableSet;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
@@ -22,21 +22,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class FavouriteRepositoryDataProviderTest {
+class FavoriteRepositoryDataProviderTest {
 
   private final Repository REPOSITORY = RepositoryTestData.createHeartOfGold();
 
   @Mock
   private RepositoryManager repositoryManager;
   @Mock
-  private FavouriteRepositoryProvider favouriteRepositoryProvider;
+  private FavoriteRepositoryProvider favoriteRepositoryProvider;
   @Mock
-  private FavouriteRepositoryProvider.FavouriteRepositoryStore store;
+  private FavoriteRepositoryProvider.FavoriteRepositoryStore store;
   @Mock
   private Subject subject;
 
   @InjectMocks
-  private FavouriteRepositoryDataProvider dataProvider;
+  private FavoriteRepositoryDataProvider dataProvider;
 
   @BeforeEach
   void initSubject() {
@@ -50,8 +50,8 @@ class FavouriteRepositoryDataProviderTest {
 
   @Test
   void shouldReturnEmptyList() {
-    RepositoryFavorite favorite = new RepositoryFavorite(ImmutableSet.of());
-    when(favouriteRepositoryProvider.get()).thenReturn(store);
+    FavoriteRepository favorite = new FavoriteRepository(ImmutableSet.of());
+    when(favoriteRepositoryProvider.get()).thenReturn(store);
     when(store.get()).thenReturn(favorite);
 
     Iterable<MyData> data = dataProvider.getData();
@@ -60,9 +60,9 @@ class FavouriteRepositoryDataProviderTest {
   }
 
   @Test
-  void shouldReturnFavouriteRepositories() {
-    RepositoryFavorite favorite = new RepositoryFavorite(ImmutableSet.of(REPOSITORY.getId()));
-    when(favouriteRepositoryProvider.get()).thenReturn(store);
+  void shouldReturnFavoriteRepositories() {
+    FavoriteRepository favorite = new FavoriteRepository(ImmutableSet.of(REPOSITORY.getId()));
+    when(favoriteRepositoryProvider.get()).thenReturn(store);
     when(store.get()).thenReturn(favorite);
     when(repositoryManager.get(REPOSITORY.getId())).thenReturn(REPOSITORY);
 
@@ -72,6 +72,6 @@ class FavouriteRepositoryDataProviderTest {
 
     MyData data1 = iterator.next();
     assertThat(data1.getLink()).isEqualTo("/repos/hitchhiker/HeartOfGold");
-    assertThat(data1.getType()).isEqualTo(FavouriteRepositoryData.class.getSimpleName());
+    assertThat(data1.getType()).isEqualTo(FavoriteRepositoryData.class.getSimpleName());
   }
 }

@@ -5,10 +5,23 @@ export type MyTaskType = {
   _links: Links
 };
 
-type Props<T = MyTaskType> = {
+type TaskProps<T = MyTaskType> = {
   task: T
 };
 
-export type MyTaskComponent<T = MyTaskType> = React.FC<Props<T>> & {
+export type MyTaskComponent<T = MyTaskType> = React.FC<TaskProps<T>> & {
   type: string
+};
+
+export type MyDataType = {
+  type: string;
+  _links: Links
+}
+
+export type MyDataComponent<T = MyDataType> = React.FC<DataProps<T>> & {
+  type: string
+};
+
+type DataProps<T = MyDataType> = {
+  data: T
 };

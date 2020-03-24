@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.cloudogu.scm.favourite;
+package com.cloudogu.scm.favorite;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -39,7 +39,7 @@ import java.util.Set;
 @NoArgsConstructor
 @XmlRootElement(name = "favorites")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class RepositoryFavorite {
+public class FavoriteRepository {
 
   private Set<String> repositoryIds = new HashSet<>();
 

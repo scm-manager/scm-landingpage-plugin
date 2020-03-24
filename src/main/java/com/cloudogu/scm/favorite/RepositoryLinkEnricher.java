@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.cloudogu.scm.favourite;
+package com.cloudogu.scm.favorite;
 
 import sonia.scm.api.v2.resources.Enrich;
 import sonia.scm.api.v2.resources.HalAppender;
@@ -41,10 +41,10 @@ import javax.inject.Provider;
 public class RepositoryLinkEnricher implements HalEnricher {
 
   private final Provider<ScmPathInfoStore> scmPathInfoStore;
-  private final FavouriteRepositoryProvider storeProvider;
+  private final FavoriteRepositoryProvider storeProvider;
 
   @Inject
-  public RepositoryLinkEnricher(Provider<ScmPathInfoStore> scmPathInfoStore, FavouriteRepositoryProvider storeProvider) {
+  public RepositoryLinkEnricher(Provider<ScmPathInfoStore> scmPathInfoStore, FavoriteRepositoryProvider storeProvider) {
     this.scmPathInfoStore = scmPathInfoStore;
     this.storeProvider = storeProvider;
   }
@@ -53,8 +53,8 @@ public class RepositoryLinkEnricher implements HalEnricher {
   public void enrich(HalEnricherContext context, HalAppender appender) {
     Repository repository = context.oneRequireByType(Repository.class);
     if (RepositoryPermissions.read().isPermitted(repository)) {
-      LinkBuilder linkBuilder = new LinkBuilder(scmPathInfoStore.get().get(), FavouriteRepositoryResource.class);
-      RepositoryFavorite favorites = storeProvider.get().get();
+      LinkBuilder linkBuilder = new LinkBuilder(scmPathInfoStore.get().get(), FavoriteRepositoryResource.class);
+      FavoriteRepository favorites = storeProvider.get().get();
       if (favorites != null && favorites.isFavorite(repository)) {
         appender.appendLink("unfavorize", linkBuilder.method("unfavorizeRepository").parameters(repository.getNamespace(), repository.getName()).href());
       } else {

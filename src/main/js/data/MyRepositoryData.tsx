@@ -1,27 +1,27 @@
 import React, { FC } from "react";
 import { binder } from "@scm-manager/ui-extensions";
 import { Link } from "@scm-manager/ui-types";
-import { MyTaskComponent, MyTaskType } from "./types";
+import { MyDataComponent, MyDataType } from "../types";
 import { Link as ReactLink } from "react-router-dom";
 import styled from "styled-components";
 
 type Props = {
-  task: MyTaskType;
+  data: MyDataType;
 };
 
 const StyledLink = styled(ReactLink)`
   color: inherit;
   :hover {
-  color: #33b2e8 !important;
+    color: #33b2e8 !important;
   }
 `;
 
-const MyTask: FC<Props> = ({ task }) => {
-  const extensions: MyTaskComponent[] = binder.getExtensions("landingpage.mytask");
+const MyRepositoryData: FC<Props> = ({ data }) => {
+  const extensions: MyDataComponent[] = binder.getExtensions("landingpage.myFavoriteRepository");
 
   let Component = null;
   for (let extension of extensions) {
-    if (extension.type === task.type) {
+    if (extension.type === data.type) {
       Component = extension;
       break;
     }
@@ -32,10 +32,10 @@ const MyTask: FC<Props> = ({ task }) => {
   }
 
   return (
-    <StyledLink to={(task?._links?.self as Link)?.href}>
-      <Component task={task} />
+    <StyledLink to={(data?._links?.self as Link)?.href}>
+      <Component data={data} />
     </StyledLink>
   );
 };
 
-export default MyTask;
+export default MyRepositoryData;

@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.cloudogu.scm.favourite;
+package com.cloudogu.scm.favorite;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Provider;
@@ -41,7 +41,6 @@ import sonia.scm.api.v2.resources.HalAppender;
 import sonia.scm.api.v2.resources.HalEnricherContext;
 import sonia.scm.api.v2.resources.ScmPathInfoStore;
 import sonia.scm.repository.Repository;
-import sonia.scm.repository.RepositoryTestData;
 
 import java.net.URI;
 
@@ -57,9 +56,9 @@ class RepositoryLinkEnricherTest {
   private Repository REPOSITORY = new Repository();
 
   @Mock
-  private FavouriteRepositoryProvider storeProvider;
+  private FavoriteRepositoryProvider storeProvider;
   @Mock
-  private FavouriteRepositoryProvider.FavouriteRepositoryStore store;
+  private FavoriteRepositoryProvider.FavoriteRepositoryStore store;
   @Mock
   private Subject subject;
   @Mock
@@ -117,7 +116,7 @@ class RepositoryLinkEnricherTest {
 
     @Test
     void shouldEnrichFavorizeLink() {
-      when(store.get()).thenReturn(new RepositoryFavorite(ImmutableSet.of("heartOfGold", "puzzle42")));
+      when(store.get()).thenReturn(new FavoriteRepository(ImmutableSet.of("heartOfGold", "puzzle42")));
 
       enricher.enrich(context, appender);
 
@@ -128,7 +127,7 @@ class RepositoryLinkEnricherTest {
 
     @Test
     void shouldEnrichUnfavorizeLink() {
-      when(store.get()).thenReturn(new RepositoryFavorite(ImmutableSet.of("HeartOfGold")));
+      when(store.get()).thenReturn(new FavoriteRepository(ImmutableSet.of("HeartOfGold")));
 
       enricher.enrich(context, appender);
 

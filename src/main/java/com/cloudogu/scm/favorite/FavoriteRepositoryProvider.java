@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.cloudogu.scm.favourite;
+package com.cloudogu.scm.favorite;
 
 import org.apache.shiro.SecurityUtils;
 import sonia.scm.repository.Repository;
@@ -30,51 +30,55 @@ import sonia.scm.store.DataStoreFactory;
 
 import javax.inject.Inject;
 
-public class FavouriteRepositoryProvider {
+public class FavoriteRepositoryProvider {
 
-  private static final String STORE_NAME = "favourite-repositories";
+  private static final String STORE_NAME = "favorite-repositories";
 
-  private final DataStore<RepositoryFavorite> store;
+  private final DataStore<FavoriteRepository> store;
 
   @Inject
-  public FavouriteRepositoryProvider(DataStoreFactory storeFactory) {
-    this.store = storeFactory.withType(RepositoryFavorite.class).withName(STORE_NAME).build();;
+  public FavoriteRepositoryProvider(DataStoreFactory storeFactory) {
+    this.store = storeFactory.withType(FavoriteRepository.class).withName(STORE_NAME).build();;
   }
 
-  public FavouriteRepositoryStore get() {
+  public FavoriteRepositoryStore get() {
     String principal = SecurityUtils.getSubject().getPrincipal().toString();
-    return new FavouriteRepositoryStore(principal, store);
+    return new FavoriteRepositoryStore(principal, store);
   }
 
-  public class FavouriteRepositoryStore {
+  public class FavoriteRepositoryStore {
 
     private final String principal;
-    private final DataStore<RepositoryFavorite> store;
+    private final DataStore<FavoriteRepository> store;
 
-    private FavouriteRepositoryStore(String principal, DataStore<RepositoryFavorite> store) {
+    private FavoriteRepositoryStore(String principal, DataStore<FavoriteRepository> store) {
       this.principal = principal;
       this.store = store;
     }
 
     public void add(Repository repository) {
-      RepositoryFavorite repositoryFavorite = store.get(principal);
-      if (repositoryFavorite == null) {
-        repositoryFavorite = new RepositoryFavorite();
+      FavoriteRepository favoriteRepository = store.get(principal);
+      if (favoriteRepository == null) {
+        favoriteRepository = new FavoriteRepository();
       }
-      repositoryFavorite.add(repository);
-      store.put(principal, repositoryFavorite);
+      favoriteRepository.add(repository);
+      store.put(principal, favoriteRepository);
     }
 
     public void remove(Repository repository) {
-      RepositoryFavorite repositoryFavorite = store.get(principal);
-      if (repositoryFavorite != null) {
-        repositoryFavorite.remove(repository);
-        store.put(principal, repositoryFavorite);
+      FavoriteRepository favoriteRepository = store.get(principal);
+      if (favoriteRepository != null) {
+        favoriteRepository.remove(repository);
+        store.put(principal, favoriteRepository);
       }
     }
 
-    public RepositoryFavorite get() {
-      return store.get(principal);
+    public FavoriteRepository get() {
+      FavoriteRepository favoriteRepository = store.get(principal);
+      if (favoriteRepository == null) {
+        favoriteRepository = new FavoriteRepository();
+      }
+      return favoriteRepository;
     }
   }
 }

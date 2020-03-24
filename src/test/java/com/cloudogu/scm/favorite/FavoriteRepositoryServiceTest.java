@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.cloudogu.scm.favourite;
+package com.cloudogu.scm.favorite;
 
 import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.subject.Subject;
@@ -47,15 +47,15 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class FavouriteRepositoryServiceTest {
+class FavoriteRepositoryServiceTest {
 
   private final Repository REPOSITORY = RepositoryTestData.createHeartOfGold();
 
   @Mock
-  private FavouriteRepositoryProvider storeProvider;
+  private FavoriteRepositoryProvider storeProvider;
 
   @Mock
-  private FavouriteRepositoryProvider.FavouriteRepositoryStore store;
+  private FavoriteRepositoryProvider.FavoriteRepositoryStore store;
 
   @Mock
   private RepositoryServiceFactory serviceFactory;
@@ -67,7 +67,7 @@ class FavouriteRepositoryServiceTest {
   private Subject subject;
 
   @InjectMocks
-  private FavouriteRepositoryService service;
+  private FavoriteRepositoryService service;
 
   @BeforeEach
   void initSubject() {

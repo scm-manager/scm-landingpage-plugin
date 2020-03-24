@@ -28,5 +28,4 @@ public class MyDataResource {
     String self = uriInfo.getAbsolutePath().toASCIIString();
     return new MyDataDto(self, collector.collect());
   }
-
 }

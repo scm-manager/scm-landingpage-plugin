@@ -10,6 +10,12 @@
     "mytasks": {
       "title": "Meine Aufgaben"
     },
+    "mydata": {
+      "title": "Meine Daten"
+    },
+    "favoriteRepository": {
+      "title": "Favorisierte Repositories"
+    },
     "tasks": {
       "updatePlugin": {
         "title": "Update plugins",

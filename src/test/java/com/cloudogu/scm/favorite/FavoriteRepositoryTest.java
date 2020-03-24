@@ -1,4 +1,4 @@
-package com.cloudogu.scm.favourite;
+package com.cloudogu.scm.favorite;
 
 import org.junit.jupiter.api.Test;
 import sonia.scm.repository.Repository;
@@ -10,7 +10,7 @@ import java.io.ByteArrayOutputStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class RepositoryFavoriteTest {
+class FavoriteRepositoryTest {
 
   @Test
   void shouldBeMarshalledBackAndForth() {
@@ -18,14 +18,14 @@ class RepositoryFavoriteTest {
     Repository puzzle42 = RepositoryTestData.create42Puzzle();
     Repository hvpt = RepositoryTestData.createHappyVerticalPeopleTransporter();
 
-    RepositoryFavorite favorites = new RepositoryFavorite();
+    FavoriteRepository favorites = new FavoriteRepository();
     favorites.add(heartOfGold);
     favorites.add(puzzle42);
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     JAXB.marshal(favorites, out);
 
-    favorites = JAXB.unmarshal(new ByteArrayInputStream(out.toByteArray()), RepositoryFavorite.class);
+    favorites = JAXB.unmarshal(new ByteArrayInputStream(out.toByteArray()), FavoriteRepository.class);
     assertThat(favorites.isFavorite(heartOfGold)).isTrue();
     assertThat(favorites.isFavorite(puzzle42)).isTrue();
     assertThat(favorites.isFavorite(hvpt)).isFalse();
