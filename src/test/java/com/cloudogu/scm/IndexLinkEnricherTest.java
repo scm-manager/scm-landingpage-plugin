@@ -1,6 +1,5 @@
 package com.cloudogu.scm;
 
-import com.cloudogu.scm.mytasks.MyTaskProvider;
 import com.google.inject.util.Providers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,7 +26,6 @@ class IndexLinkEnricherTest {
   @InjectMocks
   private IndexLinkEnricher enricher;
 
-
   @BeforeEach
   void setUp() {
     ScmPathInfoStore scmPathInfoStore = new ScmPathInfoStore();
@@ -37,7 +35,6 @@ class IndexLinkEnricherTest {
     context = HalEnricherContext.of();
   }
 
-
   @Test
   void shouldAppendTasksLink() {
     enricher.enrich(context, appender);
@@ -45,4 +42,10 @@ class IndexLinkEnricherTest {
     verify(appender).appendLink("tasks", "https://scm-manager.org/scm/api/v2/landingpage/mytasks");
   }
 
+  @Test
+  void shouldAppendDataLink() {
+    enricher.enrich(context, appender);
+
+    verify(appender).appendLink("data", "https://scm-manager.org/scm/api/v2/landingpage/mydata");
+  }
 }

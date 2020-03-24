@@ -1,5 +1,6 @@
 package com.cloudogu.scm;
 
+import com.cloudogu.scm.mydata.MyDataResource;
 import com.cloudogu.scm.mytasks.MyTaskResource;
 import sonia.scm.api.v2.resources.Enrich;
 import sonia.scm.api.v2.resources.HalAppender;
@@ -27,6 +28,16 @@ public class IndexLinkEnricher implements HalEnricher {
   @Override
   public void enrich(HalEnricherContext context, HalAppender appender) {
     appendTasksLink(appender);
+    appendDataLink(appender);
+  }
+
+  private void appendDataLink(HalAppender appender) {
+    String dataUrl = new LinkBuilder(scmPathInfoStore.get().get(), MyDataResource.class)
+      .method("getData")
+      .parameters()
+      .href();
+
+    appender.appendLink("data", dataUrl);
   }
 
   private void appendTasksLink(HalAppender appender) {
