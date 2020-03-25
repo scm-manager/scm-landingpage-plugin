@@ -28,13 +28,15 @@ import classNames from "classnames";
 import styled from "styled-components";
 type Props = {
   repository: Repository;
+  classes?: string;
 };
 
 const Icon = styled.i`
   pointer-events: all;
+  cursor: pointer;
 `;
 
-const FavoriteRepositoryToggleIcon: FC<Props> = ({ repository }) => {
+const FavoriteRepositoryToggleIcon: FC<Props> = ({ repository, classes }) => {
   const [favorite, setFavorite] = useState(false);
 
   useEffect(() => {
@@ -53,7 +55,7 @@ const FavoriteRepositoryToggleIcon: FC<Props> = ({ repository }) => {
 
   return (
     <Icon
-      className={classNames("fas fa-star", favorite ? "has-text-warning" : "has-text-dark")}
+      className={classNames(classes, favorite ? "fas fa-star has-text-warning " : "far fa-star has-text-dark")}
       onClick={() => toggleFavoriteStatus()}
     />
   );

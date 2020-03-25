@@ -1,9 +1,31 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2020-present Cloudogu GmbH and Contributors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 import React, { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import CollapsibleContainer from "../CollapsibleContainer";
-import { apiClient, ErrorNotification, Loading, Subtitle } from "@scm-manager/ui-components";
+import { apiClient, ErrorNotification, Loading } from "@scm-manager/ui-components";
 import MyRepositoryData from "./MyRepositoryData";
-import { MyDataType } from "../types";
 import styled from "styled-components";
 
 const Headline = styled.h3`
@@ -40,18 +62,13 @@ const MyData: FC<Props> = ({}) => {
     return <ErrorNotification error={error} />;
   }
 
-  console.log(content?._embedded?.data.filter((dataEntry: MyDataType) => dataEntry.type === "FavoriteRepositoryData"));
-  console.log(content?._embedded?.data.forEach((dataEntry: MyDataType) => console.log(dataEntry)));
   return (
     <>
       <Headline>{t("scm-landingpage-plugin.mydata.title")}</Headline>
-      <CollapsibleContainer title={t("scm-landingpage-plugin.favoriteRepository.title")}>
-        {content?._embedded?.data
-          .filter((dataEntry: MyDataType) => dataEntry.type === "FavoriteRepositoryData")
-          .map((data, key) => {
-            console.log(data);
-            return <MyRepositoryData key={key} data={data} />;
-          })}
+      <CollapsibleContainer title={t("scm-landingpage-plugin.favoriteRepository.title")} separatedEntries={true}>
+        {content?._embedded?.data?.map((data, key) => (
+          <MyRepositoryData key={key} data={data} />
+        ))}
       </CollapsibleContainer>
     </>
   );
