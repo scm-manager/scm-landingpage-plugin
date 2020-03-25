@@ -70,13 +70,13 @@ class MyEventsCollectorTest {
 
   static class EventOne extends MyEvent {
     public EventOne() {
-      super(EventOne.class.getSimpleName(), "/one");
+      super(EventOne.class.getSimpleName(), "permission", "/one");
     }
   }
 
   static class EventTwo extends MyEvent {
     public EventTwo() {
-      super(EventTwo.class.getSimpleName(), "/two");
+      super(EventTwo.class.getSimpleName(), "permission", "/two");
     }
   }
 

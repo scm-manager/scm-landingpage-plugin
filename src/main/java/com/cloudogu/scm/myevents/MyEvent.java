@@ -31,13 +31,15 @@ import lombok.Getter;
 @Getter
 public class MyEvent {
   private final String type;
+  private final String permission;
 
   @JsonProperty("_links")
   @JsonSerialize(using = SelfLinkSerializer.class)
   private final String link;
 
-  public MyEvent(String type, String link) {
+  public MyEvent(String type, String permission, String link) {
     this.type = type;
+    this.permission = permission;
     this.link = link;
   }
 }

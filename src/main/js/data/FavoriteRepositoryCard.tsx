@@ -34,7 +34,7 @@ type FavoriteRepositoryType = MyDataType & {
 const FavoriteRepositoryCard: MyDataComponent<FavoriteRepositoryType> = ({ data }) => {
   return (
     <div className={"columns card-columns is-multiline"}>
-      <div className="box box-link-shadow column is-full is-clipped">
+      <div className="box box-link-shadow column is-half-overlay is-clipped">
         <RepositoryEntry repository={data?.repository} />
       </div>
     </div>
