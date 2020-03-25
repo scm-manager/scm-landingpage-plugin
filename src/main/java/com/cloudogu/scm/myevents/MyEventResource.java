@@ -21,23 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.cloudogu.scm.mydata;
+package com.cloudogu.scm.myevents;
 
-import com.cloudogu.scm.SelfLinkSerializer;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.Getter;
+import sonia.scm.web.VndMediaType;
 
-@Getter
-public class MyData {
-  private final String type;
+import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.UriInfo;
 
-  @JsonProperty("_links")
-  @JsonSerialize(using = SelfLinkSerializer.class)
-  private final String link;
+@Path("v2/landingpage/myevents")
+public class MyEventResource {
 
-  public MyData(String type, String link) {
-    this.type = type;
-    this.link = link;
+  private final MyEventCollector collector;
+
+  private static final String MEDIATYPE = VndMediaType.PREFIX + "myevents" + VndMediaType.SUFFIX;
+
+  @Inject
+  public MyEventResource(MyEventCollector collector) {
+    this.collector = collector;
+  }
+
+  @GET
+  @Path("")
+  @Produces(MEDIATYPE)
+  public MyEventDto getData(@Context UriInfo uriInfo) {
+    String self = uriInfo.getAbsolutePath().toASCIIString();
+    return new MyEventDto(self, collector.collect());
   }
 }

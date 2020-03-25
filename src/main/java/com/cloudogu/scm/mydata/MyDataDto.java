@@ -23,7 +23,7 @@
  */
 package com.cloudogu.scm.mydata;
 
-import com.cloudogu.scm.mytasks.SelfLinkSerializer;
+import com.cloudogu.scm.SelfLinkSerializer;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;

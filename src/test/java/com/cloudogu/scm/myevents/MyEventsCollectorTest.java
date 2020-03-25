@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.cloudogu.scm.mydata;
+package com.cloudogu.scm.myevents;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -37,46 +37,46 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class MyDataCollectorTest {
+class MyEventsCollectorTest {
 
   @Test
-  void shouldReturnCollectedData() {
-    MyDataProvider provider = mock(MyDataProvider.class);
-    DataOne a = new DataOne();
-    DataTwo b = new DataTwo();
+  void shouldReturnCollectedEvents() {
+    MyEventProvider provider = mock(MyEventProvider.class);
+    EventOne a = new EventOne();
+    EventTwo b = new EventTwo();
 
-    Iterable<MyData> data = ImmutableList.of(a, b);
-    when(provider.getData()).thenReturn(data);
+    Iterable<MyEvent> events = ImmutableList.of(a, b);
+    when(provider.getEvents()).thenReturn(events);
 
-    MyDataCollector collector = new MyDataCollector(Collections.singleton(provider));
-    List<MyData> collectedData = collector.collect();
-    assertThat(collectedData).containsOnly(a, b);
+    MyEventCollector collector = new MyEventCollector(Collections.singleton(provider));
+    List<MyEvent> collectedEvents = collector.collect();
+    assertThat(collectedEvents).containsOnly(a, b);
   }
 
   @Test
-  void shouldReturnCombinedData() {
-    MyDataProvider providerOne = mock(MyDataProvider.class);
-    DataOne a = new DataOne();
-    when(providerOne.getData()).thenReturn(Collections.singleton(a));
+  void shouldReturnCombinedEvents() {
+    MyEventProvider providerOne = mock(MyEventProvider.class);
+    EventOne a = new EventOne();
+    when(providerOne.getEvents()).thenReturn(Collections.singleton(a));
 
-    MyDataProvider providerTwo = mock(MyDataProvider.class);
-    DataTwo b = new DataTwo();
-    when(providerTwo.getData()).thenReturn(Collections.singleton(b));
+    MyEventProvider providerTwo = mock(MyEventProvider.class);
+    EventTwo b = new EventTwo();
+    when(providerTwo.getEvents()).thenReturn(Collections.singleton(b));
 
-    MyDataCollector collector = new MyDataCollector(ImmutableSet.of(providerOne, providerTwo));
-    List<MyData> collectedData = collector.collect();
-    assertThat(collectedData).containsOnly(a, b);
+    MyEventCollector collector = new MyEventCollector(ImmutableSet.of(providerOne, providerTwo));
+    List<MyEvent> collectedEvents = collector.collect();
+    assertThat(collectedEvents).containsOnly(a, b);
   }
 
-  static class DataOne extends MyData {
-    public DataOne() {
-      super(DataOne.class.getSimpleName(), "/one");
+  static class EventOne extends MyEvent {
+    public EventOne() {
+      super(EventOne.class.getSimpleName(), "/one");
     }
   }
 
-  static class DataTwo extends MyData {
-    public DataTwo() {
-      super(DataTwo.class.getSimpleName(), "/two");
+  static class EventTwo extends MyEvent {
+    public EventTwo() {
+      super(EventTwo.class.getSimpleName(), "/two");
     }
   }
 

@@ -21,24 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.cloudogu.scm.mytasks;
+package com.cloudogu.scm.myevents;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
+import sonia.scm.plugin.ExtensionPoint;
 
-import java.io.IOException;
+@ExtensionPoint
+public interface MyEventProvider {
 
-public class SelfLinkSerializer extends JsonSerializer<String> {
-  @Override
-  public void serialize(String value, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-    jsonGenerator.writeStartObject();
-    jsonGenerator.writeFieldName("self");
-
-    jsonGenerator.writeStartObject();
-    jsonGenerator.writeStringField("href", value);
-    jsonGenerator.writeEndObject();
-
-    jsonGenerator.writeEndObject();
-  }
+  Iterable<MyEvent> getEvents();
 }

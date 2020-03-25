@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.cloudogu.scm.mydata;
+package com.cloudogu.scm.myevents;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,10 +46,10 @@ import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)
-class MyDataResourceTest {
+class MyEventsResourceTest {
 
   @Mock
-  private MyDataCollector collector;
+  private MyEventCollector collector;
 
   private RestDispatcher dispatcher;
 
@@ -58,41 +58,41 @@ class MyDataResourceTest {
   @BeforeEach
   void setUpResource() {
     dispatcher = new RestDispatcher();
-    dispatcher.addSingletonResource(new MyDataResource(collector));
+    dispatcher.addSingletonResource(new MyEventResource(collector));
   }
 
   @Test
-  void shouldReturnCollectedData() throws URISyntaxException, IOException {
-    when(collector.collect()).thenReturn(Collections.singletonList(new SampleData("awesome")));
+  void shouldReturnCollectedEvents() throws URISyntaxException, IOException {
+    when(collector.collect()).thenReturn(Collections.singletonList(new SampleEvent("awesome")));
 
-    MockHttpRequest request = MockHttpRequest.get("/v2/landingpage/mydata");
+    MockHttpRequest request = MockHttpRequest.get("/v2/landingpage/myevents");
     MockHttpResponse response = new MockHttpResponse();
 
     dispatcher.invoke(request, response);
 
     MediaType contentType = (MediaType) response.getOutputHeaders().getFirst("Content-Type");
-    assertThat(contentType.toString()).isEqualTo("application/vnd.scmm-mydata+json;v=2");
+    assertThat(contentType.toString()).isEqualTo("application/vnd.scmm-myevents+json;v=2");
     assertThat(response.getStatus()).isEqualTo(HttpServletResponse.SC_OK);
 
     JsonNode node = mapper.readTree(response.getOutput());
-    assertThat(node.get("_links").get("self").get("href").asText()).isEqualTo("/v2/landingpage/mydata");
+    assertThat(node.get("_links").get("self").get("href").asText()).isEqualTo("/v2/landingpage/myevents");
 
-    JsonNode data = node.get("_embedded").get("data");
-    assertThat(data.isArray()).isTrue();
+    JsonNode events = node.get("_embedded").get("events");
+    assertThat(events.isArray()).isTrue();
 
-    JsonNode task = data.get(0);
-    assertThat(task.get("type").asText()).isEqualTo(SampleData.class.getName());
+    JsonNode task = events.get(0);
+    assertThat(task.get("type").asText()).isEqualTo(SampleEvent.class.getName());
     assertThat(task.get("_links").get("self").get("href").asText()).isEqualTo("/sample");
     assertThat(task.get("value").asText()).isEqualTo("awesome");
   }
 
   @Getter
-  public static class SampleData extends MyData {
+  public static class SampleEvent extends MyEvent {
 
     private final String value;
 
-    public SampleData(String value) {
-      super(SampleData.class.getName(), "/sample");
+    public SampleEvent(String value) {
+      super(SampleEvent.class.getName(), "/sample");
       this.value = value;
     }
   }

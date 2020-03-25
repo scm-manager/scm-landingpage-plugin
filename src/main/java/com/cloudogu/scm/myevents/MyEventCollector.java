@@ -21,23 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.cloudogu.scm.mydata;
+package com.cloudogu.scm.myevents;
 
-import com.cloudogu.scm.SelfLinkSerializer;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.Getter;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
-@Getter
-public class MyData {
-  private final String type;
+public class MyEventCollector {
 
-  @JsonProperty("_links")
-  @JsonSerialize(using = SelfLinkSerializer.class)
-  private final String link;
+  private final Set<MyEventProvider> providers;
 
-  public MyData(String type, String link) {
-    this.type = type;
-    this.link = link;
+  @Inject
+  public MyEventCollector(Set<MyEventProvider> providers) {
+    this.providers = providers;
   }
+
+  public List<MyEvent> collect() {
+    List<MyEvent> dataList = new ArrayList<>();
+    for (MyEventProvider provider : providers) {
+      Iterable<MyEvent> tasks = provider.getEvents();
+      tasks.forEach(dataList::add);
+    }
+    return dataList;
+  }
+
 }

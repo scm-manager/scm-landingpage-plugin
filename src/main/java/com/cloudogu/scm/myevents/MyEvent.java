@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.cloudogu.scm.mydata;
+package com.cloudogu.scm.myevents;
 
 import com.cloudogu.scm.SelfLinkSerializer;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -29,14 +29,14 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
 
 @Getter
-public class MyData {
+public class MyEvent {
   private final String type;
 
   @JsonProperty("_links")
   @JsonSerialize(using = SelfLinkSerializer.class)
   private final String link;
 
-  public MyData(String type, String link) {
+  public MyEvent(String type, String link) {
     this.type = type;
     this.link = link;
   }
