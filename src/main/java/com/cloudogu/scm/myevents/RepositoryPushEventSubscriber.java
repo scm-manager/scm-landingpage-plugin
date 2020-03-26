@@ -25,7 +25,7 @@ package com.cloudogu.scm.myevents;
 
 import com.github.legman.Subscribe;
 import com.google.common.collect.Iterables;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 import org.apache.shiro.SecurityUtils;
 import sonia.scm.EagerSingleton;
 import sonia.scm.plugin.Extension;
@@ -71,6 +71,7 @@ public class RepositoryPushEventSubscriber {
 
   @XmlRootElement
   @XmlAccessorType(XmlAccessType.FIELD)
+  @Getter
   public static class PushEvent extends MyEvent {
 
     private final String repository;

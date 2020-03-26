@@ -23,7 +23,6 @@
  */
 package com.cloudogu.scm.myevents;
 
-import com.google.common.collect.EvictingQueue;
 import com.google.common.collect.ImmutableList;
 import lombok.NoArgsConstructor;
 import org.apache.shiro.SecurityUtils;
@@ -36,6 +35,7 @@ import javax.inject.Singleton;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Iterator;
 import java.util.List;
 
 @Singleton
@@ -62,13 +62,14 @@ public class MyEventStore {
     ImmutableList.Builder<MyEvent> builder = ImmutableList.builder();
     StoreEntry storeEntry = getStoreEntry();
     int i = 0;
-    for (MyEvent event : storeEntry.events) {
-      if (subject.isPermitted(event.getPermission())) {
-        builder.add(event);
+
+    Iterator<MyEvent> myEventIterator = storeEntry.events.descendingIterator();
+
+    while (i < 20 && myEventIterator.hasNext()) {
+      MyEvent next = myEventIterator.next();
+      if (subject.isPermitted(next.getPermission())) {
+        builder.add(next);
         i++;
-      }
-      if (i > 20) {
-        break;
       }
     }
 
@@ -85,7 +86,7 @@ public class MyEventStore {
 
   @XmlRootElement
   @XmlAccessorType(XmlAccessType.FIELD)
-//  @NoArgsConstructor
+  @NoArgsConstructor
   static class StoreEntry {
     private EvictingQueue<MyEvent> events = EvictingQueue.create(1000);
   }
