@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React, {FC, ReactChild, ReactChildren, useState} from "react";
+import React, { FC, ReactChildren, useState } from "react";
 import styled from "styled-components";
 import { Icon } from "@scm-manager/ui-components";
 
@@ -33,6 +33,11 @@ type Props = {
 
 const Container = styled.div`
   margin-bottom: 1rem;
+  a:not(:last-child) div.media {
+    border-bottom: solid 1px #cdcdcd;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+  }
 `;
 
 const Headline = styled.h3`
@@ -51,20 +56,16 @@ const Separator = styled.hr`
   margin: 0.5rem 0;
 `;
 
-const CollapsibleContainer:FC<Props> = ({title, separatedEntries, children}) => {
+const CollapsibleContainer: FC<Props> = ({ title, separatedEntries, children }) => {
   const [collapsed, setCollapsed] = useState(false);
 
   const icon = collapsed ? "angle-right" : "angle-down";
   let content = null;
   if (!collapsed) {
     if (separatedEntries) {
-      content = React.Children.map(children, (child) => <Content>{child}</Content>)
+      content = React.Children.map(children, child => <Content>{child}</Content>);
     } else {
-      content = (
-        <Content className="box">
-          {children}
-        </Content>
-      );
+      content = <Content className="box">{children}</Content>;
     }
   }
 
@@ -74,7 +75,7 @@ const CollapsibleContainer:FC<Props> = ({title, separatedEntries, children}) => 
         <Headline>
           <Icon name={icon} color="default" /> {title}
         </Headline>
-        <Separator/>
+        <Separator />
       </div>
       {content}
     </Container>

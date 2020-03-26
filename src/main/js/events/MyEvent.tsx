@@ -21,29 +21,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.cloudogu.scm.myevents;
+import React, { FC } from "react";
+import { binder } from "@scm-manager/ui-extensions";
+import { Link } from "@scm-manager/ui-types";
+import { MyEventComponent, MyEventType } from "../types";
+import { Link as ReactLink } from "react-router-dom";
+import styled from "styled-components";
 
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+type Props = {
+  event: MyEventType;
+};
 
-public class MyEventCollector {
-
-  private final Set<MyEventProvider> providers;
-
-  @Inject
-  public MyEventCollector(Set<MyEventProvider> providers) {
-    this.providers = providers;
+const StyledLink = styled(ReactLink)`
+  color: inherit;
+  :hover {
+    color: #33b2e8 !important;
   }
+`;
 
-  public List<MyEvent> collect() {
-    List<MyEvent> dataList = new ArrayList<>();
-    for (MyEventProvider provider : providers) {
-      Iterable<MyEvent> tasks = provider.getEvents();
-      tasks.forEach(dataList::add);
+const MyEvent: FC<Props> = ({ event }) => {
+  const extensions: MyEventComponent[] = binder.getExtensions("landingpage.myevents");
+
+  let Component = null;
+  for (let extension of extensions) {
+    if (extension.type === event.type) {
+      Component = extension;
+      break;
     }
-    return dataList;
   }
 
-}
+  if (!Component) {
+    return null;
+  }
+
+  return (
+    <>
+      <StyledLink to={(event?._links?.self as Link)?.href}>
+        <Component event={event} />
+      </StyledLink>
+    </>
+  );
+};
+
+export default MyEvent;

@@ -29,6 +29,7 @@ import { ProtectedRoute, PrimaryNavigationLink } from "@scm-manager/ui-component
 import { useTranslation } from "react-i18next";
 import "./tasks/PluginUpdateTask";
 import "./data/FavoriteRepositoryCard";
+import "./events/RepositoryPushEvent";
 import { RepositoryDataType } from "./types";
 
 const HomeRoute: FC = props => {
@@ -40,8 +41,8 @@ const HomeNavigation: FC = () => {
   return <PrimaryNavigationLink label={t("scm-landingpage-plugin.navigation.home")} to={"/home"} match={"/home"} />;
 };
 
-const LargeToggleIcon: FC<RepositoryDataType> = (props) => (
-  <FavoriteRepositoryToggleIcon repository={props.repository} classes={"fa-2x"}/>
+const LargeToggleIcon: FC<RepositoryDataType> = props => (
+  <FavoriteRepositoryToggleIcon repository={props.repository} classes={"fa-2x"} />
 );
 
 binder.bind("repository.card.beforeTitle", FavoriteRepositoryToggleIcon);

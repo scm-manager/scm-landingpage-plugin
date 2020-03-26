@@ -26,6 +26,7 @@ import { Page } from "@scm-manager/ui-components";
 import MyTasks from "./tasks/MyTasks";
 import { useTranslation } from "react-i18next";
 import MyData from "./data/MyData";
+import MyEvents from "./events/MyEvents";
 
 const Home: FC = () => {
   const [t] = useTranslation("plugins");
@@ -35,9 +36,11 @@ const Home: FC = () => {
       <div className="columns">
         <div className="column">
           <MyTasks />
-          <MyData/>
+          <MyData />
         </div>
-        <div className="column"></div>
+        <div className="column">
+          <MyEvents />
+        </div>
       </div>
     </Page>
   );

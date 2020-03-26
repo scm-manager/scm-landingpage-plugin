@@ -21,37 +21,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React from "react";
-import { binder } from "@scm-manager/ui-extensions";
-import { MyDataComponent, MyDataType } from "../types";
-import { RepositoryEntry } from "@scm-manager/ui-components";
-import { Repository } from "@scm-manager/ui-types";
-import styled from "styled-components";
+import React, { FC, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import CollapsibleContainer from "../CollapsibleContainer";
+import { apiClient, ErrorNotification, Loading } from "@scm-manager/ui-components";
+import MyEvent from "./MyEvent";
 
-type FavoriteRepositoryType = MyDataType & {
-  repository: Repository;
-};
+type Props = {};
 
-const StyledRepositoryEntry = styled(RepositoryEntry)`
-  .overlay-column {
-    width: calc(50% - 3rem);
+const MyEvents: FC<Props> = ({}) => {
+  const [t] = useTranslation("plugins");
+  const [content, setContent] = useState([]);
+  const [error, setError] = useState(undefined);
+  const [loading, setLoading] = useState(false);
 
-    @media screen and (max-width: 768px) {
-      width: calc(100% - 1.5rem);
-    }
+  useEffect(() => {
+    setLoading(true);
+    apiClient
+      .get("/landingpage/myevents")
+      .then(r => r.json())
+      .then(setContent)
+      .then(() => setLoading(false))
+      .catch(setError);
+  }, []);
+
+  if (loading) {
+    return <Loading />;
   }
-`;
 
-const FavoriteRepositoryCard: MyDataComponent<FavoriteRepositoryType> = ({ data }) => {
+  if (error) {
+    return <ErrorNotification error={error} />;
+  }
+
   return (
-    <div className={"columns card-columns is-multiline"}>
-      <div className="box box-link-shadow column is-clipped">
-        <StyledRepositoryEntry repository={data?.repository} />
-      </div>
-    </div>
+    <>
+      <CollapsibleContainer title={t("scm-landingpage-plugin.myevents.title")} separatedEntries={false}>
+        {content?._embedded?.events?.map((event, index) => (
+          <MyEvent key={index} event={event} />
+        ))}
+      </CollapsibleContainer>
+    </>
   );
 };
 
-FavoriteRepositoryCard.type = "FavoriteRepositoryData";
-
-binder.bind("landingpage.myFavoriteRepository", FavoriteRepositoryCard);
+export default MyEvents;

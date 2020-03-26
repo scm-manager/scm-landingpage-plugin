@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { Links, Repository } from "@scm-manager/ui-types";
+import {Links, Repository} from "@scm-manager/ui-types";
 
 export type MyTaskType = {
   type: string
@@ -35,6 +35,15 @@ type TaskProps<T = MyTaskType> = {
 export type MyTaskComponent<T = MyTaskType> = React.FC<TaskProps<T>> & {
   type: string
 };
+
+type MyTaskEmbedded = {
+  tasks: MyTaskType[]
+}
+
+export type MyTasksType = {
+  _links: Links
+  _embedded: MyTaskEmbedded
+}
 
 export type MyDataType = {
   type: string
@@ -53,11 +62,15 @@ export type RepositoryDataType = MyDataType & {
   repository: Repository
 }
 
-type MyTaskEmbedded = {
-  tasks: MyTaskType[]
+export type MyEventType = {
+  type: string
+  _links: Links
 }
 
-export type MyTasksType = {
-  _links: Links
-  _embedded: MyTaskEmbedded
-}
+export type MyEventComponent<T = MyEventType> = React.FC<EventProps<T>> & {
+  type: string
+};
+
+type EventProps<T = MyEventType> = {
+  event: T
+};

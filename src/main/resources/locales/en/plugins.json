@@ -21,6 +21,14 @@
         "title": "Update plugins",
         "description": "New versions for {{count}} plugins available"
       }
+    },
+    "myevents": {
+      "title": "Latest activities",
+      "repositoryPush": {
+        "title": "{{count}} change committet: {{repository}}",
+        "title_plural": "{{count}} changes committet: {{repository}}",
+        "description": "Created by"
+      }
     }
   }
 }

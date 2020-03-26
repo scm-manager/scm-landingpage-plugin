@@ -19,7 +19,15 @@
     "tasks": {
       "updatePlugin": {
         "title": "Update plugins",
-        "description": "New Versionen für {{count}} Plugins verfügbar"
+        "description": "Neue Versionen für {{count}} Plugins verfügbar"
+      }
+    },
+    "myevents": {
+      "title": "Letzte Aktivitäten",
+      "repositoryPush": {
+        "title": "{{count}} Änderung committet: {{repository}}",
+        "title_plural": "{{count}} Änderungen committet: {{repository}}",
+        "description": "Erstellt von"
       }
     }
   }
