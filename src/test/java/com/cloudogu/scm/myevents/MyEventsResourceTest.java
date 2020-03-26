@@ -49,7 +49,7 @@ import static org.mockito.Mockito.when;
 class MyEventsResourceTest {
 
   @Mock
-  private MyEventCollector collector;
+  private MyEventStore store;
 
   private RestDispatcher dispatcher;
 
@@ -58,12 +58,12 @@ class MyEventsResourceTest {
   @BeforeEach
   void setUpResource() {
     dispatcher = new RestDispatcher();
-    dispatcher.addSingletonResource(new MyEventResource(collector));
+    dispatcher.addSingletonResource(new MyEventResource(store));
   }
 
   @Test
   void shouldReturnCollectedEvents() throws URISyntaxException, IOException {
-    when(collector.collect()).thenReturn(Collections.singletonList(new SampleEvent("awesome")));
+    when(store.getEvents()).thenReturn(Collections.singletonList(new SampleEvent("awesome")));
 
     MockHttpRequest request = MockHttpRequest.get("/v2/landingpage/myevents");
     MockHttpResponse response = new MockHttpResponse();

@@ -71,4 +71,11 @@ class IndexLinkEnricherTest {
 
     verify(appender).appendLink("data", "https://scm-manager.org/scm/api/v2/landingpage/mydata");
   }
+
+  @Test
+  void shouldAppendEventsLink() {
+    enricher.enrich(context, appender);
+
+    verify(appender).appendLink("events", "https://scm-manager.org/scm/api/v2/landingpage/myevents");
+  }
 }

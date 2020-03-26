@@ -24,6 +24,7 @@
 package com.cloudogu.scm;
 
 import com.cloudogu.scm.mydata.MyDataResource;
+import com.cloudogu.scm.myevents.MyEventResource;
 import com.cloudogu.scm.mytasks.MyTaskResource;
 import sonia.scm.api.v2.resources.Enrich;
 import sonia.scm.api.v2.resources.HalAppender;
@@ -52,6 +53,7 @@ public class IndexLinkEnricher implements HalEnricher {
   public void enrich(HalEnricherContext context, HalAppender appender) {
     appendTasksLink(appender);
     appendDataLink(appender);
+    appendEventsLink(appender);
   }
 
   private void appendDataLink(HalAppender appender) {
@@ -70,5 +72,14 @@ public class IndexLinkEnricher implements HalEnricher {
       .href();
 
     appender.appendLink("tasks", tasksUrl);
+  }
+
+  private void appendEventsLink(HalAppender appender) {
+    String tasksUrl = new LinkBuilder(scmPathInfoStore.get().get(), MyEventResource.class)
+      .method("getEvents")
+      .parameters()
+      .href();
+
+    appender.appendLink("events", tasksUrl);
   }
 }

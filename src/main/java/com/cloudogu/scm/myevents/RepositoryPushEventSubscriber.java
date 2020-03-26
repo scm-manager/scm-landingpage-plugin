@@ -38,7 +38,7 @@ import sonia.scm.user.User;
 import javax.inject.Inject;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
+import java.time.Instant;
 
 @Extension
 @EagerSingleton
@@ -65,11 +65,10 @@ public class RepositoryPushEventSubscriber {
       link,
       repository.getNamespace() + "/" + repository.getName(),
       author,
-      changesetCount
-    ));
+      changesetCount,
+      Instant.now()));
   }
 
-  @XmlRootElement
   @XmlAccessorType(XmlAccessType.FIELD)
   @Getter
   public static class PushEvent extends MyEvent {
@@ -77,12 +76,14 @@ public class RepositoryPushEventSubscriber {
     private final String repository;
     private final String author;
     private final int changesets;
+    private final Instant date;
 
-    public PushEvent(String permission, String link, String repository, String author, int changesets) {
+    public PushEvent(String permission, String link, String repository, String author, int changesets, Instant date) {
       super(PushEvent.class.getSimpleName(), permission, link);
       this.repository = repository;
       this.author = author;
       this.changesets = changesets;
+      this.date = date;
     }
   }
 }

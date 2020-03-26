@@ -24,7 +24,7 @@
 package com.cloudogu.scm.myevents;
 
 import com.google.common.collect.ImmutableList;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import sonia.scm.store.ConfigurationStore;
@@ -86,7 +86,7 @@ public class MyEventStore {
 
   @XmlRootElement
   @XmlAccessorType(XmlAccessType.FIELD)
-  @NoArgsConstructor
+  @Getter
   static class StoreEntry {
     private EvictingQueue<MyEvent> events = EvictingQueue.create(1000);
   }

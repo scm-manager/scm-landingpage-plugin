@@ -35,20 +35,20 @@ import javax.ws.rs.core.UriInfo;
 @Path("v2/landingpage/myevents")
 public class MyEventResource {
 
-  private final MyEventCollector collector;
+  private final MyEventStore store;
 
   private static final String MEDIATYPE = VndMediaType.PREFIX + "myevents" + VndMediaType.SUFFIX;
 
   @Inject
-  public MyEventResource(MyEventCollector collector) {
-    this.collector = collector;
+  public MyEventResource(MyEventStore store) {
+    this.store = store;
   }
 
   @GET
   @Path("")
   @Produces(MEDIATYPE)
-  public MyEventDto getData(@Context UriInfo uriInfo) {
+  public MyEventDto getEvents(@Context UriInfo uriInfo) {
     String self = uriInfo.getAbsolutePath().toASCIIString();
-    return new MyEventDto(self, collector.collect());
+    return new MyEventDto(self, store.getEvents());
   }
 }
