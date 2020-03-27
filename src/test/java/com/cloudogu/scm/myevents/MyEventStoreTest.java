@@ -23,6 +23,10 @@
  */
 package com.cloudogu.scm.myevents;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import lombok.Getter;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.junit.jupiter.api.AfterEach;
@@ -31,10 +35,25 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import sonia.scm.store.ConfigurationStoreFactory;
 import sonia.scm.store.InMemoryConfigurationStoreFactory;
 
+import javax.xml.XMLConstants;
 import javax.xml.bind.JAXB;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.time.Instant;
@@ -155,10 +174,12 @@ class MyEventStoreTest {
   @Test
   void shouldMarshallAndUnmarshallPushEvent() {
     MyEventStore.StoreEntry entry = new MyEventStore.StoreEntry();
-    entry.getEvents().add(new RepositoryPushEventSubscriber.PushEvent("1", "2", "3", "4", 5, Instant.now()));
+    entry.getEvents().add(new RepositoryPushEventSubscriber.PushEvent("repository:1:read", "/repo/1", "repo/1", "Trillian", 1, Instant.now()));
+    entry.getEvents().add(new RepositoryPushEventSubscriber.PushEvent("repository:2:read", "/repo/2", "repo/2", "Trillian", 2, Instant.now()));
 
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     JAXB.marshal(entry, baos);
+    System.out.println(baos);
     ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
 
     MyEventStore.StoreEntry unmarshalled = JAXB.unmarshal(bais, MyEventStore.StoreEntry.class);

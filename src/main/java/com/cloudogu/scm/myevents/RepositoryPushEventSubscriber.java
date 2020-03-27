@@ -26,6 +26,7 @@ package com.cloudogu.scm.myevents;
 import com.github.legman.Subscribe;
 import com.google.common.collect.Iterables;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.apache.shiro.SecurityUtils;
 import sonia.scm.EagerSingleton;
 import sonia.scm.plugin.Extension;
@@ -34,10 +35,13 @@ import sonia.scm.repository.PostReceiveRepositoryHookEvent;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryPermissions;
 import sonia.scm.user.User;
+import sonia.scm.xml.XmlInstantAdapter;
 
 import javax.inject.Inject;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.Instant;
 
 @Extension
@@ -69,14 +73,18 @@ public class RepositoryPushEventSubscriber {
       Instant.now()));
   }
 
+  @XmlRootElement
   @XmlAccessorType(XmlAccessType.FIELD)
   @Getter
+  @NoArgsConstructor
   public static class PushEvent extends MyEvent {
 
-    private final String repository;
-    private final String author;
-    private final int changesets;
-    private final Instant date;
+    private String repository;
+    private String author;
+    private int changesets;
+    @XmlJavaTypeAdapter(XmlInstantAdapter.class)
+    private Instant date;
+
 
     public PushEvent(String permission, String link, String repository, String author, int changesets, Instant date) {
       super(PushEvent.class.getSimpleName(), permission, link);

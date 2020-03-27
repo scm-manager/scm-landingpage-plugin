@@ -48,8 +48,7 @@ const Headline = styled.h3`
 `;
 
 const Content = styled.div`
-  margin: 1rem 0 2rem;
-  padding-top: 1rem;
+  margin: 1.25rem 0 0;
 `;
 
 const Separator = styled.hr`

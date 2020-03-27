@@ -38,7 +38,7 @@ public class FavoriteRepositoryProvider {
 
   @Inject
   public FavoriteRepositoryProvider(DataStoreFactory storeFactory) {
-    this.store = storeFactory.withType(FavoriteRepository.class).withName(STORE_NAME).build();;
+    this.store = storeFactory.withType(FavoriteRepository.class).withName(STORE_NAME).build();
   }
 
   public FavoriteRepositoryStore get() {

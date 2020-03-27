@@ -21,38 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React from "react";
-import { binder } from "@scm-manager/ui-extensions";
-import { MyDataComponent, MyDataType } from "../types";
-import { RepositoryEntry } from "@scm-manager/ui-components";
-import { Repository } from "@scm-manager/ui-types";
-import styled from "styled-components";
+package com.cloudogu.scm.myevents;
 
-type FavoriteRepositoryType = MyDataType & {
-  repository: Repository;
-};
+import com.github.legman.Subscribe;
+import sonia.scm.EagerSingleton;
+import sonia.scm.plugin.Extension;
 
-const RepositoryEntryWrapper = styled.div`
-  height: 110px;
-  .overlay-column {
-    width: calc(50% - 3rem);
+import javax.inject.Inject;
 
-    @media screen and (max-width: 768px) {
-      width: calc(100% - 1.5rem);
-    }
+@Extension
+@EagerSingleton
+public class MyEventHandler {
+  private final MyEventStore store;
+
+  @Inject
+  public MyEventHandler(MyEventStore store) {
+    this.store = store;
   }
-`;
 
-const FavoriteRepositoryCard: MyDataComponent<FavoriteRepositoryType> = ({ data }) => {
-  return (
-    <div className={"is-multiline"}>
-      <RepositoryEntryWrapper className="box box-link-shadow column is-clipped">
-        <RepositoryEntry repository={data?.repository} />
-      </RepositoryEntryWrapper>
-    </div>
-  );
-};
+  @Subscribe
+  public void handleEvent(MyEvent event) {
+    store.add(event);
+  }
 
-FavoriteRepositoryCard.type = "FavoriteRepositoryData";
-
-binder.bind("landingpage.myFavoriteRepository", FavoriteRepositoryCard);
+}
