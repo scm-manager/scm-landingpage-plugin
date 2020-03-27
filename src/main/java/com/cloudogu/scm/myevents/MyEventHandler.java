@@ -23,31 +23,25 @@
  */
 package com.cloudogu.scm.myevents;
 
-import com.cloudogu.scm.SelfLinkSerializer;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.github.legman.Subscribe;
+import sonia.scm.EagerSingleton;
+import sonia.scm.plugin.Extension;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.inject.Inject;
 
-@XmlRootElement
-@Getter
-@XmlAccessorType(XmlAccessType.FIELD)
-@NoArgsConstructor
-public class MyEvent {
-  private String type;
-  private String permission;
+@Extension
+@EagerSingleton
+public class MyEventHandler {
+  private final MyEventStore store;
 
-  @JsonProperty("_links")
-  @JsonSerialize(using = SelfLinkSerializer.class)
-  private String link;
-
-  public MyEvent(String type, String permission, String link) {
-    this.type = type;
-    this.permission = permission;
-    this.link = link;
+  @Inject
+  public MyEventHandler(MyEventStore store) {
+    this.store = store;
   }
+
+  @Subscribe
+  public void handleEvent(MyEvent event) {
+    store.add(event);
+  }
+
 }

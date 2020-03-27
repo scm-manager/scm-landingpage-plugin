@@ -79,7 +79,7 @@ const RepositoryPushEvent: MyEventComponent<RepositoryPushEventType> = ({ event 
                 })}
               </strong>
               <p>
-                {t("scm-landingpage-plugin.myevents.repositoryPush.description")} <a>{event.author}</a>
+                {t("scm-landingpage-plugin.myevents.repositoryPush.description")} <span className="has-text-info">{event.author}</span>
               </p>
             </ContentLeft>
             <ContentRight>

@@ -23,18 +23,30 @@
  */
 package com.cloudogu.scm.myevents;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import sonia.scm.store.ConfigurationStore;
 import sonia.scm.store.ConfigurationStoreFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.xml.XMLConstants;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.util.Iterator;
 import java.util.List;
 
@@ -88,7 +100,60 @@ public class MyEventStore {
   @XmlAccessorType(XmlAccessType.FIELD)
   @Getter
   static class StoreEntry {
+    @XmlJavaTypeAdapter(MyEventXmlAdapter.class)
     private EvictingQueue<MyEvent> events = EvictingQueue.create(1000);
+  }
+
+  @XmlAccessorType(XmlAccessType.FIELD)
+  public static class MyEventStoreEntry {
+
+    private Class<? extends MyEvent> type;
+
+    @XmlAnyElement
+    private Element payload;
+
+  }
+
+  public static class MyEventXmlAdapter extends XmlAdapter<MyEventStoreEntry, MyEvent> {
+
+    LoadingCache<Class, JAXBContext> cache = CacheBuilder.newBuilder()
+      .maximumSize(1000)
+      .build(
+        new CacheLoader<Class, JAXBContext>() {
+          @Override
+          public JAXBContext load(Class c) throws JAXBException {
+            return JAXBContext.newInstance(c);
+          }
+        });
+
+    @Override
+    public MyEvent unmarshal(MyEventStoreEntry myEventStoreEntry) throws Exception {
+
+
+
+      JAXBContext jaxbContext = cache.get(myEventStoreEntry.type);
+      return (MyEvent) jaxbContext.createUnmarshaller().unmarshal(myEventStoreEntry.payload);
+    }
+
+    @Override
+    public MyEventStoreEntry marshal(MyEvent event) throws Exception {
+      MyEventStoreEntry entry = new MyEventStoreEntry();
+      entry.type = event.getClass();
+
+      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+      factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+      factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+      factory.setAttribute(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+
+      Document document = factory.newDocumentBuilder().newDocument();
+
+      JAXBContext jaxbContext = cache.get(event.getClass());
+      jaxbContext.createMarshaller().marshal(event, document);
+
+      entry.payload = document.getDocumentElement();
+
+      return entry;
+    }
   }
 }
 
