@@ -32,7 +32,7 @@ type FavoriteRepositoryType = MyDataType & {
   repository: Repository;
 };
 
-const StyledRepositoryEntry = styled(RepositoryEntry)`
+const RepositoryEntryWrapper = styled.div`
   .overlay-column {
     width: calc(50% - 3rem);
 
@@ -45,9 +45,9 @@ const StyledRepositoryEntry = styled(RepositoryEntry)`
 const FavoriteRepositoryCard: MyDataComponent<FavoriteRepositoryType> = ({ data }) => {
   return (
     <div className={"columns card-columns is-multiline"}>
-      <div className="box box-link-shadow column is-clipped">
-        <StyledRepositoryEntry repository={data?.repository} />
-      </div>
+      <RepositoryEntryWrapper className="box box-link-shadow column is-clipped">
+        <RepositoryEntry repository={data?.repository} />
+      </RepositoryEntryWrapper>
     </div>
   );
 };
