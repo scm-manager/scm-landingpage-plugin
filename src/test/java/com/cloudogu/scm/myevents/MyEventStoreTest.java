@@ -167,7 +167,6 @@ class MyEventStoreTest {
 
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     JAXB.marshal(entry, baos);
-    System.out.println(baos);
     ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
 
     MyEventStore.StoreEntry unmarshalled = JAXB.unmarshal(bais, MyEventStore.StoreEntry.class);

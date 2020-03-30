@@ -67,7 +67,7 @@ const RepositoryPushEvent: MyEventComponent<RepositoryPushEventType> = ({event})
   return (
     <>
       <div className={"media"}>
-        <Icon className="fas fa-square fa-2x media-left"/>
+        <Icon className="fas fa-square fa-3x media-left"/>
         <FlexFullHeight className={classNames("media-content", "text-box", "is-flex")}>
           <CenteredItems className="is-flex">
             <ContentLeft className="content">
