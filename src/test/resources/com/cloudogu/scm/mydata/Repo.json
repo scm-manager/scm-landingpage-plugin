@@ -1,0 +1,48 @@
+{
+  "type": "FavoriteRepositoryData",
+  "repository": {
+    "contact": "",
+    "creationDate": "2020-03-23T08:26:01.164Z",
+    "description": "",
+    "healthCheckFailures": [],
+    "lastModified": "2020-03-23T08:26:01.876Z",
+    "namespace": "scmadmin",
+    "name": "init2",
+    "type": "git",
+    "_links": {
+      "self": { "href": "http://localhost:8081/scm/api/v2/repositories/scmadmin/init2" },
+      "delete": { "href": "http://localhost:8081/scm/api/v2/repositories/scmadmin/init2" },
+      "update": { "href": "http://localhost:8081/scm/api/v2/repositories/scmadmin/init2" },
+      "permissions": { "href": "http://localhost:8081/scm/api/v2/repositories/scmadmin/init2/permissions/" },
+      "protocol": [
+        { "href": "ssh://scmadmin@localhost:4567/repo/scmadmin/init2", "name": "ssh" },
+        { "href": "http://localhost:8081/scm/repo/scmadmin/init2", "name": "http" }
+      ],
+      "tags": { "href": "http://localhost:8081/scm/api/v2/repositories/scmadmin/init2/tags/" },
+      "branches": { "href": "http://localhost:8081/scm/api/v2/repositories/scmadmin/init2/branches/" },
+      "incomingChangesets": {
+        "href": "http://localhost:8081/scm/api/v2/repositories/scmadmin/init2/incoming/{source}/{target}/changesets",
+        "templated": true
+      },
+      "incomingDiff": {
+        "href": "http://localhost:8081/scm/api/v2/repositories/scmadmin/init2/incoming/{source}/{target}/diff",
+        "templated": true
+      },
+      "incomingDiffParsed": {
+        "href": "http://localhost:8081/scm/api/v2/repositories/scmadmin/init2/incoming/{source}/{target}/diff/parsed",
+        "templated": true
+      },
+      "changesets": { "href": "http://localhost:8081/scm/api/v2/repositories/scmadmin/init2/changesets/" },
+      "sources": { "href": "http://localhost:8081/scm/api/v2/repositories/scmadmin/init2/sources/" },
+      "authorMappingConfig": {
+        "href": "http://localhost:8081/scm/api/v2/authormapping/configuration/scmadmin/init2"
+      },
+      "unfavorize": { "href": "http://localhost:8081/scm/api/v2/unfavorize/scmadmin/init2" },
+      "favorites": [
+        { "href": "http://localhost:8081/scm/api/v2/unfavorize/scmadmin/init2", "name": "unfavorize" },
+        { "href": "http://localhost:8081/scm/api/v2/favorize/scmadmin/init2", "name": "favorize" }
+      ]
+    }
+  },
+  "_links": { "self": { "href": "/repo/scmadmin/init2" } }
+}

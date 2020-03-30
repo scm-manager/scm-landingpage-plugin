@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.cloudogu.scm.favourite;
+package com.cloudogu.scm.favorite;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -33,23 +33,22 @@ import sonia.scm.web.VndMediaType;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
 @Path("v2/")
-public class FavouriteRepositoryResource {
+public class FavoriteRepositoryResource {
 
-  private final FavouriteRepositoryService service;
+  private final FavoriteRepositoryService service;
 
   @Inject
-  public FavouriteRepositoryResource(FavouriteRepositoryService service) {
+  public FavoriteRepositoryResource(FavoriteRepositoryService service) {
     this.service = service;
   }
 
   @POST
-  @Path("favorize/{namespace}/{name}/{userId}")
+  @Path("favorize/{namespace}/{name}")
   @Operation(
     summary = "Favorize repository",
     description = "Favorizes a repository for an user",
@@ -70,14 +69,13 @@ public class FavouriteRepositoryResource {
     )
   )
   public Response favorizeRepository(@PathParam("namespace") String namespace,
-                                     @PathParam("name") String name,
-                                     @PathParam("userId") String userId) {
-    service.favorizeRepository(new NamespaceAndName(namespace, name), userId);
+                                     @PathParam("name") String name) {
+    service.favorizeRepository(new NamespaceAndName(namespace, name));
     return Response.noContent().build();
   }
 
   @POST
-  @Path("unfavorize/{namespace}/{name}/{userId}")
+  @Path("unfavorize/{namespace}/{name}")
   @Operation(
     summary = "Unfavorize repository",
     description = "Unfavorizes a repository for an user",
@@ -98,9 +96,8 @@ public class FavouriteRepositoryResource {
     )
   )
   public Response unfavorizeRepository(@PathParam("namespace") String namespace,
-                                       @PathParam("name") String name,
-                                       @PathParam("userId") String userId) {
-    service.unfavorizeRepository(new NamespaceAndName(namespace, name), userId);
+                                       @PathParam("name") String name) {
+    service.unfavorizeRepository(new NamespaceAndName(namespace, name));
     return Response.noContent().build();
   }
 

@@ -21,24 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.cloudogu.scm.mytasks;
+package com.cloudogu.scm.favorite;
 
-import com.cloudogu.scm.SelfLinkSerializer;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.Getter;
+import org.junit.jupiter.api.Test;
+import sonia.scm.repository.Repository;
+import sonia.scm.repository.RepositoryTestData;
 
-@Getter
-public abstract class MyTask {
+import javax.xml.bind.JAXB;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 
-  private final String type;
+import static org.assertj.core.api.Assertions.assertThat;
 
-  @JsonProperty("_links")
-  @JsonSerialize(using = SelfLinkSerializer.class)
-  private final String link;
+class FavoriteRepositoryTest {
 
-  public MyTask(String type, String link) {
-    this.type = type;
-    this.link = link;
+  @Test
+  void shouldBeMarshalledBackAndForth() {
+    Repository heartOfGold = RepositoryTestData.createHeartOfGold();
+    Repository puzzle42 = RepositoryTestData.create42Puzzle();
+    Repository hvpt = RepositoryTestData.createHappyVerticalPeopleTransporter();
+
+    FavoriteRepository favorites = new FavoriteRepository();
+    favorites.add(heartOfGold);
+    favorites.add(puzzle42);
+
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    JAXB.marshal(favorites, out);
+
+    favorites = JAXB.unmarshal(new ByteArrayInputStream(out.toByteArray()), FavoriteRepository.class);
+    assertThat(favorites.isFavorite(heartOfGold)).isTrue();
+    assertThat(favorites.isFavorite(puzzle42)).isTrue();
+    assertThat(favorites.isFavorite(hvpt)).isFalse();
   }
+
 }

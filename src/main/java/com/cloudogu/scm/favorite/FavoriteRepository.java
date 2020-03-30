@@ -21,24 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.cloudogu.scm.mytasks;
+package com.cloudogu.scm.favorite;
 
-import com.cloudogu.scm.SelfLinkSerializer;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import sonia.scm.repository.Repository;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
-public abstract class MyTask {
+@AllArgsConstructor
+@NoArgsConstructor
+@XmlRootElement(name = "favorites")
+@XmlAccessorType(XmlAccessType.FIELD)
+public class FavoriteRepository {
 
-  private final String type;
+  private Set<String> repositoryIds = new HashSet<>();
 
-  @JsonProperty("_links")
-  @JsonSerialize(using = SelfLinkSerializer.class)
-  private final String link;
-
-  public MyTask(String type, String link) {
-    this.type = type;
-    this.link = link;
+  void add(Repository repository) {
+    repositoryIds.add(repository.getId());
   }
+
+  void remove(Repository repository) {
+    repositoryIds.remove(repository.getId());
+  }
+
+  boolean isFavorite(Repository repository) {
+    return repositoryIds.contains(repository.getId());
+  }
+
 }

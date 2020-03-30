@@ -21,24 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.cloudogu.scm.mytasks;
+package com.cloudogu.scm;
 
-import com.cloudogu.scm.SelfLinkSerializer;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.Getter;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
 
-@Getter
-public abstract class MyTask {
+import java.io.IOException;
 
-  private final String type;
+public class SelfLinkSerializer extends JsonSerializer<String> {
+  @Override
+  public void serialize(String value, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+    jsonGenerator.writeStartObject();
+    jsonGenerator.writeFieldName("self");
 
-  @JsonProperty("_links")
-  @JsonSerialize(using = SelfLinkSerializer.class)
-  private final String link;
+    jsonGenerator.writeStartObject();
+    jsonGenerator.writeStringField("href", value);
+    jsonGenerator.writeEndObject();
 
-  public MyTask(String type, String link) {
-    this.type = type;
-    this.link = link;
+    jsonGenerator.writeEndObject();
   }
 }

@@ -21,24 +21,74 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.cloudogu.scm.mytasks;
+import {Links, Repository} from "@scm-manager/ui-types";
 
-import com.cloudogu.scm.SelfLinkSerializer;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.Getter;
+export type MyTaskType = {
+  type: string
+  _links: Links
+};
 
-@Getter
-public abstract class MyTask {
+type TaskProps<T = MyTaskType> = {
+  task: T
+};
 
-  private final String type;
+export type MyTaskComponent<T = MyTaskType> = React.FC<TaskProps<T>> & {
+  type: string
+};
 
-  @JsonProperty("_links")
-  @JsonSerialize(using = SelfLinkSerializer.class)
-  private final String link;
+type MyTaskEmbedded = {
+  tasks: MyTaskType[]
+}
 
-  public MyTask(String type, String link) {
-    this.type = type;
-    this.link = link;
-  }
+export type MyTasksType = {
+  _links: Links
+  _embedded: MyTaskEmbedded
+}
+
+type MyDataEmbedded = {
+  data: MyDataType[]
+}
+
+export type MyDataEntriesType= {
+  _links: Links
+  _embedded: MyDataEmbedded
+}
+
+export type MyDataType = {
+  type: string
+  _links: Links
+}
+
+export type MyDataComponent<T = MyDataType> = React.FC<DataProps<T>> & {
+  type: string
+};
+
+type DataProps<T = MyDataType> = {
+  data: T
+};
+
+export type RepositoryDataType = MyDataType & {
+  repository: Repository
+}
+
+export type MyEventType = {
+  type: string
+  _links: Links
+}
+
+export type MyEventComponent<T = MyEventType> = React.FC<EventProps<T>> & {
+  type: string
+};
+
+type EventProps<T = MyEventType> = {
+  event: T
+};
+
+type MyEventEmbedded = {
+  events: MyEventType[]
+}
+
+export type MyEventsType= {
+  _links: Links
+  _embedded: MyEventEmbedded
 }

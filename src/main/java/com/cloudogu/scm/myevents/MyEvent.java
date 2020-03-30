@@ -21,24 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.cloudogu.scm.mytasks;
+package com.cloudogu.scm.myevents;
 
 import com.cloudogu.scm.SelfLinkSerializer;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 @Getter
-public abstract class MyTask {
-
-  private final String type;
+@XmlAccessorType(XmlAccessType.FIELD)
+@NoArgsConstructor
+public class MyEvent {
+  private String type;
+  private String permission;
 
   @JsonProperty("_links")
   @JsonSerialize(using = SelfLinkSerializer.class)
-  private final String link;
+  private String link;
 
-  public MyTask(String type, String link) {
+  public MyEvent(String type, String permission, String link) {
     this.type = type;
+    this.permission = permission;
     this.link = link;
   }
 }

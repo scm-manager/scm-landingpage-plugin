@@ -21,24 +21,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.cloudogu.scm.mytasks;
+package com.cloudogu.scm.mydata;
 
 import com.cloudogu.scm.SelfLinkSerializer;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
 
+/**
+ * We could not use hal representation,
+ * because we don't know each field of MyTasks so we could not map them to dto's.
+ */
 @Getter
-public abstract class MyTask {
-
-  private final String type;
+public class MyDataDto {
 
   @JsonProperty("_links")
   @JsonSerialize(using = SelfLinkSerializer.class)
-  private final String link;
+  private final String self;
 
-  public MyTask(String type, String link) {
-    this.type = type;
-    this.link = link;
+  @JsonProperty("_embedded")
+  private final Embedded embedded;
+
+  public MyDataDto(String self, Iterable<MyData> data) {
+    this.self = self;
+    this.embedded = new Embedded(data);
+  }
+
+  @Getter
+  public static class Embedded {
+
+    private final Iterable<MyData> data;
+
+    private Embedded(Iterable<MyData> data) {
+      this.data = data;
+    }
   }
 }

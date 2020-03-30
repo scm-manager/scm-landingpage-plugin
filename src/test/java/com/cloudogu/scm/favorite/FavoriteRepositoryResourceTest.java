@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.cloudogu.scm.favourite;
+package com.cloudogu.scm.favorite;
 
 import org.jboss.resteasy.mock.MockHttpRequest;
 import org.jboss.resteasy.mock.MockHttpResponse;
@@ -39,23 +39,20 @@ import java.net.URISyntaxException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 @ExtendWith(MockitoExtension.class)
-class FavouriteRepositoryResourceTest {
+class FavoriteRepositoryResourceTest {
 
   Repository REPOSITORY = RepositoryTestData.createHeartOfGold();
 
   @Mock
-  private FavouriteRepositoryService service;
+  private FavoriteRepositoryService service;
 
-  private FavouriteRepositoryResource resource;
   private RestDispatcher dispatcher;
 
   @BeforeEach
-  public void init() {
-    initMocks(this);
-    resource = new FavouriteRepositoryResource(service);
+  void init() {
+    FavoriteRepositoryResource resource = new FavoriteRepositoryResource(service);
 
     dispatcher = new RestDispatcher();
     dispatcher.addSingletonResource(resource);
@@ -64,25 +61,23 @@ class FavouriteRepositoryResourceTest {
 
   @Test
   void shouldFavorizeRepository() throws URISyntaxException {
-    String userId = "trillian";
-    MockHttpRequest request = MockHttpRequest.post("/v2/favorize/" + REPOSITORY.getNamespace() + "/" + REPOSITORY.getName() + "/" + userId);
+    MockHttpRequest request = MockHttpRequest.post("/v2/favorize/" + REPOSITORY.getNamespace() + "/" + REPOSITORY.getName());
     MockHttpResponse response = new MockHttpResponse();
 
     dispatcher.invoke(request, response);
 
-    verify(service).favorizeRepository(new NamespaceAndName(REPOSITORY.getNamespace(), REPOSITORY.getName()), userId);
+    verify(service).favorizeRepository(new NamespaceAndName(REPOSITORY.getNamespace(), REPOSITORY.getName()));
     assertThat(response.getStatus()).isEqualTo(204);
   }
 
   @Test
   void shouldUnfavorizeRepository() throws URISyntaxException {
-    String userId = "trillian";
-    MockHttpRequest request = MockHttpRequest.post("/v2/unfavorize/" + REPOSITORY.getNamespace() + "/" + REPOSITORY.getName() + "/" + userId);
+    MockHttpRequest request = MockHttpRequest.post("/v2/unfavorize/" + REPOSITORY.getNamespace() + "/" + REPOSITORY.getName());
     MockHttpResponse response = new MockHttpResponse();
 
     dispatcher.invoke(request, response);
 
-    verify(service).unfavorizeRepository(new NamespaceAndName(REPOSITORY.getNamespace(), REPOSITORY.getName()), userId);
+    verify(service).unfavorizeRepository(new NamespaceAndName(REPOSITORY.getNamespace(), REPOSITORY.getName()));
     assertThat(response.getStatus()).isEqualTo(204);
   }
 

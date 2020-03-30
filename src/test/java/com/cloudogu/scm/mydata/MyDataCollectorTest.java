@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.cloudogu.scm.mytasks;
+package com.cloudogu.scm.mydata;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -37,46 +37,46 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class MyTaskCollectorTest {
+class MyDataCollectorTest {
 
   @Test
-  void shouldReturnCollectedTasks() {
-    MyTaskProvider provider = mock(MyTaskProvider.class);
-    TaskOne a = new TaskOne();
-    TaskOne b = new TaskOne();
+  void shouldReturnCollectedData() {
+    MyDataProvider provider = mock(MyDataProvider.class);
+    DataOne a = new DataOne();
+    DataTwo b = new DataTwo();
 
-    Iterable<MyTask> tasks = ImmutableList.of(a, b);
-    when(provider.getTasks()).thenReturn(tasks);
+    Iterable<MyData> data = ImmutableList.of(a, b);
+    when(provider.getData()).thenReturn(data);
 
-    MyTaskCollector collector = new MyTaskCollector(Collections.singleton(provider));
-    List<MyTask> collectedTasks = collector.collect();
-    assertThat(collectedTasks).containsOnly(a, b);
+    MyDataCollector collector = new MyDataCollector(Collections.singleton(provider));
+    List<MyData> collectedData = collector.collect();
+    assertThat(collectedData).containsOnly(a, b);
   }
 
   @Test
-  void shouldReturnCombinedTasks() {
-    MyTaskProvider providerOne = mock(MyTaskProvider.class);
-    TaskOne a = new TaskOne();
-    when(providerOne.getTasks()).thenReturn(Collections.singleton(a));
+  void shouldReturnCombinedData() {
+    MyDataProvider providerOne = mock(MyDataProvider.class);
+    DataOne a = new DataOne();
+    when(providerOne.getData()).thenReturn(Collections.singleton(a));
 
-    MyTaskProvider providerTwo = mock(MyTaskProvider.class);
-    TaskTwo b = new TaskTwo();
-    when(providerTwo.getTasks()).thenReturn(Collections.singleton(b));
+    MyDataProvider providerTwo = mock(MyDataProvider.class);
+    DataTwo b = new DataTwo();
+    when(providerTwo.getData()).thenReturn(Collections.singleton(b));
 
-    MyTaskCollector collector = new MyTaskCollector(ImmutableSet.of(providerOne, providerTwo));
-    List<MyTask> collectedTasks = collector.collect();
-    assertThat(collectedTasks).containsOnly(a, b);
+    MyDataCollector collector = new MyDataCollector(ImmutableSet.of(providerOne, providerTwo));
+    List<MyData> collectedData = collector.collect();
+    assertThat(collectedData).containsOnly(a, b);
   }
 
-  static class TaskOne extends MyTask {
-    public TaskOne() {
-      super(TaskOne.class.getSimpleName(), "/one");
+  static class DataOne extends MyData {
+    public DataOne() {
+      super(DataOne.class.getSimpleName(), "/one");
     }
   }
 
-  static class TaskTwo extends MyTask {
-    public TaskTwo() {
-      super(TaskTwo.class.getSimpleName(), "/two");
+  static class DataTwo extends MyData {
+    public DataTwo() {
+      super(DataTwo.class.getSimpleName(), "/two");
     }
   }
 

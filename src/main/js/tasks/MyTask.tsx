@@ -21,32 +21,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { binder } from "@scm-manager/ui-extensions";
-import FavoriteRepositoryToggleIcon from "./FavoriteRepositoryToggleIcon";
-import Home from "./Home";
 import React, { FC } from "react";
-import { PrimaryNavigationLink, ProtectedRoute } from "@scm-manager/ui-components";
-import { useTranslation } from "react-i18next";
-import "./tasks/PluginUpdateTask";
-import "./data/FavoriteRepositoryCard";
-import "./events/RepositoryPushEvent";
-import { RepositoryDataType } from "./types";
+import { binder } from "@scm-manager/ui-extensions";
+import { Link } from "@scm-manager/ui-types";
+import { MyTaskComponent, MyTaskType } from "../types";
+import { Link as ReactLink } from "react-router-dom";
+import styled from "styled-components";
 
-const HomeRoute: FC = props => {
-  return <ProtectedRoute {...props} path={"/home"} component={Home} />;
+type Props = {
+  task: MyTaskType;
 };
 
-const HomeNavigation: FC = () => {
-  const [t] = useTranslation("plugins");
-  return <PrimaryNavigationLink label={t("scm-landingpage-plugin.navigation.home")} to={"/home"} match={"/home"} />;
+const StyledLink = styled(ReactLink)`
+  color: inherit;
+  :hover {
+    color: #33b2e8 !important;
+  }
+`;
+
+const MyTask: FC<Props> = ({ task }) => {
+  const extensions: MyTaskComponent[] = binder.getExtensions("landingpage.mytask");
+
+  let Component = null;
+  for (let extension of extensions) {
+    if (extension.type === task.type) {
+      Component = extension;
+      break;
+    }
+  }
+
+  if (!Component) {
+    return null;
+  }
+
+  return (
+    <StyledLink to={(task?._links?.self as Link)?.href}>
+      <Component task={task} />
+    </StyledLink>
+  );
 };
 
-const LargeToggleIcon: FC<RepositoryDataType> = props => (
-  <FavoriteRepositoryToggleIcon repository={props.repository} classes={"fa-2x"} />
-);
-
-binder.bind("repository.card.beforeTitle", FavoriteRepositoryToggleIcon);
-binder.bind("repository.afterTitle", LargeToggleIcon);
-binder.bind("main.route", HomeRoute);
-binder.bind("main.redirect", () => "/home");
-binder.bind("primary-navigation.first-menu", HomeNavigation);
+export default MyTask;

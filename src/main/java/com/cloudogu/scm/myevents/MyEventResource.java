@@ -21,33 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.cloudogu.scm.favourite;
+package com.cloudogu.scm.myevents;
 
-import sonia.scm.store.DataStore;
-import sonia.scm.store.DataStoreFactory;
+import sonia.scm.web.VndMediaType;
 
 import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.UriInfo;
 
-public class FavouriteRepositoryStore {
+@Path("v2/landingpage/myevents")
+public class MyEventResource {
 
-  private static final String FAVORITES_STORE_NAME = "repository-favorites";
+  private final MyEventStore store;
 
-  private final DataStoreFactory storeFactory;
+  private static final String MEDIATYPE = VndMediaType.PREFIX + "myevents" + VndMediaType.SUFFIX;
 
   @Inject
-  public FavouriteRepositoryStore(DataStoreFactory storeFactory) {
-    this.storeFactory = storeFactory;
+  public MyEventResource(MyEventStore store) {
+    this.store = store;
   }
 
-  public RepositoryFavorite get(String repositoryId) {
-    return createStore().get(repositoryId);
-  }
-
-  public void put(RepositoryFavorite newFavorite) {
-    createStore().put(newFavorite.getRepositoryId(), newFavorite);
-  }
-
-  private DataStore<RepositoryFavorite> createStore() {
-    return storeFactory.withType(RepositoryFavorite.class).withName(FAVORITES_STORE_NAME).build();
+  @GET
+  @Path("")
+  @Produces(MEDIATYPE)
+  public MyEventDto getEvents(@Context UriInfo uriInfo) {
+    String self = uriInfo.getAbsolutePath().toASCIIString();
+    return new MyEventDto(self, store.getEvents());
   }
 }

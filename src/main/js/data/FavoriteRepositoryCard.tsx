@@ -21,32 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import React from "react";
 import { binder } from "@scm-manager/ui-extensions";
-import FavoriteRepositoryToggleIcon from "./FavoriteRepositoryToggleIcon";
-import Home from "./Home";
-import React, { FC } from "react";
-import { PrimaryNavigationLink, ProtectedRoute } from "@scm-manager/ui-components";
-import { useTranslation } from "react-i18next";
-import "./tasks/PluginUpdateTask";
-import "./data/FavoriteRepositoryCard";
-import "./events/RepositoryPushEvent";
-import { RepositoryDataType } from "./types";
+import { MyDataComponent, MyDataType } from "../types";
+import { RepositoryEntry } from "@scm-manager/ui-components";
+import { Repository } from "@scm-manager/ui-types";
+import styled from "styled-components";
 
-const HomeRoute: FC = props => {
-  return <ProtectedRoute {...props} path={"/home"} component={Home} />;
+type FavoriteRepositoryType = MyDataType & {
+  repository: Repository;
 };
 
-const HomeNavigation: FC = () => {
-  const [t] = useTranslation("plugins");
-  return <PrimaryNavigationLink label={t("scm-landingpage-plugin.navigation.home")} to={"/home"} match={"/home"} />;
+const RepositoryEntryWrapper = styled.div`
+  .overlay-column {
+    width: calc(50% - 3rem);
+
+    @media screen and (max-width: 768px) {
+      width: calc(100% - 1.5rem);
+    }
+  }
+`;
+
+const FavoriteRepositoryCard: MyDataComponent<FavoriteRepositoryType> = ({ data }) => {
+  return (
+    <div className={"card-columns is-multiline"}>
+      <RepositoryEntryWrapper className="box box-link-shadow column is-clipped">
+        <RepositoryEntry repository={data?.repository} />
+      </RepositoryEntryWrapper>
+    </div>
+  );
 };
 
-const LargeToggleIcon: FC<RepositoryDataType> = props => (
-  <FavoriteRepositoryToggleIcon repository={props.repository} classes={"fa-2x"} />
-);
+FavoriteRepositoryCard.type = "FavoriteRepositoryData";
 
-binder.bind("repository.card.beforeTitle", FavoriteRepositoryToggleIcon);
-binder.bind("repository.afterTitle", LargeToggleIcon);
-binder.bind("main.route", HomeRoute);
-binder.bind("main.redirect", () => "/home");
-binder.bind("primary-navigation.first-menu", HomeNavigation);
+binder.bind("landingpage.myFavoriteRepository", FavoriteRepositoryCard);

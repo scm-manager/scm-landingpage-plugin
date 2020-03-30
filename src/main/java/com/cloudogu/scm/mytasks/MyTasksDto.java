@@ -28,17 +28,32 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
 
+/**
+ * We could not use hal representation,
+ * because we don't know each field of MyTasks so we could not map them to dto's.
+ */
 @Getter
-public abstract class MyTask {
-
-  private final String type;
+public class MyTasksDto {
 
   @JsonProperty("_links")
   @JsonSerialize(using = SelfLinkSerializer.class)
-  private final String link;
+  private final String self;
 
-  public MyTask(String type, String link) {
-    this.type = type;
-    this.link = link;
+  @JsonProperty("_embedded")
+  private final Embedded embedded;
+
+  public MyTasksDto(String self, Iterable<MyTask> tasks) {
+    this.self = self;
+    this.embedded = new Embedded(tasks);
+  }
+
+  @Getter
+  public static class Embedded {
+
+    private final Iterable<MyTask> tasks;
+
+    private Embedded(Iterable<MyTask> tasks) {
+      this.tasks = tasks;
+    }
   }
 }

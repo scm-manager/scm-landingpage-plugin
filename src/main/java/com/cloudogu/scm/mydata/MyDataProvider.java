@@ -21,24 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.cloudogu.scm.mytasks;
+package com.cloudogu.scm.mydata;
 
-import com.cloudogu.scm.SelfLinkSerializer;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.Getter;
+import sonia.scm.plugin.ExtensionPoint;
 
-@Getter
-public abstract class MyTask {
+@ExtensionPoint
+public interface MyDataProvider {
 
-  private final String type;
-
-  @JsonProperty("_links")
-  @JsonSerialize(using = SelfLinkSerializer.class)
-  private final String link;
-
-  public MyTask(String type, String link) {
-    this.type = type;
-    this.link = link;
-  }
+  Iterable<MyData> getData();
 }

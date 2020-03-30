@@ -21,32 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { binder } from "@scm-manager/ui-extensions";
-import FavoriteRepositoryToggleIcon from "./FavoriteRepositoryToggleIcon";
-import Home from "./Home";
 import React, { FC } from "react";
-import { PrimaryNavigationLink, ProtectedRoute } from "@scm-manager/ui-components";
+import { Page } from "@scm-manager/ui-components";
+import MyTasks from "./tasks/MyTasks";
 import { useTranslation } from "react-i18next";
-import "./tasks/PluginUpdateTask";
-import "./data/FavoriteRepositoryCard";
-import "./events/RepositoryPushEvent";
-import { RepositoryDataType } from "./types";
+import MyData from "./data/MyData";
+import MyEvents from "./events/MyEvents";
 
-const HomeRoute: FC = props => {
-  return <ProtectedRoute {...props} path={"/home"} component={Home} />;
-};
-
-const HomeNavigation: FC = () => {
+const Home: FC = () => {
   const [t] = useTranslation("plugins");
-  return <PrimaryNavigationLink label={t("scm-landingpage-plugin.navigation.home")} to={"/home"} match={"/home"} />;
+
+  return (
+    <Page title={t("scm-landingpage-plugin.home.title")} subtitle={t("scm-landingpage-plugin.home.subtitle")}>
+      <div className="columns">
+        <div className="column">
+          <MyTasks />
+          <MyData />
+        </div>
+        <div className="column">
+          <MyEvents />
+        </div>
+      </div>
+    </Page>
+  );
 };
 
-const LargeToggleIcon: FC<RepositoryDataType> = props => (
-  <FavoriteRepositoryToggleIcon repository={props.repository} classes={"fa-2x"} />
-);
-
-binder.bind("repository.card.beforeTitle", FavoriteRepositoryToggleIcon);
-binder.bind("repository.afterTitle", LargeToggleIcon);
-binder.bind("main.route", HomeRoute);
-binder.bind("main.redirect", () => "/home");
-binder.bind("primary-navigation.first-menu", HomeNavigation);
+export default Home;

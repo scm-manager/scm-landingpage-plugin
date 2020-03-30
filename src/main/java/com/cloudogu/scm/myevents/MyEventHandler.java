@@ -21,35 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React, {FC} from "react";
-import {apiClient} from "@scm-manager/ui-components";
-import { Repository, Link } from "@scm-manager/ui-types";
-type Props = {
-  repository: Repository;
-};
+package com.cloudogu.scm.myevents;
 
-const FavouriteRepositoryToggleIcon: FC<Props> = ({repository}) => {
+import com.github.legman.Subscribe;
+import sonia.scm.EagerSingleton;
+import sonia.scm.plugin.Extension;
 
-  const getLink = () => {
-    if (!!repository?._links?.favorize) {
-      return (repository._links.favorize as Link).href
-    } else {
-      return (repository._links.unfavorize as Link).href
-    }
-  };
+import javax.inject.Inject;
 
-  const getClassName = () =>{
-    if ((repository?._links?.unfavorize as Link)?.href) {
-      return "fas fa-star";
-    }
-    return "far fa-star";
-  };
+@Extension
+@EagerSingleton
+public class MyEventHandler {
+  private final MyEventStore store;
 
-  const sendRequest = () => {
-    apiClient.post(getLink());
-  };
+  @Inject
+  public MyEventHandler(MyEventStore store) {
+    this.store = store;
+  }
 
-  return (<i className={getClassName()} onClick={() => sendRequest()}/>);
-};
+  @Subscribe
+  public void handleEvent(MyEvent event) {
+    store.add(event);
+  }
 
-export default FavouriteRepositoryToggleIcon;
+}

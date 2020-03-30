@@ -21,21 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.cloudogu.scm.favourite;
+package com.cloudogu.scm.mydata;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
-@Getter
-@AllArgsConstructor
-@XmlRootElement(name = "favorite")
-@XmlAccessorType(XmlAccessType.FIELD)
-public class RepositoryFavorite {
-  private String repositoryId;
-  private Set<String> userIds;
+public class MyDataCollector {
+
+  private final Set<MyDataProvider> providers;
+
+  @Inject
+  public MyDataCollector(Set<MyDataProvider> providers) {
+    this.providers = providers;
+  }
+
+  public List<MyData> collect() {
+    List<MyData> dataList = new ArrayList<>();
+    for (MyDataProvider provider : providers) {
+      Iterable<MyData> tasks = provider.getData();
+      tasks.forEach(dataList::add);
+    }
+    return dataList;
+  }
+
 }

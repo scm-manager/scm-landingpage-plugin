@@ -21,47 +21,65 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.cloudogu.scm.favourite;
+package com.cloudogu.scm;
 
-import org.apache.shiro.SecurityUtils;
+import com.cloudogu.scm.mydata.MyDataResource;
+import com.cloudogu.scm.myevents.MyEventResource;
+import com.cloudogu.scm.mytasks.MyTaskResource;
 import sonia.scm.api.v2.resources.Enrich;
 import sonia.scm.api.v2.resources.HalAppender;
 import sonia.scm.api.v2.resources.HalEnricher;
 import sonia.scm.api.v2.resources.HalEnricherContext;
+import sonia.scm.api.v2.resources.Index;
 import sonia.scm.api.v2.resources.LinkBuilder;
 import sonia.scm.api.v2.resources.ScmPathInfoStore;
 import sonia.scm.plugin.Extension;
-import sonia.scm.repository.Repository;
-import sonia.scm.repository.RepositoryPermissions;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
 @Extension
-@Enrich(Repository.class)
-public class RepositoryLinkEnricher implements HalEnricher {
+@Enrich(Index.class)
+public class IndexLinkEnricher implements HalEnricher {
 
   private final Provider<ScmPathInfoStore> scmPathInfoStore;
-  private final FavouriteRepositoryStore store;
 
   @Inject
-  public RepositoryLinkEnricher(Provider<ScmPathInfoStore> scmPathInfoStore, FavouriteRepositoryStore store) {
+  public IndexLinkEnricher(Provider<ScmPathInfoStore> scmPathInfoStore) {
     this.scmPathInfoStore = scmPathInfoStore;
-    this.store = store;
   }
 
   @Override
   public void enrich(HalEnricherContext context, HalAppender appender) {
-    Repository repository = context.oneRequireByType(Repository.class);
-    if (RepositoryPermissions.read().isPermitted(repository)) {
-      RepositoryFavorite favoritesForRepository = store.get(repository.getId());
-      String username = (String) SecurityUtils.getSubject().getPrincipal();
-      LinkBuilder linkBuilder = new LinkBuilder(scmPathInfoStore.get().get(), FavouriteRepositoryResource.class);
-      if (favoritesForRepository.getUserIds().contains(username)) {
-        appender.appendLink("unfavorize", linkBuilder.method("unfavorizeRepository").parameters(repository.getNamespace(), repository.getName(), username).href());
-      } else {
-        appender.appendLink("favorize", linkBuilder.method("favorizeRepository").parameters(repository.getNamespace(), repository.getName(), username).href());
-      }
-    }
+    appendTasksLink(appender);
+    appendDataLink(appender);
+    appendEventsLink(appender);
+  }
+
+  private void appendDataLink(HalAppender appender) {
+    String dataUrl = new LinkBuilder(scmPathInfoStore.get().get(), MyDataResource.class)
+      .method("getData")
+      .parameters()
+      .href();
+
+    appender.appendLink("data", dataUrl);
+  }
+
+  private void appendTasksLink(HalAppender appender) {
+    String tasksUrl = new LinkBuilder(scmPathInfoStore.get().get(), MyTaskResource.class)
+      .method("getTasks")
+      .parameters()
+      .href();
+
+    appender.appendLink("tasks", tasksUrl);
+  }
+
+  private void appendEventsLink(HalAppender appender) {
+    String tasksUrl = new LinkBuilder(scmPathInfoStore.get().get(), MyEventResource.class)
+      .method("getEvents")
+      .parameters()
+      .href();
+
+    appender.appendLink("events", tasksUrl);
   }
 }

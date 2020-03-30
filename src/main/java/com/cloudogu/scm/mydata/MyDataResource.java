@@ -21,24 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.cloudogu.scm.mytasks;
+package com.cloudogu.scm.mydata;
 
-import com.cloudogu.scm.SelfLinkSerializer;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.Getter;
+import sonia.scm.web.VndMediaType;
 
-@Getter
-public abstract class MyTask {
+import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.UriInfo;
 
-  private final String type;
+@Path("v2/landingpage/mydata")
+public class MyDataResource {
 
-  @JsonProperty("_links")
-  @JsonSerialize(using = SelfLinkSerializer.class)
-  private final String link;
+  private final MyDataCollector collector;
 
-  public MyTask(String type, String link) {
-    this.type = type;
-    this.link = link;
+  private static final String MEDIATYPE = VndMediaType.PREFIX + "mydata" + VndMediaType.SUFFIX;
+
+  @Inject
+  public MyDataResource(MyDataCollector collector) {
+    this.collector = collector;
+  }
+
+  @GET
+  @Path("")
+  @Produces(MEDIATYPE)
+  public MyDataDto getData(@Context UriInfo uriInfo) {
+    String self = uriInfo.getAbsolutePath().toASCIIString();
+    return new MyDataDto(self, collector.collect());
   }
 }

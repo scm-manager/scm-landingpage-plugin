@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.cloudogu.scm.favourite;
+package com.cloudogu.scm.favorite;
 
 import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.subject.Subject;
@@ -31,8 +31,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -41,22 +39,23 @@ import sonia.scm.repository.RepositoryTestData;
 import sonia.scm.repository.api.RepositoryService;
 import sonia.scm.repository.api.RepositoryServiceFactory;
 
-import java.util.HashSet;
-
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class FavouriteRepositoryServiceTest {
+class FavoriteRepositoryServiceTest {
 
   private final Repository REPOSITORY = RepositoryTestData.createHeartOfGold();
 
   @Mock
-  private FavouriteRepositoryStore store;
+  private FavoriteRepositoryProvider storeProvider;
+
+  @Mock
+  private FavoriteRepositoryProvider.FavoriteRepositoryStore store;
 
   @Mock
   private RepositoryServiceFactory serviceFactory;
@@ -67,11 +66,8 @@ class FavouriteRepositoryServiceTest {
   @Mock
   private Subject subject;
 
-  @Captor
-  private ArgumentCaptor<RepositoryFavorite> repositoryFavoritesArgumentCaptor;
-
   @InjectMocks
-  private FavouriteRepositoryService service;
+  private FavoriteRepositoryService service;
 
   @BeforeEach
   void initSubject() {
@@ -89,50 +85,35 @@ class FavouriteRepositoryServiceTest {
     void initRepositoryService() {
       when(serviceFactory.create(REPOSITORY.getNamespaceAndName())).thenReturn(repositoryService);
       when(repositoryService.getRepository()).thenReturn(REPOSITORY);
+      lenient().when(storeProvider.get()).thenReturn(store);
     }
 
     @Test
     void shouldFavorizeRepositoryForUser() {
-      String userId = "trillian";
-      RepositoryFavorite repositoryFavorite = new RepositoryFavorite(REPOSITORY.getId(), new HashSet<>());
+      service.favorizeRepository(REPOSITORY.getNamespaceAndName());
 
-      when(store.get(REPOSITORY.getId())).thenReturn(repositoryFavorite);
-      doNothing().when(store).put(repositoryFavoritesArgumentCaptor.capture());
-
-      service.favorizeRepository(REPOSITORY.getNamespaceAndName(), userId);
-
-      assertThat(repositoryFavoritesArgumentCaptor.getValue().getUserIds()).contains(userId);
+      verify(store).add(REPOSITORY);
     }
 
     @Test
     void shouldThrowAuthorizationExceptionIfNotPermittedToFavorize() {
-      String userId = "trillian";
       doThrow(AuthorizationException.class).when(subject).checkPermission(anyString());
 
-      assertThrows(AuthorizationException.class, () -> service.favorizeRepository(REPOSITORY.getNamespaceAndName(), userId));
+      assertThrows(AuthorizationException.class, () -> service.favorizeRepository(REPOSITORY.getNamespaceAndName()));
     }
 
     @Test
     void shouldUnfavorizeRepositoryForUser() {
-      String userId = "trillian";
-      HashSet<String> userIds = new HashSet<>();
-      userIds.add(userId);
-      RepositoryFavorite repositoryFavorite = new RepositoryFavorite(REPOSITORY.getId(), userIds);
+      service.unfavorizeRepository(REPOSITORY.getNamespaceAndName());
 
-      when(store.get(REPOSITORY.getId())).thenReturn(repositoryFavorite);
-      doNothing().when(store).put(repositoryFavoritesArgumentCaptor.capture());
-
-      service.unfavorizeRepository(REPOSITORY.getNamespaceAndName(), userId);
-
-      assertThat(repositoryFavoritesArgumentCaptor.getValue().getUserIds()).doesNotContain(userId);
+      verify(store).remove(REPOSITORY);
     }
 
     @Test
     void shouldThrowAuthorizationExceptionIfNotPermittedToUnfavorize() {
-      String userId = "trillian";
       doThrow(AuthorizationException.class).when(subject).checkPermission(anyString());
 
-      assertThrows(AuthorizationException.class, () -> service.unfavorizeRepository(REPOSITORY.getNamespaceAndName(), userId));
+      assertThrows(AuthorizationException.class, () -> service.unfavorizeRepository(REPOSITORY.getNamespaceAndName()));
     }
   }
 

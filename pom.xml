@@ -37,7 +37,7 @@
 
   <artifactId>scm-landingpage-plugin</artifactId>
   <version>1.0.0-SNAPSHOT</version>
-  <name>Landingpage-Plugin</name>
+  <name>scm-landingpage-plugin</name>
   <packaging>smp</packaging>
   <url>https://github.com/scm-manager/scm-landingpage-plugin</url>
   <description>Creates a personal landingpage for each user</description>

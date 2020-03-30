@@ -1,5 +1,34 @@
 {
   "scm-landingpage-plugin": {
-
+    "navigation": {
+      "home": "Landing-Page"
+    },
+    "home": {
+      "title": "Landing-Page",
+      "subtitle": "Meine Aufgaben und Repos"
+    },
+    "mytasks": {
+      "title": "Meine Aufgaben"
+    },
+    "mydata": {
+      "title": "Meine Daten"
+    },
+    "favoriteRepository": {
+      "title": "Favorisierte Repositories"
+    },
+    "tasks": {
+      "updatePlugin": {
+        "title": "Update plugins",
+        "description": "Neue Versionen für {{count}} Plugins verfügbar"
+      }
+    },
+    "myevents": {
+      "title": "Letzte Aktivitäten",
+      "repositoryPush": {
+        "title": "{{count}} Änderung committet: {{repository}}",
+        "title_plural": "{{count}} Änderungen committet: {{repository}}",
+        "description": "Erstellt von"
+      }
+    }
   }
 }

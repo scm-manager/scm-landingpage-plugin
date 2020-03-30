@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.cloudogu.scm.favourite;
+package com.cloudogu.scm.favorite;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Provider;
@@ -33,6 +33,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -40,11 +41,11 @@ import sonia.scm.api.v2.resources.HalAppender;
 import sonia.scm.api.v2.resources.HalEnricherContext;
 import sonia.scm.api.v2.resources.ScmPathInfoStore;
 import sonia.scm.repository.Repository;
-import sonia.scm.repository.RepositoryTestData;
 
 import java.net.URI;
 
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -52,15 +53,18 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class RepositoryLinkEnricherTest {
 
-  private Repository REPOSITORY = RepositoryTestData.createHeartOfGold();
+  private Repository REPOSITORY = new Repository();
 
-  private Provider<ScmPathInfoStore> scmPathInfoStoreProvider;
   @Mock
-  private FavouriteRepositoryStore store;
+  private FavoriteRepositoryProvider storeProvider;
+  @Mock
+  private FavoriteRepositoryProvider.FavoriteRepositoryStore store;
   @Mock
   private Subject subject;
   @Mock
   private HalAppender appender;
+  @Mock(answer = Answers.RETURNS_SELF)
+  private HalAppender.LinkArrayBuilder linkArrayBuilder;
 
   private HalEnricherContext context;
 
@@ -68,12 +72,20 @@ class RepositoryLinkEnricherTest {
   private RepositoryLinkEnricher enricher;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     ScmPathInfoStore scmPathInfoStore = new ScmPathInfoStore();
     scmPathInfoStore.set(() -> URI.create("https://scm-manager.org/scm/api/"));
-    scmPathInfoStoreProvider = Providers.of(scmPathInfoStore);
-    enricher = new RepositoryLinkEnricher(scmPathInfoStoreProvider, store);
+    Provider<ScmPathInfoStore> scmPathInfoStoreProvider = Providers.of(scmPathInfoStore);
+    enricher = new RepositoryLinkEnricher(scmPathInfoStoreProvider, storeProvider);
     context = HalEnricherContext.of(REPOSITORY);
+    lenient().when(storeProvider.get()).thenReturn(store);
+  }
+
+  @BeforeEach
+  void prepareRepository() {
+    REPOSITORY.setId("HeartOfGold");
+    REPOSITORY.setNamespace("hitchhiker");
+    REPOSITORY.setName("HeartOfGold");
   }
 
   @BeforeEach
@@ -99,28 +111,29 @@ class RepositoryLinkEnricherTest {
     @BeforeEach
     void permitSubject() {
       when(subject.isPermitted(anyString())).thenReturn(true);
+      when(appender.linkArrayBuilder("favorites")).thenReturn(linkArrayBuilder);
     }
 
     @Test
     void shouldEnrichFavorizeLink() {
-      when(store.get(REPOSITORY.getId())).thenReturn(new RepositoryFavorite(REPOSITORY.getId(), ImmutableSet.of("tricia", "dent")));
-      when(subject.getPrincipal()).thenReturn("trillian");
+      when(store.get()).thenReturn(new FavoriteRepository(ImmutableSet.of("heartOfGold", "puzzle42")));
 
       enricher.enrich(context, appender);
 
-      verify(appender).appendLink("favorize", "https://scm-manager.org/scm/api/v2/favorize/hitchhiker/HeartOfGold/trillian");
+      verify(appender).appendLink("favorize", "https://scm-manager.org/scm/api/v2/favorize/hitchhiker/HeartOfGold");
+      verify(linkArrayBuilder).append("favorize", "https://scm-manager.org/scm/api/v2/favorize/hitchhiker/HeartOfGold");
+      verify(linkArrayBuilder).append("unfavorize", "https://scm-manager.org/scm/api/v2/unfavorize/hitchhiker/HeartOfGold");
     }
 
     @Test
     void shouldEnrichUnfavorizeLink() {
-      when(store.get(REPOSITORY.getId())).thenReturn(new RepositoryFavorite(REPOSITORY.getId(), ImmutableSet.of("trillian")));
-      when(subject.getPrincipal()).thenReturn("trillian");
+      when(store.get()).thenReturn(new FavoriteRepository(ImmutableSet.of("HeartOfGold")));
 
       enricher.enrich(context, appender);
 
-      verify(appender).appendLink("unfavorize", "https://scm-manager.org/scm/api/v2/unfavorize/hitchhiker/HeartOfGold/trillian");
+      verify(appender).appendLink("unfavorize", "https://scm-manager.org/scm/api/v2/unfavorize/hitchhiker/HeartOfGold");
+      verify(linkArrayBuilder).append("favorize", "https://scm-manager.org/scm/api/v2/favorize/hitchhiker/HeartOfGold");
+      verify(linkArrayBuilder).append("unfavorize", "https://scm-manager.org/scm/api/v2/unfavorize/hitchhiker/HeartOfGold");
     }
   }
-
-
 }

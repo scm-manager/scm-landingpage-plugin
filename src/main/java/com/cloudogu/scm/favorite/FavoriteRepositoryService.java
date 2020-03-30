@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.cloudogu.scm.favourite;
+package com.cloudogu.scm.favorite;
 
 import sonia.scm.repository.NamespaceAndName;
 import sonia.scm.repository.Repository;
@@ -30,36 +30,31 @@ import sonia.scm.repository.api.RepositoryService;
 import sonia.scm.repository.api.RepositoryServiceFactory;
 
 import javax.inject.Inject;
-import java.util.Set;
 
-public class FavouriteRepositoryService {
+public class FavoriteRepositoryService {
 
-  private final FavouriteRepositoryStore store;
+  private final FavoriteRepositoryProvider store;
   private final RepositoryServiceFactory serviceFactory;
 
   @Inject
-  public FavouriteRepositoryService(FavouriteRepositoryStore store, RepositoryServiceFactory serviceFactory) {
+  public FavoriteRepositoryService(FavoriteRepositoryProvider store, RepositoryServiceFactory serviceFactory) {
     this.store = store;
     this.serviceFactory = serviceFactory;
   }
 
-  public void favorizeRepository(NamespaceAndName namespaceAndName, String userId) {
+  public void favorizeRepository(NamespaceAndName namespaceAndName) {
     try (RepositoryService repositoryService = serviceFactory.create(namespaceAndName)) {
       Repository repository = repositoryService.getRepository();
       RepositoryPermissions.read().check(repository);
-      Set<String> favorites = store.get(repository.getId()).getUserIds();
-      favorites.add(userId);
-      store.put(new RepositoryFavorite(repository.getId(), favorites));
+      store.get().add(repository);
     }
   }
 
-  public void unfavorizeRepository(NamespaceAndName namespaceAndName, String userId) {
+  public void unfavorizeRepository(NamespaceAndName namespaceAndName) {
     try (RepositoryService repositoryService = serviceFactory.create(namespaceAndName)) {
       Repository repository = repositoryService.getRepository();
       RepositoryPermissions.read().check(repository);
-      Set<String> favorites = store.get(repository.getId()).getUserIds();
-      favorites.remove(userId);
-      store.put(new RepositoryFavorite(repository.getId(), favorites));
+      store.get().remove(repository);
     }
   }
 }
