@@ -26,13 +26,13 @@ import CollapsibleContainer from "../CollapsibleContainer";
 import { useTranslation } from "react-i18next";
 import { apiClient, ErrorNotification, Loading } from "@scm-manager/ui-components";
 import MyTask from "./MyTask";
-import {MyTasksType, MyTaskType} from "../types";
+import { MyTasksType } from "../types";
 
 type Props = {};
 
 const MyTasks: FC<Props> = ({}) => {
   const [t] = useTranslation("plugins");
-  const [content, setContent] = useState<MyTasksType>();
+  const [content, setContent] = useState<MyTasksType>({ _embedded: { tasks: [] }, _links: {} });
   const [error, setError] = useState(undefined);
   const [loading, setLoading] = useState(false);
 
@@ -56,7 +56,9 @@ const MyTasks: FC<Props> = ({}) => {
 
   return (
     <CollapsibleContainer title={t("scm-landingpage-plugin.mytasks.title")} separatedEntries={false}>
-      {content?._embedded?.tasks.map((task,key) => <MyTask key={key} task={task} />)}
+      {content?._embedded?.tasks.map((task, key) => (
+        <MyTask key={key} task={task} />
+      ))}
     </CollapsibleContainer>
   );
 };

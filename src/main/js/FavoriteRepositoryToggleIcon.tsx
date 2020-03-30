@@ -23,9 +23,10 @@
  */
 import React, { FC, useEffect, useState } from "react";
 import { apiClient } from "@scm-manager/ui-components";
-import { Repository, Link } from "@scm-manager/ui-types";
+import { Link, Repository } from "@scm-manager/ui-types";
 import classNames from "classnames";
 import styled from "styled-components";
+
 type Props = {
   repository: Repository;
   classes?: string;
@@ -46,7 +47,7 @@ const FavoriteRepositoryToggleIcon: FC<Props> = ({ repository, classes }) => {
   const getLink = () => {
     return favorite
       ? (repository?._links?.favorites as Link[])?.filter(link => link.name === "unfavorize")[0].href
-      : (repository?._links?.favorites as Link[])?.filter(link => link.name === "favorize")[0].href
+      : (repository?._links?.favorites as Link[])?.filter(link => link.name === "favorize")[0].href;
   };
 
   const toggleFavoriteStatus = () => {

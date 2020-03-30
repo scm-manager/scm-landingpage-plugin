@@ -21,14 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React, { FC, ReactChildren, useState } from "react";
+import React, { FC, ReactNode, useState } from "react";
 import styled from "styled-components";
 import { Icon } from "@scm-manager/ui-components";
 
 type Props = {
   title: string;
   separatedEntries: boolean;
-  children: ReactChildren;
+  children: ReactNode | Element[];
 };
 
 const Container = styled.div`

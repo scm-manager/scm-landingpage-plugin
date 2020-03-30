@@ -35,7 +35,7 @@ type Props = {
 const StyledLink = styled(ReactLink)`
   color: inherit;
   :hover {
-  color: #33b2e8 !important;
+    color: #33b2e8 !important;
   }
 `;
 

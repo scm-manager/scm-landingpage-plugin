@@ -26,12 +26,13 @@ import { useTranslation } from "react-i18next";
 import CollapsibleContainer from "../CollapsibleContainer";
 import { apiClient, ErrorNotification, Loading } from "@scm-manager/ui-components";
 import MyEvent from "./MyEvent";
+import { MyEventsType } from "../types";
 
 type Props = {};
 
 const MyEvents: FC<Props> = ({}) => {
   const [t] = useTranslation("plugins");
-  const [content, setContent] = useState([]);
+  const [content, setContent] = useState<MyEventsType>({ _embedded: { events: [] }, _links: {} });
   const [error, setError] = useState(undefined);
   const [loading, setLoading] = useState(false);
 

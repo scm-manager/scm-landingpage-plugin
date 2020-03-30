@@ -27,6 +27,7 @@ import CollapsibleContainer from "../CollapsibleContainer";
 import { apiClient, ErrorNotification, Loading } from "@scm-manager/ui-components";
 import MyRepositoryData from "./MyRepositoryData";
 import styled from "styled-components";
+import { MyDataEntriesType } from "../types";
 
 const Headline = styled.h3`
   font-size: 1.25rem;
@@ -40,7 +41,7 @@ type Props = {};
 
 const MyData: FC<Props> = ({}) => {
   const [t] = useTranslation("plugins");
-  const [content, setContent] = useState([]);
+  const [content, setContent] = useState<MyDataEntriesType>({ _embedded: { data: [] }, _links: {} });
   const [error, setError] = useState(undefined);
   const [loading, setLoading] = useState(false);
 

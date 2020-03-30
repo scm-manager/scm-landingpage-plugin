@@ -25,7 +25,7 @@ import { binder } from "@scm-manager/ui-extensions";
 import FavoriteRepositoryToggleIcon from "./FavoriteRepositoryToggleIcon";
 import Home from "./Home";
 import React, { FC } from "react";
-import { ProtectedRoute, PrimaryNavigationLink } from "@scm-manager/ui-components";
+import { PrimaryNavigationLink, ProtectedRoute } from "@scm-manager/ui-components";
 import { useTranslation } from "react-i18next";
 import "./tasks/PluginUpdateTask";
 import "./data/FavoriteRepositoryCard";

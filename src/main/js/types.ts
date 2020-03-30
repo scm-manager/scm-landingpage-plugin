@@ -45,6 +45,15 @@ export type MyTasksType = {
   _embedded: MyTaskEmbedded
 }
 
+type MyDataEmbedded = {
+  data: MyDataType[]
+}
+
+export type MyDataEntriesType= {
+  _links: Links
+  _embedded: MyDataEmbedded
+}
+
 export type MyDataType = {
   type: string
   _links: Links
@@ -74,3 +83,12 @@ export type MyEventComponent<T = MyEventType> = React.FC<EventProps<T>> & {
 type EventProps<T = MyEventType> = {
   event: T
 };
+
+type MyEventEmbedded = {
+  events: MyEventType[]
+}
+
+export type MyEventsType= {
+  _links: Links
+  _embedded: MyEventEmbedded
+}
