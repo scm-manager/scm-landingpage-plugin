@@ -22,12 +22,13 @@
  * SOFTWARE.
  */
 import React from "react";
-import {binder} from "@scm-manager/ui-extensions";
-import {MyEventComponent, MyEventType} from "../types";
-import {useTranslation} from "react-i18next";
+import { binder } from "@scm-manager/ui-extensions";
+import { DateFromNow } from "@scm-manager/ui-components";
+import { MyEventComponent, MyEventType } from "../types";
+import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import classNames from "classnames";
-import {DateFromNow} from "@scm-manager/ui-components";
+import { Link as ReactLink } from "react-router-dom";
 
 type RepositoryPushEventType = MyEventType & {
   author: string;
@@ -61,13 +62,22 @@ const Icon = styled.i`
   align-self: center;
 `;
 
-const RepositoryPushEvent: MyEventComponent<RepositoryPushEventType> = ({event}) => {
+const StyledLink = styled(ReactLink)`
+  color: inherit;
+  :hover {
+    color: #33b2e8 !important;
+  }
+`;
+
+const RepositoryPushEvent: MyEventComponent<RepositoryPushEventType> = ({ event }) => {
   const [t] = useTranslation("plugins");
 
+  const link = "/repo/" + event.repository;
+
   return (
-    <>
+    <StyledLink to={link}>
       <div className={"media"}>
-        <Icon className="fas fa-square fa-3x media-left"/>
+        <Icon className="fas fa-square fa-3x media-left" />
         <FlexFullHeight className={classNames("media-content", "text-box", "is-flex")}>
           <CenteredItems className="is-flex">
             <ContentLeft className="content">
@@ -83,12 +93,12 @@ const RepositoryPushEvent: MyEventComponent<RepositoryPushEventType> = ({event})
               </p>
             </ContentLeft>
             <ContentRight>
-              <DateFromNow date={event.date}/>
+              <DateFromNow date={event.date} />
             </ContentRight>
           </CenteredItems>
         </FlexFullHeight>
       </div>
-    </>
+    </StyledLink>
   );
 };
 

@@ -55,13 +55,11 @@ const MyEvents: FC<Props> = ({}) => {
   }
 
   return (
-    <>
-      <CollapsibleContainer title={t("scm-landingpage-plugin.myevents.title")} separatedEntries={false}>
-        {content?._embedded?.events?.map((event, index) => (
-          <MyEvent key={index} event={event} />
-        ))}
-      </CollapsibleContainer>
-    </>
+    <CollapsibleContainer title={t("scm-landingpage-plugin.myevents.title")} separatedEntries={false}>
+      {content?._embedded?.events?.map((event, index) => (
+        <MyEvent key={index} event={event} />
+      ))}
+    </CollapsibleContainer>
   );
 };
 

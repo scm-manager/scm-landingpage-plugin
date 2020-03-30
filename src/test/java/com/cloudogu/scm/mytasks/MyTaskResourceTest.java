@@ -74,14 +74,11 @@ class MyTaskResourceTest {
     assertThat(response.getStatus()).isEqualTo(HttpServletResponse.SC_OK);
 
     JsonNode node = mapper.readTree(response.getOutput());
-    assertThat(node.get("_links").get("self").get("href").asText()).isEqualTo("/v2/landingpage/mytasks");
-
     JsonNode tasks = node.get("_embedded").get("tasks");
     assertThat(tasks.isArray()).isTrue();
 
     JsonNode task = tasks.get(0);
     assertThat(task.get("type").asText()).isEqualTo(SampleTask.class.getName());
-    assertThat(task.get("_links").get("self").get("href").asText()).isEqualTo("/sample");
     assertThat(task.get("value").asText()).isEqualTo("awesome");
   }
 
@@ -91,7 +88,7 @@ class MyTaskResourceTest {
     private final String value;
 
     public SampleTask(String value) {
-      super(SampleTask.class.getName(), "/sample");
+      super(SampleTask.class.getName());
       this.value = value;
     }
   }

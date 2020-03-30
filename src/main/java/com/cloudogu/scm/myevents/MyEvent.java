@@ -23,9 +23,6 @@
  */
 package com.cloudogu.scm.myevents;
 
-import com.cloudogu.scm.SelfLinkSerializer;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -41,13 +38,8 @@ public class MyEvent {
   private String type;
   private String permission;
 
-  @JsonProperty("_links")
-  @JsonSerialize(using = SelfLinkSerializer.class)
-  private String link;
-
-  public MyEvent(String type, String permission, String link) {
+  public MyEvent(String type, String permission) {
     this.type = type;
     this.permission = permission;
-    this.link = link;
   }
 }

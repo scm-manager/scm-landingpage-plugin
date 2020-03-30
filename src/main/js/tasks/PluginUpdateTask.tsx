@@ -27,11 +27,10 @@ import { MyTaskComponent, MyTaskType } from "../types";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import classNames from "classnames";
-import { DateFromNow } from "@scm-manager/ui-components";
+import { Link as ReactLink } from "react-router-dom";
 
 type PluginUpdateTaskType = MyTaskType & {
   outdatedPlugins: number;
-  lastCheck: Date;
 };
 
 const FlexFullHeight = styled.div`
@@ -45,11 +44,6 @@ const ContentLeft = styled.div`
   overflow: hidden;
 `;
 
-const ContentRight = styled.div`
-  margin-left: auto;
-  align-items: start;
-`;
-
 const CenteredItems = styled.div`
   align-items: center;
 `;
@@ -59,11 +53,20 @@ const Icon = styled.i`
   align-self: center;
 `;
 
+const StyledLink = styled(ReactLink)`
+  color: inherit;
+  :hover {
+    color: #33b2e8 !important;
+  }
+`;
+
 const PluginUpdateTask: MyTaskComponent<PluginUpdateTaskType> = ({ task }) => {
   const [t] = useTranslation("plugins");
 
+  const link = "admin/plugins/installed/";
+
   return (
-    <>
+    <StyledLink to={link}>
       <div className={"media"}>
         <Icon className="fas fa-puzzle-piece fa-lg media-left" />
         <FlexFullHeight className={classNames("media-content", "text-box", "is-flex")}>
@@ -72,13 +75,10 @@ const PluginUpdateTask: MyTaskComponent<PluginUpdateTaskType> = ({ task }) => {
               <strong className="is-marginless">{t("scm-landingpage-plugin.tasks.updatePlugin.title")}</strong>
               <p>{t("scm-landingpage-plugin.tasks.updatePlugin.description", { count: task.outdatedPlugins })}</p>
             </ContentLeft>
-            <ContentRight>
-              <DateFromNow date={task.lastCheck} />
-            </ContentRight>
           </CenteredItems>
         </FlexFullHeight>
       </div>
-    </>
+    </StyledLink>
   );
 };
 

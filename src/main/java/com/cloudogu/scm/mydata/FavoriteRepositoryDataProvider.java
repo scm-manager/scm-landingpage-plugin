@@ -57,8 +57,7 @@ public class FavoriteRepositoryDataProvider implements MyDataProvider {
     for (String repoId : repositoryIds) {
       Repository repository = repositoryManager.get(repoId);
       HalRepresentation repositoryDto = mapper.map(repository);
-      String repoLink = "/repo/" + repository.getNamespace() + "/" + repository.getName();
-      data.add(new FavoriteRepositoryData(repoLink, repositoryDto));
+      data.add(new FavoriteRepositoryData(repositoryDto));
     }
     return data;
   }

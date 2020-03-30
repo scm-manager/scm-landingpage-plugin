@@ -112,6 +112,5 @@ class RepositoryPushEventSubscriberTest {
     assertThat(pushEvent.getRepository()).isEqualTo(REPOSITORY.getNamespace() + "/" + REPOSITORY.getName());
     assertThat(pushEvent.getAuthor()).isEqualTo(trillian.getDisplayName());
     assertThat(pushEvent.getType()).isEqualTo(RepositoryPushEventSubscriber.PushEvent.class.getSimpleName());
-    assertThat(pushEvent.getLink()).isEqualTo("/repo/" + REPOSITORY.getNamespace() + "/" + REPOSITORY.getName() + "/code/changesets");
   }
 }

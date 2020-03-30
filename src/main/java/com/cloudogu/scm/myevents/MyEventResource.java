@@ -48,7 +48,6 @@ public class MyEventResource {
   @Path("")
   @Produces(MEDIATYPE)
   public MyEventDto getEvents(@Context UriInfo uriInfo) {
-    String self = uriInfo.getAbsolutePath().toASCIIString();
-    return new MyEventDto(self, store.getEvents());
+    return new MyEventDto(store.getEvents());
   }
 }

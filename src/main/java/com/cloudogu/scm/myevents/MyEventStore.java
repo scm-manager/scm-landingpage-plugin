@@ -50,7 +50,6 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Consumer;
 
 @Singleton
 public class MyEventStore {

@@ -23,9 +23,7 @@
  */
 package com.cloudogu.scm.myevents;
 
-import com.cloudogu.scm.SelfLinkSerializer;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
 
 /**
@@ -35,15 +33,10 @@ import lombok.Getter;
 @Getter
 public class MyEventDto {
 
-  @JsonProperty("_links")
-  @JsonSerialize(using = SelfLinkSerializer.class)
-  private final String self;
-
   @JsonProperty("_embedded")
   private final Embedded embedded;
 
-  public MyEventDto(String self, Iterable<MyEvent> events) {
-    this.self = self;
+  public MyEventDto(Iterable<MyEvent> events) {
     this.embedded = new Embedded(events);
   }
 

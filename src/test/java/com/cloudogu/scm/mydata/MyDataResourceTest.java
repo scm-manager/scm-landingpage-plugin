@@ -75,14 +75,11 @@ class MyDataResourceTest {
     assertThat(response.getStatus()).isEqualTo(HttpServletResponse.SC_OK);
 
     JsonNode node = mapper.readTree(response.getOutput());
-    assertThat(node.get("_links").get("self").get("href").asText()).isEqualTo("/v2/landingpage/mydata");
-
     JsonNode data = node.get("_embedded").get("data");
     assertThat(data.isArray()).isTrue();
 
     JsonNode task = data.get(0);
     assertThat(task.get("type").asText()).isEqualTo(SampleData.class.getName());
-    assertThat(task.get("_links").get("self").get("href").asText()).isEqualTo("/sample");
     assertThat(task.get("value").asText()).isEqualTo("awesome");
   }
 
@@ -92,7 +89,7 @@ class MyDataResourceTest {
     private final String value;
 
     public SampleData(String value) {
-      super(SampleData.class.getName(), "/sample");
+      super(SampleData.class.getName());
       this.value = value;
     }
   }

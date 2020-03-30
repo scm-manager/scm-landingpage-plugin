@@ -41,7 +41,7 @@ public class MyTaskCollector {
     List<MyTask> taskList = new ArrayList<>();
     for (MyTaskProvider provider : providers) {
       Iterable<MyTask> tasks = provider.getTasks();
-      tasks.forEach(task -> taskList.add(task));
+      tasks.forEach(taskList::add);
     }
     return taskList;
   }

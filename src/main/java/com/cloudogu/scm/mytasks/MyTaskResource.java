@@ -48,8 +48,7 @@ public class MyTaskResource {
   @Path("")
   @Produces(MEDIATYPE)
   public MyTasksDto getTasks(@Context UriInfo uriInfo) {
-    String self = uriInfo.getAbsolutePath().toASCIIString();
-    return new MyTasksDto(self, collector.collect());
+    return new MyTasksDto(collector.collect());
   }
 
 }

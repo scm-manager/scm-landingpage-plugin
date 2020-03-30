@@ -46,6 +46,7 @@ import java.time.Instant;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
@@ -77,7 +78,7 @@ class MyEventStoreTest {
 
   @Test
   void shouldStoreEvent() {
-    MyEvent event = new MyEvent(MyEvent.class.getSimpleName(), "allowed", "/event");
+    MyEvent event = new MyEvent(MyEvent.class.getSimpleName(), "allowed");
     when(subject.isPermitted("allowed")).thenReturn(true);
 
     store.add(event);
@@ -89,10 +90,10 @@ class MyEventStoreTest {
 
   @Test
   void shouldOnlyGetPermittedEvents() {
-    MyEvent event1 = new MyEvent(MyEvent.class.getSimpleName(), "allowed", "/event");
+    MyEvent event1 = new MyEvent(MyEvent.class.getSimpleName(), "allowed");
     doReturn(true).when(subject).isPermitted("allowed");
 
-    MyEvent event2 = new MyEvent(MyEvent.class.getSimpleName(), "forbidden", "/event");
+    MyEvent event2 = new MyEvent(MyEvent.class.getSimpleName(), "forbidden");
     doReturn(false).when(subject).isPermitted("forbidden");
 
     store.add(event1);
@@ -107,7 +108,7 @@ class MyEventStoreTest {
   void shouldOnlyGet20Events() {
     when(subject.isPermitted("allowed")).thenReturn(true);
     for (int i = 0; i <= 40; i++) {
-      MyEvent event = new MyEvent(MyEvent.class.getSimpleName(), "allowed", "/event" + i);
+      MyEvent event = new MyEvent(MyEvent.class.getSimpleName(), "allowed");
       store.add(event);
     }
 
@@ -117,33 +118,34 @@ class MyEventStoreTest {
 
   @Test
   void shouldGetLatestEvents() {
-    when(subject.isPermitted("allowed")).thenReturn(true);
+    when(subject.isPermitted(anyString())).thenReturn(true);
     for (int i = 0; i <= 40; i++) {
-      MyEvent event = new MyEvent(MyEvent.class.getSimpleName(), "allowed", "/event" + i);
+      MyEvent event = new MyEvent(MyEvent.class.getSimpleName(), "allowed" + i);
       store.add(event);
     }
 
     List<MyEvent> events = store.getEvents();
-    assertThat(events.iterator().next().getLink()).isEqualTo("/event40");
+
+    assertThat(events.iterator().next().getPermission()).isEqualTo("allowed40");
   }
 
   @Test
   void shouldRemoveOldestEntryIfQueueIsFull() {
-    when(subject.isPermitted("allowed")).thenReturn(true);
+    when(subject.isPermitted(anyString())).thenReturn(true);
     for (int i = 0; i <= 2000; i++) {
-      MyEvent event = new MyEvent(MyEvent.class.getSimpleName(), "allowed", "/event" + i);
+      MyEvent event = new MyEvent(MyEvent.class.getSimpleName(), "allowed" + i);
       store.add(event);
     }
 
     List<MyEvent> events = store.getEvents();
-    assertThat(events.iterator().next().getLink()).isEqualTo("/event2000");
     assertThat(events.size()).isEqualTo(20);
+    assertThat(events.iterator().next().getPermission()).isEqualTo("allowed2000");
   }
 
   @Test
   void shouldMarshallAndUnmarshallMyEvent() {
     MyEventStore.StoreEntry entry = new MyEventStore.StoreEntry();
-    entry.getEvents().add(new MyEvent("1", "2", "3"));
+    entry.getEvents().add(new MyEvent("1", "2"));
 
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     JAXB.marshal(entry, baos);
@@ -154,7 +156,6 @@ class MyEventStoreTest {
     MyEvent unmarshalledEvent = unmarshalled.getEvents().descendingIterator().next();
     MyEvent entryEvent = entry.getEvents().descendingIterator().next();
 
-    assertThat(unmarshalledEvent.getLink()).isEqualTo(entryEvent.getLink());
     assertThat(unmarshalledEvent.getPermission()).isEqualTo(entryEvent.getPermission());
     assertThat(unmarshalledEvent.getType()).isEqualTo(entryEvent.getType());
   }
@@ -162,8 +163,8 @@ class MyEventStoreTest {
   @Test
   void shouldMarshallAndUnmarshallPushEvent() {
     MyEventStore.StoreEntry entry = new MyEventStore.StoreEntry();
-    entry.getEvents().add(new RepositoryPushEventSubscriber.PushEvent("repository:1:read", "/repo/1", "repo/1", "Trillian", 1, Instant.now()));
-    entry.getEvents().add(new RepositoryPushEventSubscriber.PushEvent("repository:2:read", "/repo/2", "repo/2", "Trillian", 2, Instant.now()));
+    entry.getEvents().add(new RepositoryPushEventSubscriber.PushEvent("repository:1:read", "repo/1", "Trillian", 1, Instant.now()));
+    entry.getEvents().add(new RepositoryPushEventSubscriber.PushEvent("repository:2:read", "repo/2", "Trillian", 2, Instant.now()));
 
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     JAXB.marshal(entry, baos);
@@ -174,7 +175,6 @@ class MyEventStoreTest {
     RepositoryPushEventSubscriber.PushEvent unmarshalledEvent = (RepositoryPushEventSubscriber.PushEvent) unmarshalled.getEvents().descendingIterator().next();
     RepositoryPushEventSubscriber.PushEvent entryEvent = (RepositoryPushEventSubscriber.PushEvent) entry.getEvents().descendingIterator().next();
 
-    assertThat(unmarshalledEvent.getLink()).isEqualTo(entryEvent.getLink());
     assertThat(unmarshalledEvent.getPermission()).isEqualTo(entryEvent.getPermission());
     assertThat(unmarshalledEvent.getType()).isEqualTo(entryEvent.getType());
     assertThat(unmarshalledEvent.getAuthor()).isEqualTo(entryEvent.getAuthor());
@@ -195,7 +195,6 @@ class MyEventStoreTest {
 
     MyEvent latestEvent = events.descendingIterator().next();
     assertThat(latestEvent.getType()).isEqualTo("PushEvent");
-    assertThat(latestEvent.getLink()).isEqualTo("/repo/scmadmin/UPPERCASE/code/changesets");
     assertThat(latestEvent.getPermission()).isEqualTo("repository:read:EIRu8Tnsn2");
   }
 

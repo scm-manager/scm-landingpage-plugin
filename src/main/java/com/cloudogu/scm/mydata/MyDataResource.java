@@ -48,7 +48,6 @@ public class MyDataResource {
   @Path("")
   @Produces(MEDIATYPE)
   public MyDataDto getData(@Context UriInfo uriInfo) {
-    String self = uriInfo.getAbsolutePath().toASCIIString();
-    return new MyDataDto(self, collector.collect());
+    return new MyDataDto(collector.collect());
   }
 }

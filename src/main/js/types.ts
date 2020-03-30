@@ -21,74 +21,74 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import {Links, Repository} from "@scm-manager/ui-types";
+import { Links, Repository } from "@scm-manager/ui-types";
 
 export type MyTaskType = {
-  type: string
-  _links: Links
+  type: string;
+  _links: Links;
 };
 
 type TaskProps<T = MyTaskType> = {
-  task: T
+  task: T;
 };
 
 export type MyTaskComponent<T = MyTaskType> = React.FC<TaskProps<T>> & {
-  type: string
+  type: string;
 };
 
 type MyTaskEmbedded = {
-  tasks: MyTaskType[]
-}
+  tasks: MyTaskType[];
+};
 
 export type MyTasksType = {
-  _links: Links
-  _embedded: MyTaskEmbedded
-}
+  _links: Links;
+  _embedded: MyTaskEmbedded;
+};
 
 type MyDataEmbedded = {
-  data: MyDataType[]
-}
+  data: MyDataType[];
+};
 
-export type MyDataEntriesType= {
-  _links: Links
-  _embedded: MyDataEmbedded
-}
+export type MyDataEntriesType = {
+  _links: Links;
+  _embedded: MyDataEmbedded;
+};
 
 export type MyDataType = {
-  type: string
-  _links: Links
-}
+  type: string;
+  _links: Links;
+};
 
 export type MyDataComponent<T = MyDataType> = React.FC<DataProps<T>> & {
-  type: string
+  type: string;
 };
 
 type DataProps<T = MyDataType> = {
-  data: T
+  data: T;
 };
 
 export type RepositoryDataType = MyDataType & {
-  repository: Repository
-}
+  repository: Repository;
+};
 
 export type MyEventType = {
-  type: string
-  _links: Links
-}
+  type: string;
+  _links: Links;
+};
 
 export type MyEventComponent<T = MyEventType> = React.FC<EventProps<T>> & {
-  type: string
+  type: string;
 };
 
 type EventProps<T = MyEventType> = {
-  event: T
+  event: T;
 };
 
 type MyEventEmbedded = {
-  events: MyEventType[]
-}
+  events: MyEventType[];
+};
 
-export type MyEventsType= {
-  _links: Links
-  _embedded: MyEventEmbedded
-}
+export type MyEventsType = {
+  _links: Links;
+  _embedded: MyEventEmbedded;
+};

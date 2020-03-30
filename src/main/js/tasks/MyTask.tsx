@@ -23,21 +23,11 @@
  */
 import React, { FC } from "react";
 import { binder } from "@scm-manager/ui-extensions";
-import { Link } from "@scm-manager/ui-types";
 import { MyTaskComponent, MyTaskType } from "../types";
-import { Link as ReactLink } from "react-router-dom";
-import styled from "styled-components";
 
 type Props = {
   task: MyTaskType;
 };
-
-const StyledLink = styled(ReactLink)`
-  color: inherit;
-  :hover {
-    color: #33b2e8 !important;
-  }
-`;
 
 const MyTask: FC<Props> = ({ task }) => {
   const extensions: MyTaskComponent[] = binder.getExtensions("landingpage.mytask");
@@ -54,11 +44,7 @@ const MyTask: FC<Props> = ({ task }) => {
     return null;
   }
 
-  return (
-    <StyledLink to={(task?._links?.self as Link)?.href}>
-      <Component task={task} />
-    </StyledLink>
-  );
+  return <Component task={task} />;
 };
 
 export default MyTask;

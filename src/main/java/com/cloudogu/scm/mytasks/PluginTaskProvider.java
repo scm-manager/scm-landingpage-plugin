@@ -29,7 +29,6 @@ import sonia.scm.plugin.PluginManager;
 import sonia.scm.plugin.PluginPermissions;
 
 import javax.inject.Inject;
-import java.time.Clock;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -38,16 +37,10 @@ import java.util.List;
 public class PluginTaskProvider implements MyTaskProvider {
 
   private final PluginManager pluginManager;
-  private final Clock clock;
 
   @Inject
   public PluginTaskProvider(PluginManager pluginManager) {
-    this(pluginManager, Clock.systemUTC());
-  }
-
-  PluginTaskProvider(PluginManager pluginManager, Clock clock) {
     this.pluginManager = pluginManager;
-    this.clock = clock;
   }
 
   @Override
@@ -57,7 +50,7 @@ public class PluginTaskProvider implements MyTaskProvider {
       List<InstalledPlugin> updatable = pluginManager.getUpdatable();
       int size = updatable.size();
       if (size > 0) {
-        tasks.add(new PluginUpdateTask(size, clock.instant()));
+        tasks.add(new PluginUpdateTask(size));
       }
     }
     return Collections.unmodifiableList(tasks);

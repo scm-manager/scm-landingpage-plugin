@@ -70,13 +70,13 @@ class MyDataCollectorTest {
 
   static class DataOne extends MyData {
     public DataOne() {
-      super(DataOne.class.getSimpleName(), "/one");
+      super(DataOne.class.getSimpleName());
     }
   }
 
   static class DataTwo extends MyData {
     public DataTwo() {
-      super(DataTwo.class.getSimpleName(), "/two");
+      super(DataTwo.class.getSimpleName());
     }
   }
 

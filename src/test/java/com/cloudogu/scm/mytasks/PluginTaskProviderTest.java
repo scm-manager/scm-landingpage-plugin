@@ -99,8 +99,6 @@ class PluginTaskProviderTest {
         mock(InstalledPlugin.class)
       );
       when(pluginManager.getUpdatable()).thenReturn(updates);
-      Instant now = Instant.now();
-      when(clock.instant()).thenReturn(now);
 
       Iterable<MyTask> tasks = provider.getTasks();
       Iterator<MyTask> it = tasks.iterator();
@@ -110,7 +108,6 @@ class PluginTaskProviderTest {
 
       PluginUpdateTask updateTask = (PluginUpdateTask) task;
       assertThat(updateTask.getOutdatedPlugins()).isEqualTo(3);
-      assertThat(updateTask.getLastCheck()).isEqualTo(now);
     }
   }
 

@@ -23,9 +23,7 @@
  */
 package com.cloudogu.scm.mydata;
 
-import com.cloudogu.scm.SelfLinkSerializer;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
 
 /**
@@ -35,15 +33,10 @@ import lombok.Getter;
 @Getter
 public class MyDataDto {
 
-  @JsonProperty("_links")
-  @JsonSerialize(using = SelfLinkSerializer.class)
-  private final String self;
-
   @JsonProperty("_embedded")
   private final Embedded embedded;
 
-  public MyDataDto(String self, Iterable<MyData> data) {
-    this.self = self;
+  public MyDataDto(Iterable<MyData> data) {
     this.embedded = new Embedded(data);
   }
 

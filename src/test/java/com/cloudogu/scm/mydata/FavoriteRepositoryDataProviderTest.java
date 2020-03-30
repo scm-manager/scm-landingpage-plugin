@@ -25,7 +25,6 @@ package com.cloudogu.scm.mydata;
 
 import com.cloudogu.scm.favorite.FavoriteRepository;
 import com.cloudogu.scm.favorite.FavoriteRepositoryProvider;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableSet;
 import de.otto.edison.hal.HalRepresentation;
 import org.apache.shiro.subject.Subject;
@@ -49,7 +48,6 @@ import static org.mockito.Mockito.when;
 class FavoriteRepositoryDataProviderTest {
 
   private final Repository REPOSITORY = RepositoryTestData.createHeartOfGold();
-  private final ObjectMapper objectMapper = new ObjectMapper();
 
   @Mock
   private RepositoryManager repositoryManager;
@@ -97,7 +95,6 @@ class FavoriteRepositoryDataProviderTest {
 
     FavoriteRepositoryData data = (FavoriteRepositoryData) dataProvider.getData().iterator().next();
 
-    assertThat(data.getLink()).isEqualTo("/repo/hitchhiker/HeartOfGold");
     assertThat(data.getType()).isEqualTo(FavoriteRepositoryData.class.getSimpleName());
     assertThat(data.getRepository()).isEqualTo(halRepresentation);
   }

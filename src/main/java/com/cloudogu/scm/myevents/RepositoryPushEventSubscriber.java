@@ -62,11 +62,8 @@ public class RepositoryPushEventSubscriber {
     int changesetCount = Iterables.size(changesets);
     String author = SecurityUtils.getSubject().getPrincipals().oneByType(User.class).getDisplayName();
 
-    String link = String.format("/repo/%s/%s/code/changesets", repository.getNamespace(), repository.getName());
-
     store.add(new PushEvent(
       RepositoryPermissions.read(repository).asShiroString(),
-      link,
       repository.getNamespace() + "/" + repository.getName(),
       author,
       changesetCount,
@@ -86,8 +83,8 @@ public class RepositoryPushEventSubscriber {
     private Instant date;
 
 
-    public PushEvent(String permission, String link, String repository, String author, int changesets, Instant date) {
-      super(PushEvent.class.getSimpleName(), permission, link);
+    public PushEvent(String permission, String repository, String author, int changesets, Instant date) {
+      super(PushEvent.class.getSimpleName(), permission);
       this.repository = repository;
       this.author = author;
       this.changesets = changesets;

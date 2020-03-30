@@ -75,14 +75,11 @@ class MyEventsResourceTest {
     assertThat(response.getStatus()).isEqualTo(HttpServletResponse.SC_OK);
 
     JsonNode node = mapper.readTree(response.getOutput());
-    assertThat(node.get("_links").get("self").get("href").asText()).isEqualTo("/v2/landingpage/myevents");
-
     JsonNode events = node.get("_embedded").get("events");
     assertThat(events.isArray()).isTrue();
 
     JsonNode task = events.get(0);
     assertThat(task.get("type").asText()).isEqualTo(SampleEvent.class.getName());
-    assertThat(task.get("_links").get("self").get("href").asText()).isEqualTo("/sample");
     assertThat(task.get("value").asText()).isEqualTo("awesome");
   }
 
@@ -92,7 +89,7 @@ class MyEventsResourceTest {
     private final String value;
 
     public SampleEvent(String value) {
-      super(SampleEvent.class.getName(), "permission", "/sample");
+      super(SampleEvent.class.getName(), "permission");
       this.value = value;
     }
   }

@@ -70,13 +70,13 @@ class MyTaskCollectorTest {
 
   static class TaskOne extends MyTask {
     public TaskOne() {
-      super(TaskOne.class.getSimpleName(), "/one");
+      super(TaskOne.class.getSimpleName());
     }
   }
 
   static class TaskTwo extends MyTask {
     public TaskTwo() {
-      super(TaskTwo.class.getSimpleName(), "/two");
+      super(TaskTwo.class.getSimpleName());
     }
   }
 

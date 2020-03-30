@@ -23,21 +23,11 @@
  */
 import React, { FC } from "react";
 import { binder } from "@scm-manager/ui-extensions";
-import { Link } from "@scm-manager/ui-types";
 import { MyEventComponent, MyEventType } from "../types";
-import { Link as ReactLink } from "react-router-dom";
-import styled from "styled-components";
 
 type Props = {
   event: MyEventType;
 };
-
-const StyledLink = styled(ReactLink)`
-  color: inherit;
-  :hover {
-    color: #33b2e8 !important;
-  }
-`;
 
 const MyEvent: FC<Props> = ({ event }) => {
   const extensions: MyEventComponent[] = binder.getExtensions("landingpage.myevents");
@@ -54,13 +44,7 @@ const MyEvent: FC<Props> = ({ event }) => {
     return null;
   }
 
-  return (
-    <>
-      <StyledLink to={(event?._links?.self as Link)?.href}>
-        <Component event={event} />
-      </StyledLink>
-    </>
-  );
+  return <Component event={event} />;
 };
 
 export default MyEvent;

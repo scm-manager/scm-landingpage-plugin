@@ -31,8 +31,8 @@ public class FavoriteRepositoryData extends MyData {
 
   private HalRepresentation repository;
 
-  public FavoriteRepositoryData(String link, HalRepresentation repository) {
-    super(FavoriteRepositoryData.class.getSimpleName(), link);
+  public FavoriteRepositoryData(HalRepresentation repository) {
+    super(FavoriteRepositoryData.class.getSimpleName());
     this.repository = repository;
   }
 }
