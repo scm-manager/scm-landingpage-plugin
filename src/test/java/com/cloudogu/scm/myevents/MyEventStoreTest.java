@@ -23,10 +23,7 @@
  */
 package com.cloudogu.scm.myevents;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import lombok.Getter;
+import com.google.common.io.Resources;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.junit.jupiter.api.AfterEach;
@@ -35,27 +32,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import sonia.scm.plugin.PluginLoader;
 import sonia.scm.store.ConfigurationStoreFactory;
 import sonia.scm.store.InMemoryConfigurationStoreFactory;
 
-import javax.xml.XMLConstants;
 import javax.xml.bind.JAXB;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.time.Instant;
 import java.util.List;
 
@@ -70,6 +56,8 @@ class MyEventStoreTest {
 
   @Mock
   private Subject subject;
+  @Mock
+  private PluginLoader pluginLoader;
 
   @BeforeEach
   void bindSubject() {
@@ -79,7 +67,7 @@ class MyEventStoreTest {
   @BeforeEach
   void setUpObjectUnderTesting() {
     ConfigurationStoreFactory storeFactory = new InMemoryConfigurationStoreFactory();
-    store = new MyEventStore(storeFactory);
+    store = new MyEventStore(storeFactory, pluginLoader);
   }
 
   @AfterEach
@@ -191,5 +179,25 @@ class MyEventStoreTest {
     assertThat(unmarshalledEvent.getPermission()).isEqualTo(entryEvent.getPermission());
     assertThat(unmarshalledEvent.getType()).isEqualTo(entryEvent.getType());
     assertThat(unmarshalledEvent.getAuthor()).isEqualTo(entryEvent.getAuthor());
+    assertThat(unmarshalledEvent.getRepository()).isEqualTo(entryEvent.getRepository());
+    assertThat(unmarshalledEvent.getDate()).isEqualTo(entryEvent.getDate());
+    assertThat(unmarshalledEvent.getChangesets()).isEqualTo(entryEvent.getChangesets());
   }
+
+  @Test
+  void shouldUnmarshallEventsFromFile() throws IOException {
+    URL resource = Resources.getResource("com/cloudogu/scm/myevents/myevents.xml");
+    InputStream inputStream = resource.openStream();
+    MyEventStore.StoreEntry unmarshal = JAXB.unmarshal(inputStream, MyEventStore.StoreEntry.class);
+
+    EvictingQueue<MyEvent> events = unmarshal.getEvents();
+
+    assertThat(events.size()).isEqualTo(3);
+
+    MyEvent latestEvent = events.descendingIterator().next();
+    assertThat(latestEvent.getType()).isEqualTo("PushEvent");
+    assertThat(latestEvent.getLink()).isEqualTo("/repo/scmadmin/UPPERCASE/code/changesets");
+    assertThat(latestEvent.getPermission()).isEqualTo("repository:read:EIRu8Tnsn2");
+  }
+
 }

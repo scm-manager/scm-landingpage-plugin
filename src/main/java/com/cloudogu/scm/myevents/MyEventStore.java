@@ -32,6 +32,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import sonia.scm.plugin.PluginLoader;
 import sonia.scm.store.ConfigurationStore;
 import sonia.scm.store.ConfigurationStoreFactory;
 
@@ -49,6 +50,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Consumer;
 
 @Singleton
 public class MyEventStore {
@@ -56,36 +58,51 @@ public class MyEventStore {
   private final String STORE_NAME = "myevents";
 
   private final ConfigurationStore<StoreEntry> store;
+  private final ClassLoader uberClassLoader;
 
   @Inject
-  public MyEventStore(ConfigurationStoreFactory storeFactory) {
+  public MyEventStore(ConfigurationStoreFactory storeFactory, PluginLoader pluginLoader) {
     this.store = storeFactory.withType(StoreEntry.class).withName(STORE_NAME).build();
+    this.uberClassLoader = pluginLoader.getUberClassLoader();
   }
 
   public synchronized void add(MyEvent event) {
-    StoreEntry storeEntry = getStoreEntry();
-    storeEntry.events.add(event);
-    store.set(storeEntry);
+    withUberClassLoader(() -> {
+      StoreEntry storeEntry = getStoreEntry();
+      storeEntry.events.add(event);
+      store.set(storeEntry);
+    });
   }
 
   public List<MyEvent> getEvents() {
     Subject subject = SecurityUtils.getSubject();
 
     ImmutableList.Builder<MyEvent> builder = ImmutableList.builder();
-    StoreEntry storeEntry = getStoreEntry();
-    int i = 0;
+    withUberClassLoader(() -> {
+      StoreEntry storeEntry = getStoreEntry();
+      int i = 0;
 
-    Iterator<MyEvent> myEventIterator = storeEntry.events.descendingIterator();
+      Iterator<MyEvent> myEventIterator = storeEntry.events.descendingIterator();
 
-    while (i < 20 && myEventIterator.hasNext()) {
-      MyEvent next = myEventIterator.next();
-      if (subject.isPermitted(next.getPermission())) {
-        builder.add(next);
-        i++;
+      while (i < 20 && myEventIterator.hasNext()) {
+        MyEvent next = myEventIterator.next();
+        if (subject.isPermitted(next.getPermission())) {
+          builder.add(next);
+          i++;
+        }
       }
-    }
-
+    });
     return builder.build();
+  }
+
+  private void withUberClassLoader(Runnable runnable) {
+    ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+    Thread.currentThread().setContextClassLoader(uberClassLoader);
+    try {
+      runnable.run();
+    } finally {
+      Thread.currentThread().setContextClassLoader(contextClassLoader);
+    }
   }
 
   private StoreEntry getStoreEntry() {
@@ -107,7 +124,7 @@ public class MyEventStore {
   @XmlAccessorType(XmlAccessType.FIELD)
   public static class MyEventStoreEntry {
 
-    private String type;
+    private Class type;
 
     @XmlAnyElement
     private Element payload;
@@ -115,7 +132,7 @@ public class MyEventStore {
 
   public static class MyEventXmlAdapter extends XmlAdapter<MyEventStoreEntry, MyEvent> {
 
-    LoadingCache<Class, JAXBContext> cache = CacheBuilder.newBuilder()
+    private static final LoadingCache<Class, JAXBContext> cache = CacheBuilder.newBuilder()
       .maximumSize(1000)
       .build(
         new CacheLoader<Class, JAXBContext>() {
@@ -127,14 +144,14 @@ public class MyEventStore {
 
     @Override
     public MyEvent unmarshal(MyEventStoreEntry myEventStoreEntry) throws Exception {
-      JAXBContext jaxbContext = cache.get(getClass().getClassLoader().loadClass(myEventStoreEntry.type));
+      JAXBContext jaxbContext = cache.get(myEventStoreEntry.type);
       return (MyEvent) jaxbContext.createUnmarshaller().unmarshal(myEventStoreEntry.payload);
     }
 
     @Override
     public MyEventStoreEntry marshal(MyEvent event) throws Exception {
       MyEventStoreEntry entry = new MyEventStoreEntry();
-      entry.type = event.getClass().getName();
+      entry.type = event.getClass();
 
       DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
       factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
