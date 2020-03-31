@@ -23,7 +23,7 @@
  */
 import React, { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import CollapsibleContainer from "../CollapsibleContainer";
+import { CollapsibleContainer } from "@scm-manager/ui-components";
 import { apiClient, ErrorNotification, Loading } from "@scm-manager/ui-components";
 import MyEvent from "./MyEvent";
 import { MyEventsType } from "../types";

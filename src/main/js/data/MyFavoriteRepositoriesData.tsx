@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 import React, { FC } from "react";
-import CollapsibleContainer from "../CollapsibleContainer";
 import MyFavoriteRepositoryData from "./MyFavoriteRepositoryData";
+import { CollapsibleContainer } from "@scm-manager/ui-components";
 import { useTranslation } from "react-i18next";
 import { MyDataEntriesType } from "../types";
 import { binder } from "@scm-manager/ui-extensions";

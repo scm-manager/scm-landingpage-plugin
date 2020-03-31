@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 import React, { FC, useEffect, useState } from "react";
-import CollapsibleContainer from "../CollapsibleContainer";
+import { CollapsibleContainer } from "@scm-manager/ui-components";
 import { useTranslation } from "react-i18next";
 import { apiClient, ErrorNotification, Loading } from "@scm-manager/ui-components";
 import MyTask from "./MyTask";
