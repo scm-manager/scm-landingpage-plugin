@@ -30,6 +30,7 @@ import { useTranslation } from "react-i18next";
 import "./tasks/PluginUpdateTask";
 import "./data/FavoriteRepositoryCard";
 import "./events/RepositoryPushEvent";
+import "./data/MyFavoriteRepositoriesData";
 import { RepositoryDataType } from "./types";
 
 const HomeRoute: FC = props => {

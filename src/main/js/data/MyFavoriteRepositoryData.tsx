@@ -21,68 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { Repository } from "@scm-manager/ui-types";
+import React, { FC } from "react";
+import { binder } from "@scm-manager/ui-extensions";
+import { MyDataComponent, MyDataType } from "../types";
 
-export type MyTaskType = {
-  type: string;
+type Props = {
+  data: MyDataType;
 };
 
-type TaskProps<T = MyTaskType> = {
-  task: T;
+const MyFavoriteRepositoryData: FC<Props> = ({ data }) => {
+  const extensions: MyDataComponent[] = binder.getExtensions("landingpage.myFavoriteRepository");
+
+  let Component = null;
+  for (let extension of extensions) {
+    if (extension.type === data.type) {
+      Component = extension;
+      break;
+    }
+  }
+
+  if (!Component) {
+    return null;
+  }
+
+  return <Component data={data} />;
 };
 
-export type MyTaskComponent<T = MyTaskType> = React.FC<TaskProps<T>> & {
-  type: string;
-};
-
-type MyTaskEmbedded = {
-  tasks: MyTaskType[];
-};
-
-export type MyTasksType = {
-  _embedded: MyTaskEmbedded;
-};
-
-type MyDataEmbedded = {
-  data: MyDataType[];
-};
-
-export type MyDataEntriesType = {
-  _embedded: MyDataEmbedded;
-};
-
-export type MyDataType = {
-  type: string;
-};
-
-export type MyDataComponent<T = MyDataType> = React.FC<DataProps<T>> & {
-  type: string;
-};
-
-type DataProps<T = MyDataType> = {
-  data: T;
-};
-
-export type RepositoryDataType = MyDataType & {
-  repository: Repository;
-};
-
-export type MyEventType = {
-  type: string;
-};
-
-export type MyEventComponent<T = MyEventType> = React.FC<EventProps<T>> & {
-  type: string;
-};
-
-type EventProps<T = MyEventType> = {
-  event: T;
-};
-
-type MyEventEmbedded = {
-  events: MyEventType[];
-};
-
-export type MyEventsType = {
-  _embedded: MyEventEmbedded;
-};
+export default MyFavoriteRepositoryData;

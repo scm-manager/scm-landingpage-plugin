@@ -19,7 +19,8 @@
     "tasks": {
       "updatePlugin": {
         "title": "Update plugins",
-        "description": "New versions for {{count}} plugins available"
+        "description": "New version for {{count}} plugin available",
+        "description_plural": "New versions for {{count}} plugins available"
       }
     },
     "myevents": {

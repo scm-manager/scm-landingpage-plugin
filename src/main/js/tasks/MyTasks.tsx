@@ -32,7 +32,7 @@ type Props = {};
 
 const MyTasks: FC<Props> = ({}) => {
   const [t] = useTranslation("plugins");
-  const [content, setContent] = useState<MyTasksType>({ _embedded: { tasks: [] }, _links: {} });
+  const [content, setContent] = useState<MyTasksType>({ _embedded: { tasks: [] } });
   const [error, setError] = useState(undefined);
   const [loading, setLoading] = useState(false);
 

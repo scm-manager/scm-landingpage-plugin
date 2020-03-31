@@ -23,11 +23,10 @@
  */
 import React, { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import CollapsibleContainer from "../CollapsibleContainer";
 import { apiClient, ErrorNotification, Loading } from "@scm-manager/ui-components";
-import MyRepositoryData from "./MyRepositoryData";
 import styled from "styled-components";
 import { MyDataEntriesType } from "../types";
+import { ExtensionPoint } from "@scm-manager/ui-extensions";
 
 const Headline = styled.h3`
   font-size: 1.25rem;
@@ -41,7 +40,7 @@ type Props = {};
 
 const MyData: FC<Props> = ({}) => {
   const [t] = useTranslation("plugins");
-  const [content, setContent] = useState<MyDataEntriesType>({ _embedded: { data: [] }, _links: {} });
+  const [content, setContent] = useState<MyDataEntriesType>({ _embedded: { data: [] }});
   const [error, setError] = useState(undefined);
   const [loading, setLoading] = useState(false);
 
@@ -66,11 +65,7 @@ const MyData: FC<Props> = ({}) => {
   return (
     <>
       <Headline>{t("scm-landingpage-plugin.mydata.title")}</Headline>
-      <CollapsibleContainer title={t("scm-landingpage-plugin.favoriteRepository.title")} separatedEntries={true}>
-        {content?._embedded?.data?.map((data, key) => (
-          <MyRepositoryData key={key} data={data} />
-        ))}
-      </CollapsibleContainer>
+      <ExtensionPoint name={"landingpage.mydata"} props={content} />
     </>
   );
 };

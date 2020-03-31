@@ -32,7 +32,7 @@ type Props = {};
 
 const MyEvents: FC<Props> = ({}) => {
   const [t] = useTranslation("plugins");
-  const [content, setContent] = useState<MyEventsType>({ _embedded: { events: [] }, _links: {} });
+  const [content, setContent] = useState<MyEventsType>({ _embedded: { events: [] } });
   const [error, setError] = useState(undefined);
   const [loading, setLoading] = useState(false);
 

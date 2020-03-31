@@ -22,29 +22,22 @@
  * SOFTWARE.
  */
 import React, { FC } from "react";
+import CollapsibleContainer from "../CollapsibleContainer";
+import MyFavoriteRepositoryData from "./MyFavoriteRepositoryData";
+import { useTranslation } from "react-i18next";
+import { MyDataEntriesType } from "../types";
 import { binder } from "@scm-manager/ui-extensions";
-import { MyDataComponent, MyDataType } from "../types";
 
-type Props = {
-  data: MyDataType;
+const MyFavoriteRepositoriesData: FC<MyDataEntriesType> = (content) => {
+  const [t] = useTranslation("plugins");
+
+  return (
+    <CollapsibleContainer title={t("scm-landingpage-plugin.favoriteRepository.title")} separatedEntries={true}>
+      {content?._embedded?.data?.map((data, key) => (
+        <MyFavoriteRepositoryData key={key} data={data} />
+      ))}
+    </CollapsibleContainer>
+  );
 };
 
-const MyRepositoryData: FC<Props> = ({ data }) => {
-  const extensions: MyDataComponent[] = binder.getExtensions("landingpage.myFavoriteRepository");
-
-  let Component = null;
-  for (let extension of extensions) {
-    if (extension.type === data.type) {
-      Component = extension;
-      break;
-    }
-  }
-
-  if (!Component) {
-    return null;
-  }
-
-  return <Component data={data} />;
-};
-
-export default MyRepositoryData;
+binder.bind("landingpage.mydata", MyFavoriteRepositoriesData);
