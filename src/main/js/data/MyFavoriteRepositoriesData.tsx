@@ -21,23 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React, { FC } from "react";
+import React from "react";
 import MyFavoriteRepositoryData from "./MyFavoriteRepositoryData";
-import { CollapsibleContainer } from "@scm-manager/ui-components";
-import { useTranslation } from "react-i18next";
-import { MyDataEntriesType } from "../types";
+
 import { binder } from "@scm-manager/ui-extensions";
+import { MyDataEntriesType } from "../types";
 
-const MyFavoriteRepositoriesData: FC<MyDataEntriesType> = (content) => {
-  const [t] = useTranslation("plugins");
-
-  return (
-    <CollapsibleContainer title={t("scm-landingpage-plugin.favoriteRepository.title")} separatedEntries={true}>
-      {content?._embedded?.data?.map((data, key) => (
-        <MyFavoriteRepositoryData key={key} data={data} />
-      ))}
-    </CollapsibleContainer>
-  );
-};
-
-binder.bind("landingpage.mydata", MyFavoriteRepositoriesData);
+binder.bind("landingpage.mydata", {
+  dataEntries: (content: MyDataEntriesType) =>
+    content?._embedded?.data?.map((data, key) => <MyFavoriteRepositoryData key={key} data={data} />),
+  title: "scm-landingpage-plugin.favoriteRepository.title",
+  separatedEntries: true
+});

@@ -21,12 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useState, ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 import { apiClient, ErrorNotification, Loading } from "@scm-manager/ui-components";
 import styled from "styled-components";
 import { MyDataEntriesType } from "../types";
-import { ExtensionPoint } from "@scm-manager/ui-extensions";
+import { ExtensionPoint, binder } from "@scm-manager/ui-extensions";
+import CollapsibleContainer from "../CollapsibleContainer";
 
 const Headline = styled.h3`
   font-size: 1.25rem;
@@ -38,9 +39,15 @@ const Headline = styled.h3`
 
 type Props = {};
 
+type ExtensionProps = {
+  title: string;
+  dataEntries: (content: MyDataEntriesType) => ReactElement[];
+  separatedEntries: boolean;
+}
+
 const MyData: FC<Props> = ({}) => {
   const [t] = useTranslation("plugins");
-  const [content, setContent] = useState<MyDataEntriesType>({ _embedded: { data: [] }});
+  const [content, setContent] = useState<MyDataEntriesType>({ _embedded: { data: [] } });
   const [error, setError] = useState(undefined);
   const [loading, setLoading] = useState(false);
 
@@ -54,6 +61,8 @@ const MyData: FC<Props> = ({}) => {
       .catch(setError);
   }, []);
 
+  const extensions: ExtensionProps[] = binder.getExtensions("landingpage.mydata");
+
   if (loading) {
     return <Loading />;
   }
@@ -65,7 +74,11 @@ const MyData: FC<Props> = ({}) => {
   return (
     <>
       <Headline>{t("scm-landingpage-plugin.mydata.title")}</Headline>
-      <ExtensionPoint name={"landingpage.mydata"} props={content} />
+      {extensions.map(extension => (
+        <CollapsibleContainer title={t(extension.title)} separatedEntries={extension.separatedEntries}>
+          {extension.dataEntries(content)}
+        </CollapsibleContainer>
+      ))}
     </>
   );
 };
