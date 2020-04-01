@@ -22,14 +22,14 @@
  * SOFTWARE.
  */
 import React from "react";
-import MyFavoriteRepositoryData from "./MyFavoriteRepositoryData";
 
 import { binder } from "@scm-manager/ui-extensions";
-import { MyDataEntriesType } from "../types";
+import { RepositoryDataType } from "../types";
+import FavoriteRepositoryCard from "./FavoriteRepositoryCard";
 
 binder.bind("landingpage.mydata", {
-  dataEntries: (content: MyDataEntriesType) =>
-    content?._embedded?.data?.map((data, key) => <MyFavoriteRepositoryData key={key} data={data} />),
+  render: (data: RepositoryDataType, key: any) => <FavoriteRepositoryCard data={data} key={key} />,
   title: "scm-landingpage-plugin.favoriteRepository.title",
-  separatedEntries: true
+  separatedEntries: true,
+  type: "FavoriteRepositoryData"
 });

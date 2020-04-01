@@ -44,8 +44,9 @@ type Props = {
 
 type ExtensionProps = {
   title: string;
-  dataEntries: (content: MyDataEntriesType) => ReactElement[];
+  render: (data: any, key: any) => ReactElement;
   separatedEntries: boolean;
+  type: string;
 };
 
 const MyData: FC<Props> = ({ links }) => {
@@ -79,7 +80,9 @@ const MyData: FC<Props> = ({ links }) => {
       <Headline>{t("scm-landingpage-plugin.mydata.title")}</Headline>
       {extensions.map(extension => (
         <CollapsibleContainer title={t(extension.title)} separatedEntries={extension.separatedEntries}>
-          {extension.dataEntries(content)}
+          {content._embedded.data
+            .filter(data => data.type === extension.type)
+            .map((data, key) => extension.render(data, key))}
         </CollapsibleContainer>
       ))}
     </>

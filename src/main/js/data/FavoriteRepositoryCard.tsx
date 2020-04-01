@@ -21,15 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React from "react";
-import { binder } from "@scm-manager/ui-extensions";
-import { MyDataComponent, MyDataType } from "../types";
+import React, { FC } from "react";
+import { RepositoryDataType } from "../types";
 import { RepositoryEntry } from "@scm-manager/ui-components";
-import { Repository } from "@scm-manager/ui-types";
 import styled from "styled-components";
 
-type FavoriteRepositoryType = MyDataType & {
-  repository: Repository;
+type Props = {
+  data: RepositoryDataType;
 };
 
 const RepositoryEntryWrapper = styled.div`
@@ -42,16 +40,14 @@ const RepositoryEntryWrapper = styled.div`
   }
 `;
 
-const FavoriteRepositoryCard: MyDataComponent<FavoriteRepositoryType> = ({ data }) => {
+const FavoriteRepositoryCard: FC<Props> = ({ data }) => {
   return (
     <div className={"card-columns is-multiline"}>
       <RepositoryEntryWrapper className="box box-link-shadow column is-clipped">
-        <RepositoryEntry repository={data?.repository} />
+        <RepositoryEntry repository={data.repository} />
       </RepositoryEntryWrapper>
     </div>
   );
 };
-
-FavoriteRepositoryCard.type = "FavoriteRepositoryData";
 
 export default FavoriteRepositoryCard;
