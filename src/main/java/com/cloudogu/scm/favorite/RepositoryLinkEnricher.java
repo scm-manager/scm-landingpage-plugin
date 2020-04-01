@@ -55,7 +55,7 @@ public class RepositoryLinkEnricher implements HalEnricher {
     if (RepositoryPermissions.read().isPermitted(repository)) {
       LinkBuilder linkBuilder = new LinkBuilder(scmPathInfoStore.get().get(), FavoriteRepositoryResource.class);
       FavoriteRepository favorites = storeProvider.get().get();
-      if (favorites != null && favorites.isFavorite(repository)) {
+      if (favorites.isFavorite(repository)) {
         appender.appendLink("unfavorize", linkBuilder.method("unfavorizeRepository").parameters(repository.getNamespace(), repository.getName()).href());
       } else {
         appender.appendLink("favorize", linkBuilder.method("favorizeRepository").parameters(repository.getNamespace(), repository.getName()).href());

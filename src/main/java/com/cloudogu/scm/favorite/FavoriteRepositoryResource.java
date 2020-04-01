@@ -51,7 +51,7 @@ public class FavoriteRepositoryResource {
   @Path("favorize/{namespace}/{name}")
   @Operation(
     summary = "Favorize repository",
-    description = "Favorizes a repository for an user",
+    description = "Favorizes a repository for the current user",
     tags = "Landingpage Plugin",
     operationId = "landingpage_favorize_repo"
   )
@@ -78,7 +78,7 @@ public class FavoriteRepositoryResource {
   @Path("unfavorize/{namespace}/{name}")
   @Operation(
     summary = "Unfavorize repository",
-    description = "Unfavorizes a repository for an user",
+    description = "Unfavorizes a repository for the current user",
     tags = "Landingpage Plugin",
     operationId = "landingpage_favorize_repo"
   )

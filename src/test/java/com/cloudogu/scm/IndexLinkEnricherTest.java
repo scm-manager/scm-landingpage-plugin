@@ -62,20 +62,20 @@ class IndexLinkEnricherTest {
   void shouldAppendTasksLink() {
     enricher.enrich(context, appender);
 
-    verify(appender).appendLink("tasks", "https://scm-manager.org/scm/api/v2/landingpage/mytasks");
+    verify(appender).appendLink("landingpageTasks", "https://scm-manager.org/scm/api/v2/landingpage/mytasks");
   }
 
   @Test
   void shouldAppendDataLink() {
     enricher.enrich(context, appender);
 
-    verify(appender).appendLink("data", "https://scm-manager.org/scm/api/v2/landingpage/mydata");
+    verify(appender).appendLink("landingpageData", "https://scm-manager.org/scm/api/v2/landingpage/mydata");
   }
 
   @Test
   void shouldAppendEventsLink() {
     enricher.enrich(context, appender);
 
-    verify(appender).appendLink("events", "https://scm-manager.org/scm/api/v2/landingpage/myevents");
+    verify(appender).appendLink("landingpageEvents", "https://scm-manager.org/scm/api/v2/landingpage/myevents");
   }
 }

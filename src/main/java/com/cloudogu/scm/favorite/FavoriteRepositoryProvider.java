@@ -43,17 +43,15 @@ public class FavoriteRepositoryProvider {
 
   public FavoriteRepositoryStore get() {
     String principal = SecurityUtils.getSubject().getPrincipal().toString();
-    return new FavoriteRepositoryStore(principal, store);
+    return new FavoriteRepositoryStore(principal);
   }
 
   public class FavoriteRepositoryStore {
 
     private final String principal;
-    private final DataStore<FavoriteRepository> store;
 
-    private FavoriteRepositoryStore(String principal, DataStore<FavoriteRepository> store) {
+    private FavoriteRepositoryStore(String principal) {
       this.principal = principal;
-      this.store = store;
     }
 
     public void add(Repository repository) {

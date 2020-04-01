@@ -54,7 +54,7 @@ import java.util.List;
 @Singleton
 public class MyEventStore {
 
-  private final String STORE_NAME = "myevents";
+  private static final String STORE_NAME = "myevents";
 
   private final ConfigurationStore<StoreEntry> store;
   private final ClassLoader uberClassLoader;

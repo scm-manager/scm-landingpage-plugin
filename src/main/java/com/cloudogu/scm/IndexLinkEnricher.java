@@ -62,7 +62,7 @@ public class IndexLinkEnricher implements HalEnricher {
       .parameters()
       .href();
 
-    appender.appendLink("data", dataUrl);
+    appender.appendLink("landingpageData", dataUrl);
   }
 
   private void appendTasksLink(HalAppender appender) {
@@ -71,7 +71,7 @@ public class IndexLinkEnricher implements HalEnricher {
       .parameters()
       .href();
 
-    appender.appendLink("tasks", tasksUrl);
+    appender.appendLink("landingpageTasks", tasksUrl);
   }
 
   private void appendEventsLink(HalAppender appender) {
@@ -80,6 +80,6 @@ public class IndexLinkEnricher implements HalEnricher {
       .parameters()
       .href();
 
-    appender.appendLink("events", tasksUrl);
+    appender.appendLink("landingpageEvents", tasksUrl);
   }
 }

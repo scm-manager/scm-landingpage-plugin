@@ -22,29 +22,19 @@
  * SOFTWARE.
  */
 import React, { FC } from "react";
-import { binder } from "@scm-manager/ui-extensions";
-import { MyDataComponent, MyDataType } from "../types";
+import { RepositoryDataType } from "../types";
+import FavoriteRepositoryCard from "./FavoriteRepositoryCard";
 
 type Props = {
-  data: MyDataType;
+  data: RepositoryDataType;
 };
 
 const MyFavoriteRepositoryData: FC<Props> = ({ data }) => {
-  const extensions: MyDataComponent[] = binder.getExtensions("landingpage.myFavoriteRepository");
-
-  let Component = null;
-  for (let extension of extensions) {
-    if (extension.type === data.type) {
-      Component = extension;
-      break;
-    }
-  }
-
-  if (!Component) {
+  if (data.type !== FavoriteRepositoryCard.type) {
     return null;
   }
 
-  return <Component data={data} />;
+  return <FavoriteRepositoryCard data={data} />;
 };
 
 export default MyFavoriteRepositoryData;

@@ -54,4 +54,4 @@ const FavoriteRepositoryCard: MyDataComponent<FavoriteRepositoryType> = ({ data 
 
 FavoriteRepositoryCard.type = "FavoriteRepositoryData";
 
-binder.bind("landingpage.myFavoriteRepository", FavoriteRepositoryCard);
+export default FavoriteRepositoryCard;
