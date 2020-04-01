@@ -32,9 +32,17 @@ import "./data/FavoriteRepositoryCard";
 import "./events/RepositoryPushEvent";
 import "./data/MyFavoriteRepositoriesData";
 import { RepositoryDataType } from "./types";
+import { Links } from "@scm-manager/ui-types";
 
-const HomeRoute: FC = props => {
-  return <ProtectedRoute {...props} path={"/home"} component={Home} />;
+type HomeRouteProps = {
+  authenticated: boolean;
+  links: Links;
+};
+
+const HomeRoute: FC<HomeRouteProps> = props => {
+  return (
+    <ProtectedRoute authenticated={props.authenticated} path={"/home"} component={() => <Home links={props.links} />} />
+  );
 };
 
 const HomeNavigation: FC = () => {

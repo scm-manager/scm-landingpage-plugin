@@ -27,19 +27,24 @@ import MyTasks from "./tasks/MyTasks";
 import { useTranslation } from "react-i18next";
 import MyData from "./data/MyData";
 import MyEvents from "./events/MyEvents";
+import { Links } from "@scm-manager/ui-types";
 
-const Home: FC = () => {
+type Props = {
+  links: Links;
+};
+
+const Home: FC<Props> = props => {
   const [t] = useTranslation("plugins");
 
   return (
     <Page title={t("scm-landingpage-plugin.home.title")} subtitle={t("scm-landingpage-plugin.home.subtitle")}>
       <div className="columns">
         <div className="column">
-          <MyTasks />
-          <MyData />
+          <MyTasks links={props.links} />
+          <MyData links={props.links} />
         </div>
         <div className="column">
-          <MyEvents />
+          <MyEvents links={props.links} />
         </div>
       </div>
     </Page>

@@ -21,13 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React, { FC, useEffect, useState, ReactElement } from "react";
+import React, { FC, ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { apiClient, ErrorNotification, Loading } from "@scm-manager/ui-components";
 import styled from "styled-components";
 import { MyDataEntriesType } from "../types";
-import { ExtensionPoint, binder } from "@scm-manager/ui-extensions";
+import { binder } from "@scm-manager/ui-extensions";
 import CollapsibleContainer from "../CollapsibleContainer";
+import { Link, Links } from "@scm-manager/ui-types";
 
 const Headline = styled.h3`
   font-size: 1.25rem;
@@ -37,15 +38,17 @@ const Headline = styled.h3`
   }
 `;
 
-type Props = {};
+type Props = {
+  links: Links;
+};
 
 type ExtensionProps = {
   title: string;
   dataEntries: (content: MyDataEntriesType) => ReactElement[];
   separatedEntries: boolean;
-}
+};
 
-const MyData: FC<Props> = ({}) => {
+const MyData: FC<Props> = ({ links }) => {
   const [t] = useTranslation("plugins");
   const [content, setContent] = useState<MyDataEntriesType>({ _embedded: { data: [] } });
   const [error, setError] = useState(undefined);
@@ -54,7 +57,7 @@ const MyData: FC<Props> = ({}) => {
   useEffect(() => {
     setLoading(true);
     apiClient
-      .get("/landingpage/mydata")
+      .get((links?.landingpageData as Link)?.href)
       .then(r => r.json())
       .then(setContent)
       .then(() => setLoading(false))

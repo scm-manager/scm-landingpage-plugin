@@ -27,10 +27,13 @@ import { useTranslation } from "react-i18next";
 import { apiClient, ErrorNotification, Loading } from "@scm-manager/ui-components";
 import MyTask from "./MyTask";
 import { MyTasksType } from "../types";
+import { Link, Links } from "@scm-manager/ui-types";
 
-type Props = {};
+type Props = {
+  links: Links;
+};
 
-const MyTasks: FC<Props> = ({}) => {
+const MyTasks: FC<Props> = ({ links }) => {
   const [t] = useTranslation("plugins");
   const [content, setContent] = useState<MyTasksType>({ _embedded: { tasks: [] } });
   const [error, setError] = useState(undefined);
@@ -39,7 +42,7 @@ const MyTasks: FC<Props> = ({}) => {
   useEffect(() => {
     setLoading(true);
     apiClient
-      .get("/landingpage/mytasks")
+      .get((links?.landingpageTasks as Link)?.href)
       .then(r => r.json())
       .then(setContent)
       .then(() => setLoading(false))

@@ -27,10 +27,13 @@ import CollapsibleContainer from "../CollapsibleContainer";
 import { apiClient, ErrorNotification, Loading } from "@scm-manager/ui-components";
 import MyEvent from "./MyEvent";
 import { MyEventsType } from "../types";
+import { Link, Links } from "@scm-manager/ui-types";
 
-type Props = {};
+type Props = {
+  links: Links;
+};
 
-const MyEvents: FC<Props> = ({}) => {
+const MyEvents: FC<Props> = ({ links }) => {
   const [t] = useTranslation("plugins");
   const [content, setContent] = useState<MyEventsType>({ _embedded: { events: [] } });
   const [error, setError] = useState(undefined);
@@ -39,7 +42,7 @@ const MyEvents: FC<Props> = ({}) => {
   useEffect(() => {
     setLoading(true);
     apiClient
-      .get("/landingpage/myevents")
+      .get((links?.landingpageEvents as Link)?.href)
       .then(r => r.json())
       .then(setContent)
       .then(() => setLoading(false))
