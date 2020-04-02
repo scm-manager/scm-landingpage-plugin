@@ -35,12 +35,19 @@
         "description": "Erstellt von"
       },
       "pluginInstalled": {
-        "title": "Das {{pluginName}} Plugin wurde für die Installation vorbereitet",
+        "title": "Plugin Installation vorbereitet: {{pluginName}}",
         "description": "Neue Plugin Version: {{version}}"
       },
       "pluginUpdated": {
-        "title": "Das {{pluginName}} Plugin wurde für eine Aktualisierung vorbereitet",
+        "title": "Plugin Aktualisierung vorbereitet: {{pluginName}}",
         "description": "Von Version {{previousVersion}} auf Version {{version}}"
+      },
+      "pluginInstallationFailed": {
+        "title": "Plugin Installation fehlgeschlagen: {{pluginName}}",
+        "description": "Plugin Version: {{version}}"
+      },
+      "pluginCenterNotAvailable": {
+        "title": "Plugin-Center nicht erreichbar"
       }
     }
   }

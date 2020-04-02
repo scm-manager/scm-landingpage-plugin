@@ -32,7 +32,6 @@ import { Link as ReactLink } from "react-router-dom";
 
 type PluginEventType = MyEventType & {
   pluginName: string;
-  previousPluginVersion?: string;
   newPluginVersion: string;
   date: Date;
 };
@@ -70,7 +69,7 @@ const StyledLink = styled(ReactLink)`
   }
 `;
 
-const PluginInstalledEvent: MyEventComponent<PluginEventType> = ({ event }) => {
+const PluginInstallationFailedEvent: MyEventComponent<PluginEventType> = ({ event }) => {
   const [t] = useTranslation("plugins");
 
   const link = "/admin/plugins/available/";
@@ -83,19 +82,12 @@ const PluginInstalledEvent: MyEventComponent<PluginEventType> = ({ event }) => {
           <CenteredItems className="is-flex">
             <ContentLeft className="content">
               <strong className="is-marginless">
-                {event.previousPluginVersion
-                  ? t("scm-landingpage-plugin.myevents.pluginUpdated.title", { pluginName: event.pluginName })
-                  : t("scm-landingpage-plugin.myevents.pluginInstalled.title", { pluginName: event.pluginName })}
+                {t("scm-landingpage-plugin.myevents.pluginInstallationFailed.title", { pluginName: event.pluginName })}
               </strong>
               <p>
-                {event.previousPluginVersion
-                  ? t("scm-landingpage-plugin.myevents.pluginUpdated.description", {
-                      version: event.newPluginVersion,
-                      previousVersion: event.previousPluginVersion
-                    })
-                  : t("scm-landingpage-plugin.myevents.pluginInstalled.description", {
-                      version: event.newPluginVersion
-                    })}
+                {t("scm-landingpage-plugin.myevents.pluginInstallationFailed.description", {
+                  version: event.newPluginVersion
+                })}
               </p>
             </ContentLeft>
             <ContentRight>
@@ -108,6 +100,6 @@ const PluginInstalledEvent: MyEventComponent<PluginEventType> = ({ event }) => {
   );
 };
 
-PluginInstalledEvent.type = "PluginInstalledEvent";
+PluginInstallationFailedEvent.type = "PluginInstallationFailedEvent";
 
-binder.bind("landingpage.myevents", PluginInstalledEvent);
+binder.bind("landingpage.myevents", PluginInstallationFailedEvent);

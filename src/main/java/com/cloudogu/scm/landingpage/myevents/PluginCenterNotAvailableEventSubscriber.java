@@ -67,7 +67,7 @@ public class PluginCenterNotAvailableEventSubscriber {
     private Instant date;
 
     PluginCenterNotAvailableEvent(String permission, Instant date) {
-      super(PluginInstalledEventSubscriber.PluginInstalledEvent.class.getSimpleName(), permission);
+      super(PluginCenterNotAvailableEvent.class.getSimpleName(), permission);
       this.date = date;
     }
   }
