@@ -29,6 +29,18 @@
         "title": "{{count}} change committet: {{repository}}",
         "title_plural": "{{count}} changes committet: {{repository}}",
         "description": "Created by"
+      },
+      "repositoryCreated": {
+        "title": "New repository: {{repository}}",
+        "description": "Created by"
+      },
+      "pluginInstalled": {
+        "title": "{{pluginName}} Plugin was prepared for installation",
+        "description": "New plugin version: {{version}}"
+      },
+      "pluginUpdated": {
+        "title": "{{pluginName}} Plugin was prepared for an update",
+        "description": "From version {{previousVersion}} to version {{version}}"
       }
     }
   }

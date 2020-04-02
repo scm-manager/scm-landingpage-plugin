@@ -61,9 +61,9 @@ public class PluginInstalledEventSubscriber {
   public void handleEvent(PluginEvent pluginEvent) {
     if (pluginEvent.getEventType() == PluginEvent.PluginEventType.INSTALLED) {
       AvailablePlugin newPlugin = pluginEvent.getPlugin();
-      Optional<InstalledPlugin> installedPlugin = pluginManager.getInstalled(newPlugin.getDescriptor().getInformation().getDisplayName());
+      Optional<InstalledPlugin> installedPlugin = pluginManager.getInstalled(newPlugin.getDescriptor().getInformation().getName());
       String permission = PluginPermissions.manage().asShiroString();
-      String pluginName = newPlugin.getDescriptor().getInformation().getName();
+      String pluginName = newPlugin.getDescriptor().getInformation().getDisplayName();
       String previousPluginVersion = null;
 
       if (installedPlugin.isPresent()) {
