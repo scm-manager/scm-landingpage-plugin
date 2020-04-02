@@ -21,27 +21,57 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.cloudogu.scm.myevents;
 
 import com.github.legman.Subscribe;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import sonia.scm.EagerSingleton;
+import sonia.scm.event.Event;
+import sonia.scm.event.ScmEventBus;
 import sonia.scm.plugin.Extension;
+import sonia.scm.plugin.PluginCenterEvent;
+import sonia.scm.plugin.PluginPermissions;
+import sonia.scm.xml.XmlInstantAdapter;
 
 import javax.inject.Inject;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.time.Instant;
 
 @Extension
 @EagerSingleton
-public class MyEventHandler {
+public class PluginCenterNotAvailableEventSubscriber {
+
   private final MyEventStore store;
 
   @Inject
-  public MyEventHandler(MyEventStore store) {
+  public PluginCenterNotAvailableEventSubscriber(MyEventStore store) {
     this.store = store;
   }
 
   @Subscribe
-  public void handleEvent(MyEvent event) {
-    store.add(event);
+  public void handleEvent(PluginCenterEvent pluginCenterEvent) {
+    store.add(new PluginCenterNotAvailableEvent(PluginPermissions.read().asShiroString(), Instant.now()));
+  }
+
+  @Event
+  @XmlRootElement
+  @XmlAccessorType(XmlAccessType.FIELD)
+  @Getter
+  @NoArgsConstructor
+  static class PluginCenterNotAvailableEvent extends MyEvent {
+    @XmlJavaTypeAdapter(XmlInstantAdapter.class)
+    private Instant date;
+
+    PluginCenterNotAvailableEvent(String permission, Instant date) {
+      super(PluginInstalledEventSubscriber.PluginInstalledEvent.class.getSimpleName(), permission);
+      this.date = date;
+    }
   }
 
 }
+
