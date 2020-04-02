@@ -33,11 +33,21 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @Getter
 @XmlAccessorType(XmlAccessType.FIELD)
-@NoArgsConstructor
 public class MyEvent {
   private String type;
   private String permission;
 
+  /**
+   * Used for persistence, only.
+   */
+  MyEvent() {
+  }
+
+  /**
+   * Sets the type and the permissions of the event.
+   * @param type A string to find the renderer in the frontend.
+   * @param permission A shiro permission string that determines, whether a logged in user should see this event.
+   */
   public MyEvent(String type, String permission) {
     this.type = type;
     this.permission = permission;
