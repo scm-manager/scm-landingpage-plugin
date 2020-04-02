@@ -24,22 +24,37 @@
 package com.cloudogu.scm.landingpage.myevents;
 
 import lombok.Getter;
+import sonia.scm.event.Event;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * Extend this class for your own events. Mind that this class has to be serialized and
+ * therefore only serializable types may be used for fields.
+ * <br>
+ * Subclasses have to
+ * <ul>
+ *   <li>provide an empty default constructor,</li>
+ *   <li>provide a constructor setting all fields that should be persisted and calling
+ *   the super constructor {@link #MyEvent(String, String)},</li>
+ *   <li>be annotated with <code>@XmlRootElement</code> and <code>@XmlAccessorType(XmlAccessType.FIELD)</code>.</li>
+ * </ul>
+ */
 @XmlRootElement
 @Getter
 @XmlAccessorType(XmlAccessType.FIELD)
+@Event
 public class MyEvent {
   private String type;
   private String permission;
 
   /**
-   * Used for persistence, only.
+   * Used for persistence, only. Overwrite this without setting any values. This will
+   * only be called when reading events from the store.
    */
-  MyEvent() {
+  protected MyEvent() {
   }
 
   /**
