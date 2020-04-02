@@ -33,7 +33,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import sonia.scm.plugin.PluginCenterEvent;
+import sonia.scm.plugin.PluginCenterErrorEvent;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -48,7 +48,7 @@ class PluginCenterNotAvailableEventSubscriberTest {
   private MyEventStore store;
 
   @Mock
-  private PluginCenterEvent event;
+  private PluginCenterErrorEvent event;
 
   @InjectMocks
   private PluginCenterNotAvailableEventSubscriber subscriber;

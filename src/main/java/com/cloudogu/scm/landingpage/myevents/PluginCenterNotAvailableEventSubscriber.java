@@ -30,7 +30,7 @@ import lombok.NoArgsConstructor;
 import sonia.scm.EagerSingleton;
 import sonia.scm.event.Event;
 import sonia.scm.plugin.Extension;
-import sonia.scm.plugin.PluginCenterEvent;
+import sonia.scm.plugin.PluginCenterErrorEvent;
 import sonia.scm.plugin.PluginPermissions;
 import sonia.scm.xml.XmlInstantAdapter;
 
@@ -53,7 +53,7 @@ public class PluginCenterNotAvailableEventSubscriber {
   }
 
   @Subscribe
-  public void handleEvent(PluginCenterEvent pluginCenterEvent) {
+  public void handleEvent(PluginCenterErrorEvent pluginCenterErrorEvent) {
     store.add(new PluginCenterNotAvailableEvent(PluginPermissions.read().asShiroString(), Instant.now()));
   }
 
