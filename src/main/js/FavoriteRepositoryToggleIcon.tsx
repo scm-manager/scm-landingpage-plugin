@@ -39,19 +39,27 @@ const Icon = styled.i`
 
 const FavoriteRepositoryToggleIcon: FC<Props> = ({ repository, classes }) => {
   const [favorite, setFavorite] = useState(false);
+  const [link, setLink] = useState("");
 
   useEffect(() => {
-    setFavorite(!!(repository?._links?.unfavorize as Link)?.href);
+    setFavorite(!!repository?._links?.unfavorize);
+    setLink(getLink(repository));
   }, []);
 
-  const getLink = () => {
-    return favorite
-      ? (repository?._links?.favorites as Link[])?.filter(link => link.name === "unfavorize")[0].href
-      : (repository?._links?.favorites as Link[])?.filter(link => link.name === "favorize")[0].href;
+  const getLink: (repository: Repository) => string = (repository: Repository) => {
+    const currentLink = (repository?._links?.unfavorize || repository?._links?.favorize) as Link;
+    return currentLink.href;
   };
 
   const toggleFavoriteStatus = () => {
-    apiClient.post(getLink()).then(() => setFavorite(!favorite));
+    apiClient
+      .post(link)
+      .then(() => apiClient.get((repository._links.self as Link).href))
+      .then(response => response.json())
+      .then(updatedRepository => {
+        setFavorite(!favorite);
+        setLink(getLink(updatedRepository));
+      });
   };
 
   return (

@@ -60,10 +60,6 @@ public class RepositoryLinkEnricher implements HalEnricher {
       } else {
         appender.appendLink("favorize", linkBuilder.method("favorizeRepository").parameters(repository.getNamespace(), repository.getName()).href());
       }
-      appender.linkArrayBuilder("favorites")
-        .append("unfavorize", linkBuilder.method("unfavorizeRepository").parameters(repository.getNamespace(), repository.getName()).href())
-        .append("favorize", linkBuilder.method("favorizeRepository").parameters(repository.getNamespace(), repository.getName()).href())
-        .build();
     }
   }
 }
