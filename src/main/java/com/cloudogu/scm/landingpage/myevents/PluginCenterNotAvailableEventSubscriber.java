@@ -32,13 +32,11 @@ import sonia.scm.event.Event;
 import sonia.scm.plugin.Extension;
 import sonia.scm.plugin.PluginCenterErrorEvent;
 import sonia.scm.plugin.PluginPermissions;
-import sonia.scm.xml.XmlInstantAdapter;
 
 import javax.inject.Inject;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.Instant;
 
 @Extension
@@ -63,12 +61,9 @@ public class PluginCenterNotAvailableEventSubscriber {
   @Getter
   @NoArgsConstructor
   static class PluginCenterNotAvailableEvent extends MyEvent {
-    @XmlJavaTypeAdapter(XmlInstantAdapter.class)
-    private Instant date;
 
     PluginCenterNotAvailableEvent(String permission, Instant date) {
-      super(PluginCenterNotAvailableEvent.class.getSimpleName(), permission);
-      this.date = date;
+      super(PluginCenterNotAvailableEvent.class.getSimpleName(), permission, date);
     }
   }
 

@@ -34,13 +34,11 @@ import sonia.scm.plugin.InstalledPlugin;
 import sonia.scm.plugin.PluginEvent;
 import sonia.scm.plugin.PluginManager;
 import sonia.scm.plugin.PluginPermissions;
-import sonia.scm.xml.XmlInstantAdapter;
 
 import javax.inject.Inject;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.Instant;
 import java.util.Optional;
 
@@ -83,16 +81,13 @@ public class PluginInstalledEventSubscriber {
     private String pluginName;
     private String previousPluginVersion;
     private String newPluginVersion;
-    @XmlJavaTypeAdapter(XmlInstantAdapter.class)
-    private Instant date;
 
     PluginInstalledEvent(String permission, String pluginName, String previousPluginVersion, String newPluginVersion, Instant date) {
-      super(PluginInstalledEventSubscriber.PluginInstalledEvent.class.getSimpleName(), permission);
+      super(PluginInstalledEventSubscriber.PluginInstalledEvent.class.getSimpleName(), permission, date);
 
       this.pluginName = pluginName;
       this.previousPluginVersion = previousPluginVersion;
       this.newPluginVersion = newPluginVersion;
-      this.date = date;
     }
   }
 

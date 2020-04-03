@@ -25,10 +25,13 @@ package com.cloudogu.scm.landingpage.myevents;
 
 import lombok.Getter;
 import sonia.scm.event.Event;
+import sonia.scm.xml.XmlInstantAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.time.Instant;
 
 /**
  * Extend this class for your own events. Mind that this class has to be serialized and
@@ -38,7 +41,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * <ul>
  *   <li>provide an empty default constructor,</li>
  *   <li>provide a constructor setting all fields that should be persisted and calling
- *   the super constructor {@link #MyEvent(String, String)},</li>
+ *   the super constructor {@link #MyEvent(String, String, Instant)},</li>
  *   <li>be annotated with <code>@XmlRootElement</code> and <code>@XmlAccessorType(XmlAccessType.FIELD)</code>.</li>
  * </ul>
  */
@@ -49,6 +52,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class MyEvent {
   private String type;
   private String permission;
+  @XmlJavaTypeAdapter(XmlInstantAdapter.class)
+  private Instant date;
 
   /**
    * Used for persistence, only. Overwrite this without setting any values. This will
@@ -58,12 +63,14 @@ public class MyEvent {
   }
 
   /**
-   * Sets the type and the permissions of the event.
+   * Sets the type, the permissions and the date of the event.
    * @param type A string to find the renderer in the frontend.
    * @param permission A shiro permission string that determines, whether a logged in user should see this event.
+   * @param date The date of the event.
    */
-  public MyEvent(String type, String permission) {
+  public MyEvent(String type, String permission, Instant date) {
     this.type = type;
     this.permission = permission;
+    this.date = date;
   }
 }

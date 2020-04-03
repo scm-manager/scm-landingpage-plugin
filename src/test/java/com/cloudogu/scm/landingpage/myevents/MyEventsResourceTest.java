@@ -39,6 +39,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.time.Instant;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -89,7 +90,7 @@ class MyEventsResourceTest {
     private final String value;
 
     public SampleEvent(String value) {
-      super(SampleEvent.class.getName(), "permission");
+      super(SampleEvent.class.getName(), "permission", Instant.now());
       this.value = value;
     }
   }

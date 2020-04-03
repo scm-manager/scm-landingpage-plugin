@@ -35,13 +35,11 @@ import sonia.scm.repository.PostReceiveRepositoryHookEvent;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryPermissions;
 import sonia.scm.user.User;
-import sonia.scm.xml.XmlInstantAdapter;
 
 import javax.inject.Inject;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.Instant;
 
 @Extension
@@ -84,18 +82,15 @@ public class RepositoryPushEventSubscriber {
     private String authorDisplayName;
     private String authorMail;
     private int changesets;
-    @XmlJavaTypeAdapter(XmlInstantAdapter.class)
-    private Instant date;
 
 
     public PushEvent(String permission, String repository, String authorName, String authorDisplayName, String authorMail, int changesets, Instant date) {
-      super(PushEvent.class.getSimpleName(), permission);
+      super(PushEvent.class.getSimpleName(), permission, date);
       this.repository = repository;
       this.authorName = authorName;
       this.authorDisplayName = authorDisplayName;
       this.authorMail = authorMail;
       this.changesets = changesets;
-      this.date = date;
     }
   }
 }

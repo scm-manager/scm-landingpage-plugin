@@ -54,6 +54,8 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class MyEventStoreTest {
 
+  private static final Instant NOW = Instant.now();
+
   private MyEventStore store;
 
   @Mock
@@ -79,7 +81,7 @@ class MyEventStoreTest {
 
   @Test
   void shouldStoreEvent() {
-    MyEvent event = new MyEvent(MyEvent.class.getSimpleName(), "allowed");
+    MyEvent event = new MyEvent(MyEvent.class.getSimpleName(), "allowed", NOW);
     when(subject.isPermitted("allowed")).thenReturn(true);
 
     store.add(event);
@@ -91,10 +93,10 @@ class MyEventStoreTest {
 
   @Test
   void shouldOnlyGetPermittedEvents() {
-    MyEvent event1 = new MyEvent(MyEvent.class.getSimpleName(), "allowed");
+    MyEvent event1 = new MyEvent(MyEvent.class.getSimpleName(), "allowed", NOW);
     doReturn(true).when(subject).isPermitted("allowed");
 
-    MyEvent event2 = new MyEvent(MyEvent.class.getSimpleName(), "forbidden");
+    MyEvent event2 = new MyEvent(MyEvent.class.getSimpleName(), "forbidden", NOW);
     doReturn(false).when(subject).isPermitted("forbidden");
 
     store.add(event1);
@@ -109,7 +111,7 @@ class MyEventStoreTest {
   void shouldOnlyGet20Events() {
     when(subject.isPermitted("allowed")).thenReturn(true);
     for (int i = 0; i <= 40; i++) {
-      MyEvent event = new MyEvent(MyEvent.class.getSimpleName(), "allowed");
+      MyEvent event = new MyEvent(MyEvent.class.getSimpleName(), "allowed", NOW);
       store.add(event);
     }
 
@@ -121,7 +123,7 @@ class MyEventStoreTest {
   void shouldGetLatestEvents() {
     when(subject.isPermitted(anyString())).thenReturn(true);
     for (int i = 0; i <= 40; i++) {
-      MyEvent event = new MyEvent(MyEvent.class.getSimpleName(), "allowed" + i);
+      MyEvent event = new MyEvent(MyEvent.class.getSimpleName(), "allowed" + i, NOW);
       store.add(event);
     }
 
@@ -134,7 +136,7 @@ class MyEventStoreTest {
   void shouldRemoveOldestEntryIfQueueIsFull() {
     when(subject.isPermitted(anyString())).thenReturn(true);
     for (int i = 0; i <= 2000; i++) {
-      MyEvent event = new MyEvent(MyEvent.class.getSimpleName(), "allowed" + i);
+      MyEvent event = new MyEvent(MyEvent.class.getSimpleName(), "allowed" + i, NOW);
       store.add(event);
     }
 
@@ -146,7 +148,7 @@ class MyEventStoreTest {
   @Test
   void shouldMarshallAndUnmarshallMyEvent() {
     MyEventStore.StoreEntry entry = new MyEventStore.StoreEntry();
-    entry.getEvents().add(new MyEvent("1", "2"));
+    entry.getEvents().add(new MyEvent("1", "2", NOW));
 
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     JAXB.marshal(entry, baos);
@@ -202,7 +204,7 @@ class MyEventStoreTest {
   }
 
   private RepositoryPushEventSubscriber.PushEvent createPushEvent(String permission, String repository, User user, int changesets) {
-    return new RepositoryPushEventSubscriber.PushEvent(permission, repository , user.getName(), user.getDisplayName(), user.getMail(), changesets, Instant.now());
+    return new RepositoryPushEventSubscriber.PushEvent(permission, repository , user.getName(), user.getDisplayName(), user.getMail(), changesets, NOW);
   }
 
 }

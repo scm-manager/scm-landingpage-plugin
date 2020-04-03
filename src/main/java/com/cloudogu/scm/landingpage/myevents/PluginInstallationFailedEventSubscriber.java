@@ -32,13 +32,11 @@ import sonia.scm.plugin.AvailablePlugin;
 import sonia.scm.plugin.Extension;
 import sonia.scm.plugin.PluginEvent;
 import sonia.scm.plugin.PluginPermissions;
-import sonia.scm.xml.XmlInstantAdapter;
 
 import javax.inject.Inject;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.Instant;
 
 @Extension
@@ -71,16 +69,12 @@ public class PluginInstallationFailedEventSubscriber {
   static class PluginInstallationFailedEvent extends MyEvent {
     private String pluginName;
     private String pluginVersion;
-    @XmlJavaTypeAdapter(XmlInstantAdapter.class)
-    private Instant date;
 
     PluginInstallationFailedEvent(String permission, String pluginName, String pluginVersion, Instant date) {
-      super(PluginInstalledEventSubscriber.PluginInstalledEvent.class.getSimpleName(), permission);
+      super(PluginInstalledEventSubscriber.PluginInstalledEvent.class.getSimpleName(), permission, date);
 
       this.pluginName = pluginName;
       this.pluginVersion = pluginVersion;
-      this.date = date;
     }
   }
-
 }

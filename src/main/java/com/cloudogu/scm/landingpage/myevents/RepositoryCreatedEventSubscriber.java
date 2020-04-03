@@ -35,13 +35,11 @@ import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryEvent;
 import sonia.scm.repository.RepositoryPermissions;
 import sonia.scm.user.User;
-import sonia.scm.xml.XmlInstantAdapter;
 
 import javax.inject.Inject;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.Instant;
 
 @Extension
@@ -77,16 +75,13 @@ public class RepositoryCreatedEventSubscriber {
     private String creatorName;
     private String creatorDisplayName;
     private String creatorMail;
-    @XmlJavaTypeAdapter(XmlInstantAdapter.class)
-    private Instant date;
 
     RepositoryCreatedEvent(String permission, String repository, String creatorName, String creatorDisplayName, String creatorMail, Instant date) {
-      super(RepositoryCreatedEvent.class.getSimpleName(), permission);
+      super(RepositoryCreatedEvent.class.getSimpleName(), permission, date);
       this.repository = repository;
       this.creatorName = creatorName;
       this.creatorDisplayName = creatorDisplayName;
       this.creatorMail = creatorMail;
-      this.date = date;
     }
   }
 
