@@ -29,6 +29,7 @@ import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import classNames from "classnames";
 import { Link as ReactLink } from "react-router-dom";
+import MyEventEntry from "./MyEventEntry";
 
 type PluginEventType = MyEventType & {
   pluginName: string;
@@ -36,67 +37,33 @@ type PluginEventType = MyEventType & {
   date: Date;
 };
 
-const FlexFullHeight = styled.div`
-  flex-direction: column;
-  justify-content: space-around;
-  align-self: stretch;
-`;
-
-const ContentLeft = styled.div`
-  margin-bottom: 0 !important;
-  overflow: hidden;
-`;
-
-const ContentRight = styled.div`
-  margin-left: auto;
-  align-items: start;
-`;
-
-const CenteredItems = styled.div`
-  align-items: center;
-`;
-
 const Icon = styled.i`
   width: 2.5rem;
   margin-right: 0.5rem;
   align-self: center;
 `;
 
-const StyledLink = styled(ReactLink)`
-  color: inherit;
-  :hover {
-    color: #33b2e8 !important;
-  }
-`;
-
 const PluginInstallationFailedEvent: MyEventComponent<PluginEventType> = ({ event }) => {
   const [t] = useTranslation("plugins");
 
   const link = "/admin/plugins/available/";
+  const icon = <Icon className="fas fa-puzzle-piece fa-2x media-left" />;
+  const contentLeft = (
+    <>
+      {" "}
+      <strong className="is-marginless">
+        {t("scm-landingpage-plugin.myevents.pluginInstallationFailed.title", { pluginName: event.pluginName })}
+      </strong>
+      <p>
+        {t("scm-landingpage-plugin.myevents.pluginInstallationFailed.description", {
+          version: event.newPluginVersion
+        })}
+      </p>
+    </>
+  );
 
   return (
-    <StyledLink to={link}>
-      <div className={"media"}>
-        <Icon className="fas fa-puzzle-piece fa-2x media-left" />
-        <FlexFullHeight className={classNames("media-content", "text-box", "is-flex")}>
-          <CenteredItems className="is-flex">
-            <ContentLeft className="content">
-              <strong className="is-marginless">
-                {t("scm-landingpage-plugin.myevents.pluginInstallationFailed.title", { pluginName: event.pluginName })}
-              </strong>
-              <p>
-                {t("scm-landingpage-plugin.myevents.pluginInstallationFailed.description", {
-                  version: event.newPluginVersion
-                })}
-              </p>
-            </ContentLeft>
-            <ContentRight>
-              <DateFromNow date={event.date} />
-            </ContentRight>
-          </CenteredItems>
-        </FlexFullHeight>
-      </div>
-    </StyledLink>
+   <MyEventEntry link={link} contentLeft={contentLeft} date={event.date} icon={icon} />
   );
 };
 

@@ -29,6 +29,7 @@ import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import classNames from "classnames";
 import { Link as ReactLink } from "react-router-dom";
+import MyEventEntry from "./MyEventEntry";
 
 type RepositoryCreatedEventType = MyEventType & {
   repository: string;
@@ -38,38 +39,11 @@ type RepositoryCreatedEventType = MyEventType & {
   date: Date;
 };
 
-const FlexFullHeight = styled.div`
-  flex-direction: column;
-  justify-content: space-around;
-  align-self: stretch;
-`;
-
-const ContentLeft = styled.div`
-  margin-bottom: 0 !important;
-  overflow: hidden;
-`;
-
-const ContentRight = styled.div`
-  margin-left: auto;
-  align-items: start;
-`;
-
-const CenteredItems = styled.div`
-  align-items: center;
-`;
-
 const Icon = styled.i`
   width: 2.5rem;
   font-size: 40px;
   margin-right: 0.5rem;
   align-self: center;
-`;
-
-const StyledLink = styled(ReactLink)`
-  color: inherit;
-  :hover {
-    color: #33b2e8 !important;
-  }
 `;
 
 const StyledGravatar = styled(AvatarImage)`
@@ -89,30 +63,22 @@ const RepositoryCreatedEvent: MyEventComponent<RepositoryCreatedEventType> = ({ 
     <Icon className="fas fa-square media-left" />
   );
 
+  const contentLeft = (
+    <>
+      <strong className="is-marginless">
+        {t("scm-landingpage-plugin.myevents.repositoryCreated.title", {
+          repository: event.repository
+        })}
+      </strong>
+      <p>
+        {t("scm-landingpage-plugin.myevents.repositoryCreated.description")}{" "}
+        <span className="has-text-info">{event.creatorDisplayName}</span>
+      </p>
+    </>
+  );
+
   return (
-    <StyledLink to={link}>
-      <div className={"media"}>
-        {icon}
-        <FlexFullHeight className={classNames("media-content", "text-box", "is-flex")}>
-          <CenteredItems className="is-flex">
-            <ContentLeft className="content">
-              <strong className="is-marginless">
-                {t("scm-landingpage-plugin.myevents.repositoryCreated.title", {
-                  repository: event.repository
-                })}
-              </strong>
-              <p>
-                {t("scm-landingpage-plugin.myevents.repositoryCreated.description")}{" "}
-                <span className="has-text-info">{event.creatorDisplayName}</span>
-              </p>
-            </ContentLeft>
-            <ContentRight>
-              <DateFromNow date={event.date} />
-            </ContentRight>
-          </CenteredItems>
-        </FlexFullHeight>
-      </div>
-    </StyledLink>
+   <MyEventEntry link={link} icon={icon} contentLeft={contentLeft} date={event.date}/>
   );
 };
 

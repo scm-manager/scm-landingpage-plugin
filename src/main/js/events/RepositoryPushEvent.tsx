@@ -29,6 +29,7 @@ import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import classNames from "classnames";
 import { Link as ReactLink } from "react-router-dom";
+import MyEventEntry from "./MyEventEntry";
 
 type RepositoryPushEventType = MyEventType & {
   authorName: string;
@@ -39,38 +40,11 @@ type RepositoryPushEventType = MyEventType & {
   date: Date;
 };
 
-const FlexFullHeight = styled.div`
-  flex-direction: column;
-  justify-content: space-around;
-  align-self: stretch;
-`;
-
-const ContentLeft = styled.div`
-  margin-bottom: 0 !important;
-  overflow: hidden;
-`;
-
-const ContentRight = styled.div`
-  margin-left: auto;
-  align-items: start;
-`;
-
-const CenteredItems = styled.div`
-  align-items: center;
-`;
-
 const Icon = styled.i`
   width: 2.5rem;
   font-size: 40px;
   margin-right: 0.5rem;
   align-self: center;
-`;
-
-const StyledLink = styled(ReactLink)`
-  color: inherit;
-  :hover {
-    color: #33b2e8 !important;
-  }
 `;
 
 const StyledGravatar = styled(AvatarImage)`
@@ -90,32 +64,22 @@ const RepositoryPushEvent: MyEventComponent<RepositoryPushEventType> = ({ event 
     <Icon className="fas fa-square media-left" />
   );
 
-  return (
-    <StyledLink to={link}>
-      <div className={"media"}>
-        {icon}
-        <FlexFullHeight className={classNames("media-content", "text-box", "is-flex")}>
-          <CenteredItems className="is-flex">
-            <ContentLeft className="content">
-              <strong className="is-marginless">
-                {t("scm-landingpage-plugin.myevents.repositoryPush.title", {
-                  count: event.changesets,
-                  repository: event.repository
-                })}
-              </strong>
-              <p>
-                {t("scm-landingpage-plugin.myevents.repositoryPush.description")}{" "}
-                <span className="has-text-info">{event.authorDisplayName}</span>
-              </p>
-            </ContentLeft>
-            <ContentRight>
-              <DateFromNow date={event.date} />
-            </ContentRight>
-          </CenteredItems>
-        </FlexFullHeight>
-      </div>
-    </StyledLink>
+  const contentLeft = (
+    <>
+      <strong className="is-marginless">
+        {t("scm-landingpage-plugin.myevents.repositoryPush.title", {
+          count: event.changesets,
+          repository: event.repository
+        })}
+      </strong>
+      <p>
+        {t("scm-landingpage-plugin.myevents.repositoryPush.description")}{" "}
+        <span className="has-text-info">{event.authorDisplayName}</span>
+      </p>
+    </>
   );
+
+  return <MyEventEntry icon={icon} link={link} date={event.date} contentLeft={contentLeft} />;
 };
 
 RepositoryPushEvent.type = "PushEvent";
