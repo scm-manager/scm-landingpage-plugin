@@ -69,7 +69,7 @@ public class PluginInstalledEventSubscriber {
       }
 
       String newPluginVersion = newPlugin.getDescriptor().getInformation().getVersion();
-      store.add(new PluginInstalledEvent(permission, pluginName, previousPluginVersion, newPluginVersion, Instant.now()));
+      store.add(new PluginInstalledEvent(permission, pluginName, previousPluginVersion, newPluginVersion));
     }
   }
 
@@ -82,8 +82,8 @@ public class PluginInstalledEventSubscriber {
     private String previousPluginVersion;
     private String newPluginVersion;
 
-    PluginInstalledEvent(String permission, String pluginName, String previousPluginVersion, String newPluginVersion, Instant date) {
-      super(PluginInstalledEventSubscriber.PluginInstalledEvent.class.getSimpleName(), permission, date);
+    PluginInstalledEvent(String permission, String pluginName, String previousPluginVersion, String newPluginVersion) {
+      super(PluginInstalledEventSubscriber.PluginInstalledEvent.class.getSimpleName(), permission);
 
       this.pluginName = pluginName;
       this.previousPluginVersion = previousPluginVersion;

@@ -52,7 +52,7 @@ public class PluginCenterNotAvailableEventSubscriber {
 
   @Subscribe
   public void handleEvent(PluginCenterErrorEvent pluginCenterErrorEvent) {
-    store.add(new PluginCenterNotAvailableEvent(PluginPermissions.read().asShiroString(), Instant.now()));
+    store.add(new PluginCenterNotAvailableEvent(PluginPermissions.read().asShiroString()));
   }
 
   @Event
@@ -62,8 +62,8 @@ public class PluginCenterNotAvailableEventSubscriber {
   @NoArgsConstructor
   static class PluginCenterNotAvailableEvent extends MyEvent {
 
-    PluginCenterNotAvailableEvent(String permission, Instant date) {
-      super(PluginCenterNotAvailableEvent.class.getSimpleName(), permission, date);
+    PluginCenterNotAvailableEvent(String permission) {
+      super(PluginCenterNotAvailableEvent.class.getSimpleName(), permission);
     }
   }
 

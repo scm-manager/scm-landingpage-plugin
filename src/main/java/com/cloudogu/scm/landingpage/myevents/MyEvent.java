@@ -63,6 +63,15 @@ public class MyEvent {
   }
 
   /**
+   * Sets the type and the permissions of the event. The date is set to "now".
+   * @param type A string to find the renderer in the frontend.
+   * @param permission A shiro permission string that determines, whether a logged in user should see this event.
+   */
+  public MyEvent(String type, String permission) {
+    this(type, permission, Instant.now());
+  }
+
+  /**
    * Sets the type, the permissions and the date of the event.
    * @param type A string to find the renderer in the frontend.
    * @param permission A shiro permission string that determines, whether a logged in user should see this event.

@@ -60,9 +60,8 @@ public class RepositoryCreatedEventSubscriber {
       String permission = RepositoryPermissions.read(event.getItem()).asShiroString();
       String repository = eventRepo.getNamespace() + "/" + eventRepo.getName();
       User creator = SecurityUtils.getSubject().getPrincipals().oneByType(User.class);
-      Instant date = Instant.now();
 
-      store.add(new RepositoryCreatedEvent(permission, repository,  creator.getName(), creator.getDisplayName(), creator.getMail(), date));
+      store.add(new RepositoryCreatedEvent(permission, repository,  creator.getName(), creator.getDisplayName(), creator.getMail()));
     }
   }
 
@@ -76,8 +75,8 @@ public class RepositoryCreatedEventSubscriber {
     private String creatorDisplayName;
     private String creatorMail;
 
-    RepositoryCreatedEvent(String permission, String repository, String creatorName, String creatorDisplayName, String creatorMail, Instant date) {
-      super(RepositoryCreatedEvent.class.getSimpleName(), permission, date);
+    RepositoryCreatedEvent(String permission, String repository, String creatorName, String creatorDisplayName, String creatorMail) {
+      super(RepositoryCreatedEvent.class.getSimpleName(), permission);
       this.repository = repository;
       this.creatorName = creatorName;
       this.creatorDisplayName = creatorDisplayName;

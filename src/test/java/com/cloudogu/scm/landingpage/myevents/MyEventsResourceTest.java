@@ -90,7 +90,7 @@ class MyEventsResourceTest {
     private final String value;
 
     public SampleEvent(String value) {
-      super(SampleEvent.class.getName(), "permission", Instant.now());
+      super(SampleEvent.class.getName(), "permission");
       this.value = value;
     }
   }

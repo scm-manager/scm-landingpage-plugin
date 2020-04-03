@@ -40,7 +40,6 @@ import javax.inject.Inject;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.time.Instant;
 
 @Extension
 @EagerSingleton
@@ -67,8 +66,7 @@ public class RepositoryPushEventSubscriber {
       author.getName(),
       author.getDisplayName(),
       author.getMail(),
-      changesetCount,
-      Instant.now()));
+      changesetCount));
   }
 
   @XmlRootElement
@@ -84,8 +82,8 @@ public class RepositoryPushEventSubscriber {
     private int changesets;
 
 
-    public PushEvent(String permission, String repository, String authorName, String authorDisplayName, String authorMail, int changesets, Instant date) {
-      super(PushEvent.class.getSimpleName(), permission, date);
+    public PushEvent(String permission, String repository, String authorName, String authorDisplayName, String authorMail, int changesets) {
+      super(PushEvent.class.getSimpleName(), permission);
       this.repository = repository;
       this.authorName = authorName;
       this.authorDisplayName = authorDisplayName;

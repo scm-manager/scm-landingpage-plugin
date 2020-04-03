@@ -58,7 +58,7 @@ public class PluginInstallationFailedEventSubscriber {
       String pluginName = newPlugin.getDescriptor().getInformation().getDisplayName();
       String pluginVersion = newPlugin.getDescriptor().getInformation().getVersion();
 
-      store.add(new PluginInstallationFailedEvent(permission, pluginName, pluginVersion, Instant.now()));
+      store.add(new PluginInstallationFailedEvent(permission, pluginName, pluginVersion));
     }
   }
 
@@ -70,8 +70,8 @@ public class PluginInstallationFailedEventSubscriber {
     private String pluginName;
     private String pluginVersion;
 
-    PluginInstallationFailedEvent(String permission, String pluginName, String pluginVersion, Instant date) {
-      super(PluginInstalledEventSubscriber.PluginInstalledEvent.class.getSimpleName(), permission, date);
+    PluginInstallationFailedEvent(String permission, String pluginName, String pluginVersion) {
+      super(PluginInstalledEventSubscriber.PluginInstalledEvent.class.getSimpleName(), permission);
 
       this.pluginName = pluginName;
       this.pluginVersion = pluginVersion;
