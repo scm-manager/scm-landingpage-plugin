@@ -35,6 +35,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import sonia.scm.plugin.PluginLoader;
 import sonia.scm.store.ConfigurationStoreFactory;
 import sonia.scm.store.InMemoryConfigurationStoreFactory;
+import sonia.scm.user.User;
 
 import javax.xml.bind.JAXB;
 import java.io.ByteArrayInputStream;
@@ -162,9 +163,10 @@ class MyEventStoreTest {
 
   @Test
   void shouldMarshallAndUnmarshallPushEvent() {
+    User trillian = new User("trillian", "Trillian", "tricia@hitchhiker.org");
     MyEventStore.StoreEntry entry = new MyEventStore.StoreEntry();
-    entry.getEvents().add(new RepositoryPushEventSubscriber.PushEvent("repository:1:read", "repo/1", "Trillian", 1, Instant.now()));
-    entry.getEvents().add(new RepositoryPushEventSubscriber.PushEvent("repository:2:read", "repo/2", "Trillian", 2, Instant.now()));
+    entry.getEvents().add(createPushEvent("repository:1:read", "repo/1", trillian, 1));
+    entry.getEvents().add(createPushEvent("repository:2:read", "repo/2", trillian, 2));
 
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     JAXB.marshal(entry, baos);
@@ -177,11 +179,12 @@ class MyEventStoreTest {
 
     assertThat(unmarshalledEvent.getPermission()).isEqualTo(entryEvent.getPermission());
     assertThat(unmarshalledEvent.getType()).isEqualTo(entryEvent.getType());
-    assertThat(unmarshalledEvent.getAuthor()).isEqualTo(entryEvent.getAuthor());
+    assertThat(unmarshalledEvent.getAuthorName()).isEqualTo(entryEvent.getAuthorName());
     assertThat(unmarshalledEvent.getRepository()).isEqualTo(entryEvent.getRepository());
     assertThat(unmarshalledEvent.getDate()).isEqualTo(entryEvent.getDate());
     assertThat(unmarshalledEvent.getChangesets()).isEqualTo(entryEvent.getChangesets());
   }
+
 
   @Test
   void shouldUnmarshallEventsFromFile() throws IOException {
@@ -196,6 +199,10 @@ class MyEventStoreTest {
     MyEvent latestEvent = events.descendingIterator().next();
     assertThat(latestEvent.getType()).isEqualTo("PushEvent");
     assertThat(latestEvent.getPermission()).isEqualTo("repository:read:EIRu8Tnsn2");
+  }
+
+  private RepositoryPushEventSubscriber.PushEvent createPushEvent(String permission, String repository, User user, int changesets) {
+    return new RepositoryPushEventSubscriber.PushEvent(permission, repository , user.getName(), user.getDisplayName(), user.getMail(), changesets, Instant.now());
   }
 
 }

@@ -96,7 +96,9 @@ class RepositoryCreatedEventSubscriberTest {
     assertThat(repositoryCreatedEvent.getPermission()).isEqualTo("repository:read:1");
     assertThat(repositoryCreatedEvent.getRepository()).isEqualTo(REPOSITORY.getNamespace() + "/" + REPOSITORY.getName());
     assertThat(repositoryCreatedEvent.getType()).isEqualTo(RepositoryCreatedEventSubscriber.RepositoryCreatedEvent.class.getSimpleName());
-    assertThat(repositoryCreatedEvent.getCreator()).isEqualTo("Trillian");
+    assertThat(repositoryCreatedEvent.getCreatorDisplayName()).isEqualTo(trillian.getDisplayName());
+    assertThat(repositoryCreatedEvent.getCreatorMail()).isEqualTo(trillian.getMail());
+    assertThat(repositoryCreatedEvent.getCreatorName()).isEqualTo(trillian.getName());
   }
 
   @Test

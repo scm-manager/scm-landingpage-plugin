@@ -110,7 +110,9 @@ class RepositoryPushEventSubscriberTest {
     assertThat(pushEvent.getPermission()).isEqualTo("repository:read:1");
     assertThat(pushEvent.getChangesets()).isEqualTo(2);
     assertThat(pushEvent.getRepository()).isEqualTo(REPOSITORY.getNamespace() + "/" + REPOSITORY.getName());
-    assertThat(pushEvent.getAuthor()).isEqualTo(trillian.getDisplayName());
+    assertThat(pushEvent.getAuthorDisplayName()).isEqualTo(trillian.getDisplayName());
+    assertThat(pushEvent.getAuthorMail()).isEqualTo(trillian.getMail());
+    assertThat(pushEvent.getAuthorName()).isEqualTo(trillian.getName());
     assertThat(pushEvent.getType()).isEqualTo(RepositoryPushEventSubscriber.PushEvent.class.getSimpleName());
   }
 }
