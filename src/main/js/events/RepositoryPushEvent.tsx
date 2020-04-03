@@ -23,12 +23,10 @@
  */
 import React from "react";
 import { binder } from "@scm-manager/ui-extensions";
-import { DateFromNow, AvatarImage } from "@scm-manager/ui-components";
+import { AvatarImage } from "@scm-manager/ui-components";
 import { MyEventComponent, MyEventType } from "../types";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import classNames from "classnames";
-import { Link as ReactLink } from "react-router-dom";
 import MyEventEntry from "./MyEventEntry";
 
 type RepositoryPushEventType = MyEventType & {
@@ -64,22 +62,22 @@ const RepositoryPushEvent: MyEventComponent<RepositoryPushEventType> = ({ event 
     <Icon className="fas fa-square media-left" />
   );
 
-  const contentLeft = (
+  const content = (
+    <strong className="is-marginless">
+      {t("scm-landingpage-plugin.myevents.repositoryPush.title", {
+        count: event.changesets,
+        repository: event.repository
+      })}
+    </strong>
+  );
+  const footerLeft = (
     <>
-      <strong className="is-marginless">
-        {t("scm-landingpage-plugin.myevents.repositoryPush.title", {
-          count: event.changesets,
-          repository: event.repository
-        })}
-      </strong>
-      <p>
-        {t("scm-landingpage-plugin.myevents.repositoryPush.description")}{" "}
-        <span className="has-text-info">{event.authorDisplayName}</span>
-      </p>
+      {t("scm-landingpage-plugin.myevents.repositoryPush.description")}{" "}
+      <span className="has-text-info">{event.authorDisplayName}</span>
     </>
   );
 
-  return <MyEventEntry icon={icon} link={link} date={event.date} contentLeft={contentLeft} />;
+  return <MyEventEntry icon={icon} link={link} date={event.date} header={content} footer={footerLeft} />;
 };
 
 RepositoryPushEvent.type = "PushEvent";

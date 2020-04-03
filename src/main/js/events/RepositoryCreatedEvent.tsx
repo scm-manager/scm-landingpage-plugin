@@ -23,12 +23,10 @@
  */
 import React from "react";
 import { binder } from "@scm-manager/ui-extensions";
-import { DateFromNow, AvatarImage } from "@scm-manager/ui-components";
+import { AvatarImage } from "@scm-manager/ui-components";
 import { MyEventComponent, MyEventType } from "../types";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import classNames from "classnames";
-import { Link as ReactLink } from "react-router-dom";
 import MyEventEntry from "./MyEventEntry";
 
 type RepositoryCreatedEventType = MyEventType & {
@@ -63,23 +61,21 @@ const RepositoryCreatedEvent: MyEventComponent<RepositoryCreatedEventType> = ({ 
     <Icon className="fas fa-square media-left" />
   );
 
-  const contentLeft = (
+  const content = (
+    <strong className="is-marginless">
+      {t("scm-landingpage-plugin.myevents.repositoryCreated.title", {
+        repository: event.repository
+      })}
+    </strong>
+  );
+  const footerLeft = (
     <>
-      <strong className="is-marginless">
-        {t("scm-landingpage-plugin.myevents.repositoryCreated.title", {
-          repository: event.repository
-        })}
-      </strong>
-      <p>
-        {t("scm-landingpage-plugin.myevents.repositoryCreated.description")}{" "}
-        <span className="has-text-info">{event.creatorDisplayName}</span>
-      </p>
+      {t("scm-landingpage-plugin.myevents.repositoryCreated.description")}{" "}
+      <span className="has-text-info">{event.creatorDisplayName}</span>
     </>
   );
 
-  return (
-   <MyEventEntry link={link} icon={icon} contentLeft={contentLeft} date={event.date}/>
-  );
+  return <MyEventEntry link={link} icon={icon} header={content} footer={footerLeft} date={event.date} />;
 };
 
 RepositoryCreatedEvent.type = "RepositoryCreatedEvent";

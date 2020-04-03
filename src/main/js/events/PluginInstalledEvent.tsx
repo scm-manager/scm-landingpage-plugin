@@ -23,12 +23,9 @@
  */
 import React from "react";
 import { binder } from "@scm-manager/ui-extensions";
-import { DateFromNow } from "@scm-manager/ui-components";
 import { MyEventComponent, MyEventType } from "../types";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import classNames from "classnames";
-import { Link as ReactLink } from "react-router-dom";
 import MyEventEntry from "./MyEventEntry";
 
 type PluginEventType = MyEventType & {
@@ -49,27 +46,23 @@ const PluginInstalledEvent: MyEventComponent<PluginEventType> = ({ event }) => {
 
   const link = "/admin/plugins/available/";
   const icon = <Icon className="fas fa-puzzle-piece fa-2x media-left" />;
-  const contentLeft = (
-    <>
-      <strong className="is-marginless">
-        {event.previousPluginVersion
-          ? t("scm-landingpage-plugin.myevents.pluginUpdated.title", { pluginName: event.pluginName })
-          : t("scm-landingpage-plugin.myevents.pluginInstalled.title", { pluginName: event.pluginName })}
-      </strong>
-      <p>
-        {event.previousPluginVersion
-          ? t("scm-landingpage-plugin.myevents.pluginUpdated.description", {
-              version: event.newPluginVersion,
-              previousVersion: event.previousPluginVersion
-            })
-          : t("scm-landingpage-plugin.myevents.pluginInstalled.description", {
-              version: event.newPluginVersion
-            })}
-      </p>
-    </>
+  const content = (
+    <strong className="is-marginless">
+      {event.previousPluginVersion
+        ? t("scm-landingpage-plugin.myevents.pluginUpdated.title", { pluginName: event.pluginName })
+        : t("scm-landingpage-plugin.myevents.pluginInstalled.title", { pluginName: event.pluginName })}
+    </strong>
   );
+  const footer = event.previousPluginVersion
+    ? t("scm-landingpage-plugin.myevents.pluginUpdated.description", {
+        version: event.newPluginVersion,
+        previousVersion: event.previousPluginVersion
+      })
+    : t("scm-landingpage-plugin.myevents.pluginInstalled.description", {
+        version: event.newPluginVersion
+      });
 
-  return <MyEventEntry icon={icon} contentLeft={contentLeft} link={link} date={event.date} />;
+  return <MyEventEntry icon={icon} header={content} footer={footer} link={link} date={event.date} />;
 };
 
 PluginInstalledEvent.type = "PluginInstalledEvent";

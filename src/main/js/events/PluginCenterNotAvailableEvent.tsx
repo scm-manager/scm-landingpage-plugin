@@ -23,12 +23,9 @@
  */
 import React from "react";
 import { binder } from "@scm-manager/ui-extensions";
-import { DateFromNow } from "@scm-manager/ui-components";
 import { MyEventComponent, MyEventType } from "../types";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import classNames from "classnames";
-import { Link as ReactLink } from "react-router-dom";
 import MyEventEntry from "./MyEventEntry";
 
 type PluginCenterEventType = MyEventType & {
@@ -45,11 +42,11 @@ const PluginCenterNotAvailableEvent: MyEventComponent<PluginCenterEventType> = (
   const [t] = useTranslation("plugins");
   const link = "/admin/plugins/available/";
   const icon = <Icon className="fas fa-puzzle-piece fa-2x media-left" />;
-  const contentLeft = (
+  const content = (
     <strong className="is-marginless">{t("scm-landingpage-plugin.myevents.pluginCenterNotAvailable.title")}</strong>
   );
 
-  return <MyEventEntry link={link} icon={icon} contentLeft={contentLeft} date={event.date} />;
+  return <MyEventEntry link={link} icon={icon} header={content} date={event.date} />;
 };
 
 PluginCenterNotAvailableEvent.type = "PluginCenterNotAvailableEvent";

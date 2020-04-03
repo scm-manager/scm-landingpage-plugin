@@ -27,7 +27,6 @@ import classNames from "classnames";
 import styled from "styled-components";
 import { Link as ReactLink } from "react-router-dom";
 import { DateFromNow } from "@scm-manager/ui-components";
-import { useTranslation } from "react-i18next";
 
 const FlexFullHeight = styled.div`
   flex-direction: column;
@@ -59,24 +58,24 @@ const StyledLink = styled(ReactLink)`
 type Props = {
   link: string;
   icon: ReactNode;
-  contentLeft: ReactNode;
+  header: ReactNode;
+  footer?: ReactNode;
   date: Date;
 };
 
-const MyEventEntry: FC<Props> = ({ link, icon, contentLeft, date }) => {
-  const [t] = useTranslation("plugins");
-
+const MyEventEntry: FC<Props> = ({ link, icon, header, footer, date }) => {
   return (
     <StyledLink to={link}>
       <div className={"media"}>
         {icon}
         <FlexFullHeight className={classNames("media-content", "text-box", "is-flex")}>
           <CenteredItems className="is-flex">
-            <ContentLeft className="content">{contentLeft}</ContentLeft>
+            <ContentLeft className="content">{header}</ContentLeft>
             <ContentRight>
               <DateFromNow date={date} />
             </ContentRight>
           </CenteredItems>
+          <small>{footer}</small>
         </FlexFullHeight>
       </div>
     </StyledLink>
