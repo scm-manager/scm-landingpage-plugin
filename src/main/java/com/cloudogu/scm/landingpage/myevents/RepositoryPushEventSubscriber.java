@@ -60,12 +60,15 @@ public class RepositoryPushEventSubscriber {
     Repository repository = event.getRepository();
     Iterable<Changeset> changesets = event.getContext().getChangesetProvider().getChangesets();
     int changesetCount = Iterables.size(changesets);
-    String author = SecurityUtils.getSubject().getPrincipals().oneByType(User.class).getDisplayName();
+    User author = SecurityUtils.getSubject().getPrincipals().oneByType(User.class);
+
 
     store.add(new PushEvent(
       RepositoryPermissions.read(repository).asShiroString(),
       repository.getNamespace() + "/" + repository.getName(),
-      author,
+      author.getName(),
+      author.getDisplayName(),
+      author.getMail(),
       changesetCount,
       Instant.now()));
   }
@@ -77,16 +80,20 @@ public class RepositoryPushEventSubscriber {
   public static class PushEvent extends MyEvent {
 
     private String repository;
-    private String author;
+    private String authorName;
+    private String authorDisplayName;
+    private String authorMail;
     private int changesets;
     @XmlJavaTypeAdapter(XmlInstantAdapter.class)
     private Instant date;
 
 
-    public PushEvent(String permission, String repository, String author, int changesets, Instant date) {
+    public PushEvent(String permission, String repository, String authorName, String authorDisplayName, String authorMail, int changesets, Instant date) {
       super(PushEvent.class.getSimpleName(), permission);
       this.repository = repository;
-      this.author = author;
+      this.authorName = authorName;
+      this.authorDisplayName = authorDisplayName;
+      this.authorMail = authorMail;
       this.changesets = changesets;
       this.date = date;
     }

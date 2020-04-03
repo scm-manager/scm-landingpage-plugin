@@ -68,7 +68,7 @@ const PluginUpdateTask: MyTaskComponent<PluginUpdateTaskType> = ({ task }) => {
   return (
     <StyledLink to={link}>
       <div className={"media"}>
-        <Icon className="fas fa-puzzle-piece fa-lg media-left" />
+        <Icon className="fas fa-puzzle-piece fa-2x media-left" />
         <FlexFullHeight className={classNames("media-content", "text-box", "is-flex")}>
           <CenteredItems className="is-flex">
             <ContentLeft className="content">

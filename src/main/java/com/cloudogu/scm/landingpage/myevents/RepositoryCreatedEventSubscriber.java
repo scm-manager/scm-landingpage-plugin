@@ -61,10 +61,10 @@ public class RepositoryCreatedEventSubscriber {
       Repository eventRepo = event.getItem();
       String permission = RepositoryPermissions.read(event.getItem()).asShiroString();
       String repository = eventRepo.getNamespace() + "/" + eventRepo.getName();
-      String creator = SecurityUtils.getSubject().getPrincipals().oneByType(User.class).getDisplayName();
+      User creator = SecurityUtils.getSubject().getPrincipals().oneByType(User.class);
       Instant date = Instant.now();
 
-      store.add(new RepositoryCreatedEvent(permission, repository, creator, date));
+      store.add(new RepositoryCreatedEvent(permission, repository,  creator.getName(), creator.getDisplayName(), creator.getMail(), date));
     }
   }
 
@@ -74,14 +74,18 @@ public class RepositoryCreatedEventSubscriber {
   @NoArgsConstructor
   static class RepositoryCreatedEvent extends MyEvent {
     private String repository;
-    private String creator;
+    private String creatorName;
+    private String creatorDisplayName;
+    private String creatorMail;
     @XmlJavaTypeAdapter(XmlInstantAdapter.class)
     private Instant date;
 
-    RepositoryCreatedEvent(String permission, String repository, String creator, Instant date) {
+    RepositoryCreatedEvent(String permission, String repository, String creatorName, String creatorDisplayName, String creatorMail, Instant date) {
       super(RepositoryCreatedEvent.class.getSimpleName(), permission);
       this.repository = repository;
-      this.creator = creator;
+      this.creatorName = creatorName;
+      this.creatorDisplayName = creatorDisplayName;
+      this.creatorMail = creatorMail;
       this.date = date;
     }
   }

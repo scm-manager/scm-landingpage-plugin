@@ -23,7 +23,7 @@
  */
 import React from "react";
 import { binder } from "@scm-manager/ui-extensions";
-import { DateFromNow } from "@scm-manager/ui-components";
+import { DateFromNow, AvatarImage } from "@scm-manager/ui-components";
 import { MyEventComponent, MyEventType } from "../types";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
@@ -32,7 +32,9 @@ import { Link as ReactLink } from "react-router-dom";
 
 type RepositoryCreatedEventType = MyEventType & {
   repository: string;
-  creator: string;
+  creatorName: string;
+  creatorDisplayName: string;
+  creatorMail: string;
   date: Date;
 };
 
@@ -57,6 +59,8 @@ const CenteredItems = styled.div`
 `;
 
 const Icon = styled.i`
+  width: 2.5rem;
+  font-size: 40px;
   margin-right: 0.5rem;
   align-self: center;
 `;
@@ -68,15 +72,27 @@ const StyledLink = styled(ReactLink)`
   }
 `;
 
+const StyledGravatar = styled(AvatarImage)`
+  width: 2.5rem;
+  align-self: center;
+  margin-right: 0.5rem;
+`;
+
 const RepositoryCreatedEvent: MyEventComponent<RepositoryCreatedEventType> = ({ event }) => {
   const [t] = useTranslation("plugins");
 
   const link = "/repo/" + event.repository;
 
+  const icon = binder.hasExtension("avatar.factory") ? (
+    <StyledGravatar person={{ name: event.creatorName, mail: event.creatorMail }} />
+  ) : (
+    <Icon className="fas fa-square media-left" />
+  );
+
   return (
     <StyledLink to={link}>
       <div className={"media"}>
-        <Icon className="fas fa-square fa-3x media-left" />
+        {icon}
         <FlexFullHeight className={classNames("media-content", "text-box", "is-flex")}>
           <CenteredItems className="is-flex">
             <ContentLeft className="content">
@@ -87,7 +103,7 @@ const RepositoryCreatedEvent: MyEventComponent<RepositoryCreatedEventType> = ({ 
               </strong>
               <p>
                 {t("scm-landingpage-plugin.myevents.repositoryCreated.description")}{" "}
-                <span className="has-text-info">{event.creator}</span>
+                <span className="has-text-info">{event.creatorDisplayName}</span>
               </p>
             </ContentLeft>
             <ContentRight>
