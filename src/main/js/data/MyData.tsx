@@ -47,6 +47,7 @@ type ExtensionProps = {
   render: (data: any, key: any) => ReactElement;
   separatedEntries: boolean;
   type: string;
+  noDataComponent?: any;
 };
 
 const MyData: FC<Props> = ({ links }) => {
@@ -65,6 +66,28 @@ const MyData: FC<Props> = ({ links }) => {
       .catch(setError);
   }, []);
 
+  const renderExtension: (extension: ExtensionProps) => any = extension => {
+    const dataForExtension = content._embedded.data.filter(data => data.type === extension.type);
+
+    if (dataForExtension.length == 0 && !extension.noDataComponent) {
+      return null;
+    } else if (dataForExtension.length == 0) {
+      return (
+        <CollapsibleContainer title={t(extension.title)} separatedEntries={extension.separatedEntries}>
+          {extension.noDataComponent}
+        </CollapsibleContainer>
+      );
+    } else {
+      return (
+        <CollapsibleContainer title={t(extension.title)} separatedEntries={extension.separatedEntries}>
+          {content._embedded.data
+            .filter(data => data.type === extension.type)
+            .map((data, key) => extension.render(data, key))}
+        </CollapsibleContainer>
+      );
+    }
+  };
+
   const extensions: ExtensionProps[] = binder.getExtensions("landingpage.mydata");
 
   if (loading) {
@@ -80,13 +103,7 @@ const MyData: FC<Props> = ({ links }) => {
   if (content._embedded.data.length == 0) {
     view = <Notification type={"info"}>{t("scm-landingpage-plugin.mydata.noData")}</Notification>;
   } else {
-    view = extensions.map(extension => (
-      <CollapsibleContainer title={t(extension.title)} separatedEntries={extension.separatedEntries}>
-        {content._embedded.data
-          .filter(data => data.type === extension.type)
-          .map((data, key) => extension.render(data, key))}
-      </CollapsibleContainer>
-    ));
+    view = extensions.map(renderExtension);
   }
 
   return (

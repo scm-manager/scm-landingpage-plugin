@@ -16,7 +16,8 @@
       "noData": "Keine Daten vorhanden"
     },
     "favoriteRepository": {
-      "title": "Favorisierte Repositories"
+      "title": "Favorisierte Repositories",
+      "noData": "Bisher keine Repositories als Favoriten gewählt. Markieren Sie Repositories, um sie hier aufzulisten."
     },
     "tasks": {
       "updatePlugin": {

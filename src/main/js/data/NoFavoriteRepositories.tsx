@@ -21,17 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React from "react";
 
-import { binder } from "@scm-manager/ui-extensions";
-import { RepositoryDataType } from "../types";
-import FavoriteRepositoryCard from "./FavoriteRepositoryCard";
-import NoFavoriteRepositories from "./NoFavoriteRepositories";
+import React, { FC } from "react";
+import { useTranslation } from "react-i18next";
+import { Notification } from "@scm-manager/ui-components";
 
-binder.bind("landingpage.mydata", {
-  render: (data: RepositoryDataType, key: any) => <FavoriteRepositoryCard data={data} key={key} />,
-  title: "scm-landingpage-plugin.favoriteRepository.title",
-  separatedEntries: true,
-  type: "FavoriteRepositoryData",
-  noDataComponent: <NoFavoriteRepositories />
-});
+const NoFavoriteRepositories: FC = ({}) => {
+  const [t] = useTranslation("plugins");
+
+  return <Notification type={"info"}>{t("scm-landingpage-plugin.favoriteRepository.noData")}</Notification>;
+};
+
+export default NoFavoriteRepositories;
