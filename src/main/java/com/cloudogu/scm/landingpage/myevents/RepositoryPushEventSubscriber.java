@@ -57,6 +57,9 @@ public class RepositoryPushEventSubscriber {
     Repository repository = event.getRepository();
     Iterable<Changeset> changesets = event.getContext().getChangesetProvider().getChangesets();
     int changesetCount = Iterables.size(changesets);
+    if (changesetCount == 0) {
+      return;
+    }
     User author = SecurityUtils.getSubject().getPrincipals().oneByType(User.class);
 
 
