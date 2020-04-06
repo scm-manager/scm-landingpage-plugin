@@ -22,12 +22,11 @@
  * SOFTWARE.
  */
 import React from "react";
-import { binder } from "@scm-manager/ui-extensions";
-import { AvatarImage } from "@scm-manager/ui-components";
-import { MyEventComponent, MyEventType } from "../types";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import MyEventEntry from "./MyEventEntry";
+import { CardColumnSmall, AvatarImage } from "@scm-manager/ui-components";
+import { binder } from "@scm-manager/ui-extensions";
+import { MyEventComponent, MyEventType } from "../types";
 
 type RepositoryPushEventType = MyEventType & {
   authorName: string;
@@ -77,7 +76,7 @@ const RepositoryPushEvent: MyEventComponent<RepositoryPushEventType> = ({ event 
     </>
   );
 
-  return <MyEventEntry icon={icon} link={link} date={event.date} header={content} footer={footerLeft} />;
+  return <CardColumnSmall link={link} icon={icon} contentLeft={content} contentRight={event.date} footer={footerLeft} />;
 };
 
 RepositoryPushEvent.type = "PushEvent";

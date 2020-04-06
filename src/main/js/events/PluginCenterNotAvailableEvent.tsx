@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 import React from "react";
-import { binder } from "@scm-manager/ui-extensions";
-import { MyEventComponent, MyEventType } from "../types";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import MyEventEntry from "./MyEventEntry";
+import { CardColumnSmall } from "@scm-manager/ui-components";
+import { binder } from "@scm-manager/ui-extensions";
+import { MyEventComponent, MyEventType } from "../types";
 
 type PluginCenterEventType = MyEventType & {
   date: Date;
@@ -46,7 +46,7 @@ const PluginCenterNotAvailableEvent: MyEventComponent<PluginCenterEventType> = (
     <strong className="is-marginless">{t("scm-landingpage-plugin.myevents.pluginCenterNotAvailable.title")}</strong>
   );
 
-  return <MyEventEntry link={link} icon={icon} header={content} date={event.date} />;
+  return <CardColumnSmall link={link} icon={icon} contentLeft={content} contentRight={event.date} />;
 };
 
 PluginCenterNotAvailableEvent.type = "PluginCenterNotAvailableEvent";

@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 import React from "react";
-import { binder } from "@scm-manager/ui-extensions";
-import { MyEventComponent, MyEventType } from "../types";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import MyEventEntry from "./MyEventEntry";
+import { CardColumnSmall } from "@scm-manager/ui-components";
+import { binder } from "@scm-manager/ui-extensions";
+import { MyEventComponent, MyEventType } from "../types";
 
 type PluginEventType = MyEventType & {
   pluginName: string;
@@ -62,7 +62,7 @@ const PluginInstalledEvent: MyEventComponent<PluginEventType> = ({ event }) => {
         version: event.newPluginVersion
       });
 
-  return <MyEventEntry icon={icon} header={content} footer={footer} link={link} date={event.date} />;
+  return <CardColumnSmall link={link} icon={icon} contentLeft={content} contentRight={event.date} footer={footer} />;
 };
 
 PluginInstalledEvent.type = "PluginInstalledEvent";

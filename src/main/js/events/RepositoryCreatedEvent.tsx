@@ -22,12 +22,11 @@
  * SOFTWARE.
  */
 import React from "react";
-import { binder } from "@scm-manager/ui-extensions";
-import { AvatarImage } from "@scm-manager/ui-components";
-import { MyEventComponent, MyEventType } from "../types";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import MyEventEntry from "./MyEventEntry";
+import { CardColumnSmall, AvatarImage } from "@scm-manager/ui-components";
+import { binder } from "@scm-manager/ui-extensions";
+import { MyEventComponent, MyEventType } from "../types";
 
 type RepositoryCreatedEventType = MyEventType & {
   repository: string;
@@ -75,7 +74,7 @@ const RepositoryCreatedEvent: MyEventComponent<RepositoryCreatedEventType> = ({ 
     </>
   );
 
-  return <MyEventEntry link={link} icon={icon} header={content} footer={footerLeft} date={event.date} />;
+  return <CardColumnSmall link={link} icon={icon} contentLeft={content} contentRight={event.date} footer={footerLeft} />;
 };
 
 RepositoryCreatedEvent.type = "RepositoryCreatedEvent";
