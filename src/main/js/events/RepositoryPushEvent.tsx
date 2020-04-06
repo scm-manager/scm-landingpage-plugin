@@ -24,7 +24,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { CardColumnSmall, AvatarImage } from "@scm-manager/ui-components";
+import { CardColumnSmall, DateFromNow, AvatarImage } from "@scm-manager/ui-components";
 import { binder } from "@scm-manager/ui-extensions";
 import { MyEventComponent, MyEventType } from "../types";
 
@@ -76,7 +76,15 @@ const RepositoryPushEvent: MyEventComponent<RepositoryPushEventType> = ({ event 
     </>
   );
 
-  return <CardColumnSmall link={link} icon={icon} contentLeft={content} contentRight={event.date} footer={footerLeft} />;
+  return (
+    <CardColumnSmall
+      link={link}
+      icon={icon}
+      contentLeft={content}
+      contentRight={<DateFromNow date={event.date} />}
+      footer={footerLeft}
+    />
+  );
 };
 
 RepositoryPushEvent.type = "PushEvent";

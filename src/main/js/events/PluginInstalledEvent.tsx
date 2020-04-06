@@ -24,7 +24,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { CardColumnSmall } from "@scm-manager/ui-components";
+import { CardColumnSmall, DateFromNow } from "@scm-manager/ui-components";
 import { binder } from "@scm-manager/ui-extensions";
 import { MyEventComponent, MyEventType } from "../types";
 
@@ -62,7 +62,15 @@ const PluginInstalledEvent: MyEventComponent<PluginEventType> = ({ event }) => {
         version: event.newPluginVersion
       });
 
-  return <CardColumnSmall link={link} icon={icon} contentLeft={content} contentRight={event.date} footer={footer} />;
+  return (
+    <CardColumnSmall
+      link={link}
+      icon={icon}
+      contentLeft={content}
+      contentRight={<DateFromNow date={event.date} />}
+      footer={footer}
+    />
+  );
 };
 
 PluginInstalledEvent.type = "PluginInstalledEvent";
