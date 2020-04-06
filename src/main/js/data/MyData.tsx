@@ -23,7 +23,7 @@
  */
 import React, { FC, ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { apiClient, ErrorNotification, Loading } from "@scm-manager/ui-components";
+import { apiClient, ErrorNotification, Loading, Notification } from "@scm-manager/ui-components";
 import styled from "styled-components";
 import { MyDataEntriesType } from "../types";
 import { binder } from "@scm-manager/ui-extensions";
@@ -75,16 +75,24 @@ const MyData: FC<Props> = ({ links }) => {
     return <ErrorNotification error={error} />;
   }
 
+  let view: ReactElement | ReactElement[];
+
+  if (content._embedded.data.length == 0) {
+    view = <Notification type={"info"}>{t("scm-landingpage-plugin.mydata.noData")}</Notification>;
+  } else {
+    view = extensions.map(extension => (
+      <CollapsibleContainer title={t(extension.title)} separatedEntries={extension.separatedEntries}>
+        {content._embedded.data
+          .filter(data => data.type === extension.type)
+          .map((data, key) => extension.render(data, key))}
+      </CollapsibleContainer>
+    ));
+  }
+
   return (
     <>
       <Headline>{t("scm-landingpage-plugin.mydata.title")}</Headline>
-      {extensions.map(extension => (
-        <CollapsibleContainer title={t(extension.title)} separatedEntries={extension.separatedEntries}>
-          {content._embedded.data
-            .filter(data => data.type === extension.type)
-            .map((data, key) => extension.render(data, key))}
-        </CollapsibleContainer>
-      ))}
+      {view}
     </>
   );
 };

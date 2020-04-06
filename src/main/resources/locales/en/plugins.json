@@ -8,10 +8,12 @@
       "subtitle": "My tasks and repositories"
     },
     "mytasks": {
-      "title": "My tasks"
+      "title": "My tasks",
+      "noData": "No tasks available"
     },
     "mydata": {
-      "title": "My data"
+      "title": "My data",
+      "noData": "No data available"
     },
     "favoriteRepository": {
       "title": "Favorite repositories"
@@ -25,6 +27,7 @@
     },
     "myevents": {
       "title": "Latest activities",
+      "noData": "No events available",
       "repositoryPush": {
         "title": "{{count}} change committet: {{repository}}",
         "title_plural": "{{count}} changes committet: {{repository}}",

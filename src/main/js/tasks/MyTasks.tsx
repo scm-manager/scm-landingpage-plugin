@@ -21,10 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, ReactElement, useEffect, useState } from "react";
 import CollapsibleContainer from "../CollapsibleContainer";
 import { useTranslation } from "react-i18next";
-import { apiClient, ErrorNotification, Loading } from "@scm-manager/ui-components";
+import { apiClient, ErrorNotification, Loading, Notification } from "@scm-manager/ui-components";
 import MyTask from "./MyTask";
 import { MyTasksType } from "../types";
 import { Link, Links } from "@scm-manager/ui-types";
@@ -57,11 +57,17 @@ const MyTasks: FC<Props> = ({ links }) => {
     return <ErrorNotification error={error} />;
   }
 
+  let view: ReactElement | ReactElement[];
+
+  if (content?._embedded?.tasks?.length == 0) {
+    view = <Notification type={"info"}>{t("scm-landingpage-plugin.mytasks.noData")}</Notification>;
+  } else {
+    view = content?._embedded?.tasks.map((task, key) => <MyTask key={key} task={task} />);
+  }
+
   return (
     <CollapsibleContainer title={t("scm-landingpage-plugin.mytasks.title")} separatedEntries={false}>
-      {content?._embedded?.tasks.map((task, key) => (
-        <MyTask key={key} task={task} />
-      ))}
+      {view}
     </CollapsibleContainer>
   );
 };

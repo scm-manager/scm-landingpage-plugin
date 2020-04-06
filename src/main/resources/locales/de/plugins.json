@@ -8,10 +8,12 @@
       "subtitle": "Meine Aufgaben und Repos"
     },
     "mytasks": {
-      "title": "Meine Aufgaben"
+      "title": "Meine Aufgaben",
+      "noData": "Keine Aufgaben vorhanden"
     },
     "mydata": {
-      "title": "Meine Daten"
+      "title": "Meine Daten",
+      "noData": "Keine Daten vorhanden"
     },
     "favoriteRepository": {
       "title": "Favorisierte Repositories"
@@ -25,6 +27,7 @@
     },
     "myevents": {
       "title": "Letzte Aktivitäten",
+      "noData": "Keine Aktivitäten vorhanden",
       "repositoryPush": {
         "title": "{{count}} Änderung committet: {{repository}}",
         "title_plural": "{{count}} Änderungen committet: {{repository}}",
