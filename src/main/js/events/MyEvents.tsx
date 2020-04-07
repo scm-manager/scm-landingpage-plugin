@@ -21,10 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React, { FC, ReactElement, useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import CollapsibleContainer from "../CollapsibleContainer";
-import { apiClient, ErrorNotification, Loading, Notification } from "@scm-manager/ui-components";
+import { apiClient, ErrorNotification, Loading } from "@scm-manager/ui-components";
 import MyEvent from "./MyEvent";
 import { MyEventsType } from "../types";
 import { Link, Links } from "@scm-manager/ui-types";
@@ -36,7 +36,7 @@ type Props = {
 const MyEvents: FC<Props> = ({ links }) => {
   const [t] = useTranslation("plugins");
   const [content, setContent] = useState<MyEventsType>({ _embedded: { events: [] } });
-  const [error, setError] = useState(undefined);
+  const [error, setError] = useState<Error | undefined>(undefined);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -57,17 +57,15 @@ const MyEvents: FC<Props> = ({ links }) => {
     return <ErrorNotification error={error} />;
   }
 
-  let view: ReactElement | ReactElement[];
-
-  if (content?._embedded?.events?.length == 0) {
-    view = <Notification type={"info"}>{t("scm-landingpage-plugin.myevents.noData")}</Notification>;
-  } else {
-    view = content?._embedded?.events?.map((event, index) => <MyEvent key={index} event={event} />);
-  }
-
   return (
-    <CollapsibleContainer title={t("scm-landingpage-plugin.myevents.title")} separatedEntries={false}>
-      {view}
+    <CollapsibleContainer
+      title={t("scm-landingpage-plugin.myevents.title")}
+      separatedEntries={false}
+      emptyMessage={t("scm-landingpage-plugin.myevents.noData")}
+    >
+      {content?._embedded?.events?.map((event, index) => (
+        <MyEvent key={index} event={event} />
+      ))}
     </CollapsibleContainer>
   );
 };

@@ -7,6 +7,9 @@
       "title": "Landing-Page",
       "subtitle": "Meine Aufgaben und Repos"
     },
+    "emptyMessage": {
+      "default": "Keine Daten vorhanden"
+    },
     "mytasks": {
       "title": "Meine Aufgaben",
       "noData": "Keine Aufgaben vorhanden"

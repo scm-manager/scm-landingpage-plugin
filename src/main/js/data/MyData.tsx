@@ -42,18 +42,18 @@ type Props = {
   links: Links;
 };
 
-type ExtensionProps = {
+export type ExtensionProps = {
   title: string;
   render: (data: any, key: any) => ReactElement;
   separatedEntries: boolean;
   type: string;
-  noDataComponent?: any;
+  emptyMessage?: string;
 };
 
 const MyData: FC<Props> = ({ links }) => {
   const [t] = useTranslation("plugins");
   const [content, setContent] = useState<MyDataEntriesType>({ _embedded: { data: [] } });
-  const [error, setError] = useState(undefined);
+  const [error, setError] = useState<Error | undefined>(undefined);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -65,28 +65,6 @@ const MyData: FC<Props> = ({ links }) => {
       .then(() => setLoading(false))
       .catch(setError);
   }, []);
-
-  const renderExtension: (extension: ExtensionProps) => any = extension => {
-    const dataForExtension = content._embedded.data.filter(data => data.type === extension.type);
-
-    if (dataForExtension.length == 0 && !extension.noDataComponent) {
-      return null;
-    } else if (dataForExtension.length == 0) {
-      return (
-        <CollapsibleContainer title={t(extension.title)} separatedEntries={extension.separatedEntries}>
-          {extension.noDataComponent}
-        </CollapsibleContainer>
-      );
-    } else {
-      return (
-        <CollapsibleContainer title={t(extension.title)} separatedEntries={extension.separatedEntries}>
-          {content._embedded.data
-            .filter(data => data.type === extension.type)
-            .map((data, key) => extension.render(data, key))}
-        </CollapsibleContainer>
-      );
-    }
-  };
 
   const extensions: ExtensionProps[] = binder.getExtensions("landingpage.mydata");
 
@@ -101,7 +79,17 @@ const MyData: FC<Props> = ({ links }) => {
   return (
     <>
       <Headline>{t("scm-landingpage-plugin.mydata.title")}</Headline>
-      {extensions.map(renderExtension)}
+      {extensions.map(extension => (
+        <CollapsibleContainer
+          title={t(extension.title)}
+          separatedEntries={extension.separatedEntries}
+          emptyMessage={extension.emptyMessage}
+        >
+          {content._embedded.data
+            .filter(data => data.type === extension.type)
+            .map((data, key) => extension.render(data, key))}
+        </CollapsibleContainer>
+      ))}
     </>
   );
 };

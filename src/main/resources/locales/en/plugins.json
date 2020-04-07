@@ -7,6 +7,9 @@
       "title": "Landing-Page",
       "subtitle": "My tasks and repositories"
     },
+    "emptyMessage": {
+      "default": "No data available"
+    },
     "mytasks": {
       "title": "My tasks",
       "noData": "No tasks available"
