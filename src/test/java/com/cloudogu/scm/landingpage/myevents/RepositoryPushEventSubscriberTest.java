@@ -44,7 +44,10 @@ import sonia.scm.repository.api.HookChangesetBuilder;
 import sonia.scm.repository.api.HookContext;
 import sonia.scm.user.User;
 
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -114,5 +117,19 @@ class RepositoryPushEventSubscriberTest {
     assertThat(pushEvent.getAuthorMail()).isEqualTo(trillian.getMail());
     assertThat(pushEvent.getAuthorName()).isEqualTo(trillian.getName());
     assertThat(pushEvent.getType()).isEqualTo(RepositoryPushEventSubscriber.PushEvent.class.getSimpleName());
+  }
+
+  @Test
+  void shouldNotStoreEventWithoutChanges() {
+    User trillian = new User("trillian", "Trillian", "tricia@hitchhiker.org");
+
+    when(event.getRepository()).thenReturn(REPOSITORY);
+    when(event.getContext()).thenReturn(context);
+    when(context.getChangesetProvider()).thenReturn(changesetProvider);
+    when(changesetProvider.getChangesets()).thenReturn(emptyList());
+
+    subscriber.handleEvents(event);
+
+    verify(store, never()).add(any());
   }
 }
