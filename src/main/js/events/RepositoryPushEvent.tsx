@@ -24,7 +24,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { CardColumnSmall, DateFromNow, AvatarImage } from "@scm-manager/ui-components";
+import { CardColumnSmall, Icon, DateFromNow, AvatarImage } from "@scm-manager/ui-components";
 import { binder } from "@scm-manager/ui-extensions";
 import { MyEventComponent, MyEventType } from "../types";
 
@@ -37,17 +37,9 @@ type RepositoryPushEventType = MyEventType & {
   date: Date;
 };
 
-const Icon = styled.i`
-  width: 2.5rem;
-  font-size: 40px;
-  margin-right: 0.5rem;
-  align-self: center;
-`;
-
 const StyledGravatar = styled(AvatarImage)`
   width: 2.5rem;
   align-self: center;
-  margin-right: 0.5rem;
 `;
 
 const RepositoryPushEvent: MyEventComponent<RepositoryPushEventType> = ({ event }) => {
@@ -58,7 +50,7 @@ const RepositoryPushEvent: MyEventComponent<RepositoryPushEventType> = ({ event 
   const icon = binder.hasExtension("avatar.factory") ? (
     <StyledGravatar person={{ name: event.authorName, mail: event.authorMail }} />
   ) : (
-    <Icon className="fas fa-square media-left" />
+    <Icon name="exchange-alt fa-fw fa-2x" color="inherit" />
   );
 
   const content = (

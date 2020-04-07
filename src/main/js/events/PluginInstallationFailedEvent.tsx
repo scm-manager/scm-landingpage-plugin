@@ -23,8 +23,7 @@
  */
 import React from "react";
 import { useTranslation } from "react-i18next";
-import styled from "styled-components";
-import { CardColumnSmall, DateFromNow } from "@scm-manager/ui-components";
+import { CardColumnSmall, Icon, DateFromNow } from "@scm-manager/ui-components";
 import { binder } from "@scm-manager/ui-extensions";
 import { MyEventComponent, MyEventType } from "../types";
 
@@ -34,17 +33,11 @@ type PluginEventType = MyEventType & {
   date: Date;
 };
 
-const Icon = styled.i`
-  width: 2.5rem;
-  margin-right: 0.5rem;
-  align-self: center;
-`;
-
 const PluginInstallationFailedEvent: MyEventComponent<PluginEventType> = ({ event }) => {
   const [t] = useTranslation("plugins");
 
   const link = "/admin/plugins/available/";
-  const icon = <Icon className="fas fa-puzzle-piece fa-2x media-left" />;
+  const icon = <Icon name="puzzle-piece fa-fw fa-2x" color="inherit" />;
   const content = (
     <>
       {" "}
