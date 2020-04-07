@@ -21,14 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React, { FC, ReactNode, useState } from "react";
+import React, {FC, useState} from "react";
 import styled from "styled-components";
-import { Icon } from "@scm-manager/ui-components";
+import {Icon, Notification} from "@scm-manager/ui-components";
+import EmptyMessage from "./EmptyMessage";
 
 type Props = {
   title: string;
   separatedEntries: boolean;
-  children: ReactNode | Element[];
+  emptyMessage?: string;
 };
 
 const Container = styled.div`
@@ -55,14 +56,17 @@ const Separator = styled.hr`
   margin: 0.5rem 0;
 `;
 
-const CollapsibleContainer: FC<Props> = ({ title, separatedEntries, children }) => {
+const CollapsibleContainer: FC<Props> = ({title, separatedEntries, emptyMessage, children}) => {
   const [collapsed, setCollapsed] = useState(false);
 
   const icon = collapsed ? "angle-right" : "angle-down";
   let content = null;
   if (!collapsed) {
-    if (separatedEntries) {
-      content = React.Children.map(children, child => <Content>{child}</Content>);
+    const childArray = React.Children.toArray(children);
+    if (!childArray || childArray.length === 0) {
+      content = <EmptyMessage messageKey={emptyMessage} />;
+    } else if (separatedEntries) {
+      content = childArray.map(child => <Content>{child}</Content>);
     } else {
       content = <Content className="box">{children}</Content>;
     }
@@ -72,9 +76,9 @@ const CollapsibleContainer: FC<Props> = ({ title, separatedEntries, children }) 
     <Container>
       <div className="has-cursor-pointer" onClick={() => setCollapsed(!collapsed)}>
         <Headline>
-          <Icon name={icon} color="default" /> {title}
+          <Icon name={icon} color="default"/> {title}
         </Headline>
-        <Separator />
+        <Separator/>
       </div>
       {content}
     </Container>

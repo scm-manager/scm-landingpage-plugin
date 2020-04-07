@@ -7,14 +7,19 @@
       "title": "Landing-Page",
       "subtitle": "Meine Aufgaben und Repos"
     },
+    "emptyMessage": {
+      "default": "Keine Daten vorhanden"
+    },
     "mytasks": {
-      "title": "Meine Aufgaben"
+      "title": "Meine Aufgaben",
+      "noData": "Keine Aufgaben vorhanden"
     },
     "mydata": {
       "title": "Meine Daten"
     },
     "favoriteRepository": {
-      "title": "Favorisierte Repositories"
+      "title": "Favorisierte Repositories",
+      "noData": "Bisher keine Repositories als Favoriten gewählt. Markieren Sie Repositories, um sie hier aufzulisten."
     },
     "tasks": {
       "updatePlugin": {
@@ -25,6 +30,7 @@
     },
     "myevents": {
       "title": "Letzte Aktivitäten",
+      "noData": "Keine Aktivitäten vorhanden",
       "repositoryPush": {
         "title": "{{count}} Änderung committet: {{repository}}",
         "title_plural": "{{count}} Änderungen committet: {{repository}}",

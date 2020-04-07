@@ -36,7 +36,7 @@ type Props = {
 const MyTasks: FC<Props> = ({ links }) => {
   const [t] = useTranslation("plugins");
   const [content, setContent] = useState<MyTasksType>({ _embedded: { tasks: [] } });
-  const [error, setError] = useState(undefined);
+  const [error, setError] = useState<Error | undefined>(undefined);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -58,7 +58,11 @@ const MyTasks: FC<Props> = ({ links }) => {
   }
 
   return (
-    <CollapsibleContainer title={t("scm-landingpage-plugin.mytasks.title")} separatedEntries={false}>
+    <CollapsibleContainer
+      title={t("scm-landingpage-plugin.mytasks.title")}
+      separatedEntries={false}
+      emptyMessage={t("scm-landingpage-plugin.mytasks.noData")}
+    >
       {content?._embedded?.tasks.map((task, key) => (
         <MyTask key={key} task={task} />
       ))}

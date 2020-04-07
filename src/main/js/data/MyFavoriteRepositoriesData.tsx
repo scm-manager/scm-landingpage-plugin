@@ -26,10 +26,14 @@ import React from "react";
 import { binder } from "@scm-manager/ui-extensions";
 import { RepositoryDataType } from "../types";
 import FavoriteRepositoryCard from "./FavoriteRepositoryCard";
+import {ExtensionProps} from "./MyData";
 
-binder.bind("landingpage.mydata", {
+const favoriteRepositoryData: ExtensionProps = {
   render: (data: RepositoryDataType, key: any) => <FavoriteRepositoryCard data={data} key={key} />,
   title: "scm-landingpage-plugin.favoriteRepository.title",
   separatedEntries: true,
-  type: "FavoriteRepositoryData"
-});
+  type: "FavoriteRepositoryData",
+  emptyMessage: "scm-landingpage-plugin.favoriteRepository.noData"
+};
+
+binder.bind("landingpage.mydata", favoriteRepositoryData);

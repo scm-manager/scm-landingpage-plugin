@@ -23,7 +23,7 @@
  */
 import React, { FC, ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { apiClient, ErrorNotification, Loading } from "@scm-manager/ui-components";
+import { apiClient, ErrorNotification, Loading, Notification } from "@scm-manager/ui-components";
 import styled from "styled-components";
 import { MyDataEntriesType } from "../types";
 import { binder } from "@scm-manager/ui-extensions";
@@ -42,17 +42,18 @@ type Props = {
   links: Links;
 };
 
-type ExtensionProps = {
+export type ExtensionProps = {
   title: string;
   render: (data: any, key: any) => ReactElement;
   separatedEntries: boolean;
   type: string;
+  emptyMessage?: string;
 };
 
 const MyData: FC<Props> = ({ links }) => {
   const [t] = useTranslation("plugins");
   const [content, setContent] = useState<MyDataEntriesType>({ _embedded: { data: [] } });
-  const [error, setError] = useState(undefined);
+  const [error, setError] = useState<Error | undefined>(undefined);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -64,6 +65,26 @@ const MyData: FC<Props> = ({ links }) => {
       .then(() => setLoading(false))
       .catch(setError);
   }, []);
+
+  const renderExtension: (extension: ExtensionProps) => any = extension => {
+    const dataForExtension = content._embedded.data.filter(data => data.type === extension.type);
+
+    if (dataForExtension.length == 0 && !extension.emptyMessage) {
+      return null;
+    } else {
+      return (
+        <CollapsibleContainer
+          title={t(extension.title)}
+          separatedEntries={extension.separatedEntries}
+          emptyMessage={extension.emptyMessage}
+        >
+          {content._embedded.data
+            .filter(data => data.type === extension.type)
+            .map((data, key) => extension.render(data, key))}
+        </CollapsibleContainer>
+      );
+    }
+  };
 
   const extensions: ExtensionProps[] = binder.getExtensions("landingpage.mydata");
 
@@ -78,13 +99,7 @@ const MyData: FC<Props> = ({ links }) => {
   return (
     <>
       <Headline>{t("scm-landingpage-plugin.mydata.title")}</Headline>
-      {extensions.map(extension => (
-        <CollapsibleContainer title={t(extension.title)} separatedEntries={extension.separatedEntries}>
-          {content._embedded.data
-            .filter(data => data.type === extension.type)
-            .map((data, key) => extension.render(data, key))}
-        </CollapsibleContainer>
-      ))}
+      {extensions.map(renderExtension)}
     </>
   );
 };

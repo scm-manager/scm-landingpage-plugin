@@ -36,7 +36,7 @@ type Props = {
 const MyEvents: FC<Props> = ({ links }) => {
   const [t] = useTranslation("plugins");
   const [content, setContent] = useState<MyEventsType>({ _embedded: { events: [] } });
-  const [error, setError] = useState(undefined);
+  const [error, setError] = useState<Error | undefined>(undefined);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -58,7 +58,11 @@ const MyEvents: FC<Props> = ({ links }) => {
   }
 
   return (
-    <CollapsibleContainer title={t("scm-landingpage-plugin.myevents.title")} separatedEntries={false}>
+    <CollapsibleContainer
+      title={t("scm-landingpage-plugin.myevents.title")}
+      separatedEntries={false}
+      emptyMessage={t("scm-landingpage-plugin.myevents.noData")}
+    >
       {content?._embedded?.events?.map((event, index) => (
         <MyEvent key={index} event={event} />
       ))}
