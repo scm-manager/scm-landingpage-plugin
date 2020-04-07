@@ -66,6 +66,26 @@ const MyData: FC<Props> = ({ links }) => {
       .catch(setError);
   }, []);
 
+  const renderExtension: (extension: ExtensionProps) => any = extension => {
+    const dataForExtension = content._embedded.data.filter(data => data.type === extension.type);
+
+    if (dataForExtension.length == 0 && !extension.emptyMessage) {
+      return null;
+    } else {
+      return (
+        <CollapsibleContainer
+          title={t(extension.title)}
+          separatedEntries={extension.separatedEntries}
+          emptyMessage={extension.emptyMessage}
+        >
+          {content._embedded.data
+            .filter(data => data.type === extension.type)
+            .map((data, key) => extension.render(data, key))}
+        </CollapsibleContainer>
+      );
+    }
+  };
+
   const extensions: ExtensionProps[] = binder.getExtensions("landingpage.mydata");
 
   if (loading) {
@@ -79,17 +99,7 @@ const MyData: FC<Props> = ({ links }) => {
   return (
     <>
       <Headline>{t("scm-landingpage-plugin.mydata.title")}</Headline>
-      {extensions.map(extension => (
-        <CollapsibleContainer
-          title={t(extension.title)}
-          separatedEntries={extension.separatedEntries}
-          emptyMessage={extension.emptyMessage}
-        >
-          {content._embedded.data
-            .filter(data => data.type === extension.type)
-            .map((data, key) => extension.render(data, key))}
-        </CollapsibleContainer>
-      ))}
+      {extensions.map(renderExtension)}
     </>
   );
 };
