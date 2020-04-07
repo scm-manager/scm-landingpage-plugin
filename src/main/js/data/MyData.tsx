@@ -98,18 +98,10 @@ const MyData: FC<Props> = ({ links }) => {
     return <ErrorNotification error={error} />;
   }
 
-  let view: ReactElement | ReactElement[];
-
-  if (content._embedded.data.length == 0) {
-    view = <Notification type={"info"}>{t("scm-landingpage-plugin.mydata.noData")}</Notification>;
-  } else {
-    view = extensions.map(renderExtension);
-  }
-
   return (
     <>
       <Headline>{t("scm-landingpage-plugin.mydata.title")}</Headline>
-      {view}
+      {extensions.map(renderExtension)}
     </>
   );
 };

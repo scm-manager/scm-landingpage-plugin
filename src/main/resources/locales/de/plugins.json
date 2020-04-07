@@ -12,8 +12,7 @@
       "noData": "Keine Aufgaben vorhanden"
     },
     "mydata": {
-      "title": "Meine Daten",
-      "noData": "Keine Daten vorhanden"
+      "title": "Meine Daten"
     },
     "favoriteRepository": {
       "title": "Favorisierte Repositories",
