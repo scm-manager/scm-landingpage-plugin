@@ -21,9 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React, {FC, useState} from "react";
+import React, { FC, useState } from "react";
 import styled from "styled-components";
-import {Icon, Notification} from "@scm-manager/ui-components";
+import { Icon } from "@scm-manager/ui-components";
 import EmptyMessage from "./EmptyMessage";
 
 type Props = {
@@ -56,7 +56,7 @@ const Separator = styled.hr`
   margin: 0.5rem 0;
 `;
 
-const CollapsibleContainer: FC<Props> = ({title, separatedEntries, emptyMessage, children}) => {
+const CollapsibleContainer: FC<Props> = ({ title, separatedEntries, emptyMessage, children }) => {
   const [collapsed, setCollapsed] = useState(false);
 
   const icon = collapsed ? "angle-right" : "angle-down";
@@ -76,9 +76,9 @@ const CollapsibleContainer: FC<Props> = ({title, separatedEntries, emptyMessage,
     <Container>
       <div className="has-cursor-pointer" onClick={() => setCollapsed(!collapsed)}>
         <Headline>
-          <Icon name={icon} color="default"/> {title}
+          <Icon name={icon} color="default" /> {title}
         </Headline>
-        <Separator/>
+        <Separator />
       </div>
       {content}
     </Container>

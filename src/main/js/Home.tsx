@@ -39,11 +39,11 @@ const Home: FC<Props> = props => {
   return (
     <Page title={t("scm-landingpage-plugin.home.title")} subtitle={t("scm-landingpage-plugin.home.subtitle")}>
       <div className="columns">
-        <div className="column">
+        <div className="column is-half">
           <MyTasks links={props.links} />
           <MyData links={props.links} />
         </div>
-        <div className="column">
+        <div className="column is-half">
           <MyEvents links={props.links} />
         </div>
       </div>

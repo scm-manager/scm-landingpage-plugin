@@ -22,9 +22,10 @@
  * SOFTWARE.
  */
 import React, { FC } from "react";
-import { RepositoryDataType } from "../types";
-import { RepositoryEntry } from "@scm-manager/ui-components";
+import classNames from "classnames";
 import styled from "styled-components";
+import { RepositoryEntry } from "@scm-manager/ui-components";
+import { RepositoryDataType } from "../types";
 
 type Props = {
   data: RepositoryDataType;
@@ -32,18 +33,18 @@ type Props = {
 
 const RepositoryEntryWrapper = styled.div`
   .overlay-column {
-    width: calc(50% - 3rem);
+    width: calc(50% - 0.75rem);
 
     @media screen and (max-width: 768px) {
-      width: calc(100% - 1.5rem);
+      width: calc(100%);
     }
   }
 `;
 
 const FavoriteRepositoryCard: FC<Props> = ({ data }) => {
   return (
-    <div className={"card-columns is-multiline"}>
-      <RepositoryEntryWrapper className="box box-link-shadow column is-clipped">
+    <div className={classNames("columns", "card-columns")}>
+      <RepositoryEntryWrapper className={classNames("box", "box-link-shadow", "column", "is-clipped")}>
         <RepositoryEntry repository={data.repository} />
       </RepositoryEntryWrapper>
     </div>
