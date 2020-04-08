@@ -40,7 +40,7 @@ const PluginCenterNotAvailableEvent: MyEventComponent<PluginCenterEventType> = (
   );
 
   return (
-    <CardColumnSmall link={link} icon={icon} contentLeft={content} contentRight={<DateFromNow date={event.date} />} />
+    <CardColumnSmall link={link} avatar={icon} contentLeft={content} contentRight={<DateFromNow date={event.date} />} />
   );
 };
 

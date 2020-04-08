@@ -69,7 +69,7 @@ const RepositoryCreatedEvent: MyEventComponent<RepositoryCreatedEventType> = ({ 
   return (
     <CardColumnSmall
       link={link}
-      icon={icon}
+      avatar={icon}
       contentLeft={content}
       contentRight={<DateFromNow date={event.date} />}
       footer={footerLeft}
