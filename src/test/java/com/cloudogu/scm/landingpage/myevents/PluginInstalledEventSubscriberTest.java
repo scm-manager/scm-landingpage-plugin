@@ -92,6 +92,7 @@ class PluginInstalledEventSubscriberTest {
     verify(store).add(eventCaptor.capture());
 
     PluginInstalledEventSubscriber.PluginInstalledEvent pluginInstalledEvent = eventCaptor.getValue();
+    assertThat(pluginInstalledEvent.getType()).isEqualTo("PluginInstalledEvent");
     assertThat(pluginInstalledEvent.getPermission()).isEqualTo("plugin:manage");
     assertThat(pluginInstalledEvent.getPreviousPluginVersion()).isEqualTo("1.0");
     assertThat(pluginInstalledEvent.getNewPluginVersion()).isEqualTo("1.1");
