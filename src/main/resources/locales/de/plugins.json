@@ -1,10 +1,10 @@
 {
   "scm-landingpage-plugin": {
     "navigation": {
-      "home": "Landing-Page"
+      "home": "mySCM"
     },
     "home": {
-      "title": "Landing-Page",
+      "title": "mySCM",
       "subtitle": "Meine Aufgaben und Repos"
     },
     "emptyMessage": {
