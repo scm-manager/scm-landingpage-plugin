@@ -43,7 +43,7 @@ const RepositoryEntryWrapper = styled.div`
 
 const FavoriteRepositoryCard: FC<Props> = ({ data }) => {
   return (
-    <div className="card-columns">
+    <div className={classNames("card-columns", "content")}>
       <RepositoryEntryWrapper className={classNames("box", "box-link-shadow", "column", "is-clipped")}>
         <RepositoryEntry repository={data.repository} />
       </RepositoryEntryWrapper>
