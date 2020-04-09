@@ -45,7 +45,7 @@ const StyledGravatar = styled(AvatarImage)`
 const RepositoryPushEvent: MyEventComponent<RepositoryPushEventType> = ({ event }) => {
   const [t] = useTranslation("plugins");
 
-  const link = "/repo/" + event.repository;
+  const link = "/repo/" + event.repository + "/code/changesets";
 
   const icon = binder.hasExtension("avatar.factory") ? (
     <StyledGravatar person={{ name: event.authorName, mail: event.authorMail }} />
