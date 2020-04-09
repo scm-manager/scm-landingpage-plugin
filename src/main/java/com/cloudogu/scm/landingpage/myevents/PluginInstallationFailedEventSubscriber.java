@@ -71,7 +71,7 @@ public class PluginInstallationFailedEventSubscriber {
     private String pluginVersion;
 
     PluginInstallationFailedEvent(String permission, String pluginName, String pluginVersion) {
-      super(PluginInstalledEventSubscriber.PluginInstalledEvent.class.getSimpleName(), permission);
+      super(PluginInstallationFailedEvent.class.getSimpleName(), permission);
 
       this.pluginName = pluginName;
       this.pluginVersion = pluginVersion;

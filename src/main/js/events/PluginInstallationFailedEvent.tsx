@@ -29,7 +29,7 @@ import { MyEventComponent, MyEventType } from "../types";
 
 type PluginEventType = MyEventType & {
   pluginName: string;
-  newPluginVersion: string;
+  pluginVersion: string;
   date: Date;
 };
 
@@ -47,7 +47,7 @@ const PluginInstallationFailedEvent: MyEventComponent<PluginEventType> = ({ even
     </>
   );
   const footer = t("scm-landingpage-plugin.myevents.pluginInstallationFailed.description", {
-    version: event.newPluginVersion
+    version: event.pluginVersion
   });
 
   return (

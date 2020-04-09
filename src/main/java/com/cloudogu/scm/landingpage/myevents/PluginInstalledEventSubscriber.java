@@ -83,7 +83,7 @@ public class PluginInstalledEventSubscriber {
     private String newPluginVersion;
 
     PluginInstalledEvent(String permission, String pluginName, String previousPluginVersion, String newPluginVersion) {
-      super(PluginInstalledEventSubscriber.PluginInstalledEvent.class.getSimpleName(), permission);
+      super(PluginInstalledEvent.class.getSimpleName(), permission);
 
       this.pluginName = pluginName;
       this.previousPluginVersion = previousPluginVersion;
