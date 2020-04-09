@@ -33,17 +33,17 @@ type Props = {
 
 const RepositoryEntryWrapper = styled.div`
   .overlay-column {
-    width: calc(50% - 0.75rem);
+    width: calc(50% - 2.25rem);
 
     @media screen and (max-width: 768px) {
-      width: calc(100%);
+      width: calc(100% - 1.5rem);
     }
   }
 `;
 
 const FavoriteRepositoryCard: FC<Props> = ({ data }) => {
   return (
-    <div className={classNames("columns", "card-columns")}>
+    <div className="card-columns">
       <RepositoryEntryWrapper className={classNames("box", "box-link-shadow", "column", "is-clipped")}>
         <RepositoryEntry repository={data.repository} />
       </RepositoryEntryWrapper>

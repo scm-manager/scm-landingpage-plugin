@@ -71,7 +71,7 @@ const RepositoryPushEvent: MyEventComponent<RepositoryPushEventType> = ({ event 
   return (
     <CardColumnSmall
       link={link}
-      icon={icon}
+      avatar={icon}
       contentLeft={content}
       contentRight={<DateFromNow date={event.date} />}
       footer={footerLeft}
