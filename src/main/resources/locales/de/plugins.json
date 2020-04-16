@@ -19,6 +19,8 @@
     },
     "favoriteRepository": {
       "title": "Favorisierte Repositories",
+      "star": "Favorisiere Repository",
+      "unstar": "Entfavorisiere Repository",
       "noData": "Bisher keine Repositories als Favoriten gewählt. Markieren Sie Repositories, um sie hier aufzulisten."
     },
     "tasks": {
