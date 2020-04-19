@@ -32,7 +32,7 @@ type Props = {
   classes?: string;
 };
 
-const IconWithPointer = styled(Icon)`
+const SpanWithPointer = styled.span`
   pointer-events: all;
   cursor: pointer;
 `;
@@ -64,18 +64,19 @@ const FavoriteRepositoryToggleIcon: FC<Props> = ({ repository, classes }) => {
   };
 
   return (
-    <IconWithPointer
-      title={
-        favorite
-          ? t("scm-landingpage-plugin.favoriteRepository.unstar")
-          : t("scm-landingpage-plugin.favoriteRepository.star")
-      }
-      iconStyle={favorite ? "fas" : "far"}
-      name="star"
-      color={favorite ? "warning" : "dark"}
-      className={classes}
-      onClick={() => toggleFavoriteStatus()}
-    />
+    <SpanWithPointer onClick={() => toggleFavoriteStatus()}>
+      <Icon
+        title={
+          favorite
+            ? t("scm-landingpage-plugin.favoriteRepository.unstar")
+            : t("scm-landingpage-plugin.favoriteRepository.star")
+        }
+        iconStyle={favorite ? "fas" : "far"}
+        name="star"
+        color={favorite ? "warning" : "dark"}
+        className={classes}
+      />
+    </SpanWithPointer>
   );
 };
 

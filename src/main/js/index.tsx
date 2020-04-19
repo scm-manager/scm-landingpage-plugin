@@ -55,7 +55,7 @@ const HomeNavigation: FC = () => {
 };
 
 const LargeToggleIcon: FC<RepositoryDataType> = props => (
-  <FavoriteRepositoryToggleIcon repository={props.repository} classes={"fa-2x"} />
+  <FavoriteRepositoryToggleIcon repository={props.repository} classes="fa-2x" />
 );
 
 binder.bind("repository.card.beforeTitle", FavoriteRepositoryToggleIcon);
