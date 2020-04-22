@@ -34,8 +34,8 @@
       "title": "Latest activities",
       "noData": "No events available",
       "repositoryPush": {
-        "title": "{{count}} change committet: {{repository}}",
-        "title_plural": "{{count}} changes committet: {{repository}}",
+        "title": "{{count}} change committed: {{repository}}",
+        "title_plural": "{{count}} changes committed: {{repository}}",
         "description": "Created by"
       },
       "repositoryCreated": {
