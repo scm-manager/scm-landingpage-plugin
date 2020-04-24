@@ -72,7 +72,9 @@ class IndexLinkEnricherTest {
 
     @BeforeEach
     void bindSubject() {
-      ThreadContext.bind(mock(Subject.class));
+      Subject subject = mock(Subject.class);
+      when(subject.isAuthenticated()).thenReturn(true);
+      ThreadContext.bind(subject);
     }
 
     @AfterEach
@@ -109,6 +111,29 @@ class IndexLinkEnricherTest {
     void bindSubject() {
       Subject subject = mock(Subject.class);
       when(subject.getPrincipal()).thenReturn(SCMContext.USER_ANONYMOUS);
+      ThreadContext.bind(subject);
+    }
+
+    @AfterEach
+    void removeSubject() {
+      ThreadContext.unbindSubject();
+    }
+
+    @Test
+    void shouldAppendTasksLink() {
+      enricher.enrich(context, appender);
+
+      verify(appender, never()).appendLink(any(), any());
+    }
+  }
+
+  @Nested
+  class WithoutSubject {
+
+    @BeforeEach
+    void bindSubject() {
+      Subject subject = mock(Subject.class);
+      when(subject.isAuthenticated()).thenReturn(false);
       ThreadContext.bind(subject);
     }
 

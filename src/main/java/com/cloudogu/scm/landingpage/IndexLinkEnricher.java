@@ -26,6 +26,7 @@ package com.cloudogu.scm.landingpage;
 import com.cloudogu.scm.landingpage.mydata.MyDataResource;
 import com.cloudogu.scm.landingpage.myevents.MyEventResource;
 import com.cloudogu.scm.landingpage.mytasks.MyTaskResource;
+import org.apache.shiro.util.ThreadContext;
 import sonia.scm.api.v2.resources.Enrich;
 import sonia.scm.api.v2.resources.HalAppender;
 import sonia.scm.api.v2.resources.HalEnricher;
@@ -52,7 +53,7 @@ public class IndexLinkEnricher implements HalEnricher {
 
   @Override
   public void enrich(HalEnricherContext context, HalAppender appender) {
-    if (!Authentications.isAuthenticatedSubjectAnonymous()) {
+    if (!Authentications.isAuthenticatedSubjectAnonymous() && ThreadContext.getSubject().isAuthenticated()) {
       appendTasksLink(appender);
       appendDataLink(appender);
       appendEventsLink(appender);
