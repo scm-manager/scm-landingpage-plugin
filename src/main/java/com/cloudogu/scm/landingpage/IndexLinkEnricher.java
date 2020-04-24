@@ -34,6 +34,7 @@ import sonia.scm.api.v2.resources.Index;
 import sonia.scm.api.v2.resources.LinkBuilder;
 import sonia.scm.api.v2.resources.ScmPathInfoStore;
 import sonia.scm.plugin.Extension;
+import sonia.scm.security.Authentications;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -51,9 +52,11 @@ public class IndexLinkEnricher implements HalEnricher {
 
   @Override
   public void enrich(HalEnricherContext context, HalAppender appender) {
-    appendTasksLink(appender);
-    appendDataLink(appender);
-    appendEventsLink(appender);
+    if (!Authentications.isAuthenticatedSubjectAnonymous()) {
+      appendTasksLink(appender);
+      appendDataLink(appender);
+      appendEventsLink(appender);
+    }
   }
 
   private void appendDataLink(HalAppender appender) {

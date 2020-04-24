@@ -23,21 +23,29 @@
  */
 package com.cloudogu.scm.landingpage;
 
-import com.cloudogu.scm.landingpage.IndexLinkEnricher;
 import com.google.inject.util.Providers;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import sonia.scm.SCMContext;
 import sonia.scm.api.v2.resources.HalAppender;
 import sonia.scm.api.v2.resources.HalEnricherContext;
 import sonia.scm.api.v2.resources.ScmPathInfoStore;
 
 import java.net.URI;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class IndexLinkEnricherTest {
@@ -59,24 +67,61 @@ class IndexLinkEnricherTest {
     context = HalEnricherContext.of();
   }
 
-  @Test
-  void shouldAppendTasksLink() {
-    enricher.enrich(context, appender);
+  @Nested
+  class WithAuthenticatedUser {
 
-    verify(appender).appendLink("landingpageTasks", "https://scm-manager.org/scm/api/v2/landingpage/mytasks");
+    @BeforeEach
+    void bindSubject() {
+      ThreadContext.bind(mock(Subject.class));
+    }
+
+    @AfterEach
+    void removeSubject() {
+      ThreadContext.unbindSubject();
+    }
+
+    @Test
+    void shouldAppendTasksLink() {
+      enricher.enrich(context, appender);
+
+      verify(appender).appendLink("landingpageTasks", "https://scm-manager.org/scm/api/v2/landingpage/mytasks");
+    }
+
+    @Test
+    void shouldAppendDataLink() {
+      enricher.enrich(context, appender);
+
+      verify(appender).appendLink("landingpageData", "https://scm-manager.org/scm/api/v2/landingpage/mydata");
+    }
+
+    @Test
+    void shouldAppendEventsLink() {
+      enricher.enrich(context, appender);
+
+      verify(appender).appendLink("landingpageEvents", "https://scm-manager.org/scm/api/v2/landingpage/myevents");
+    }
   }
 
-  @Test
-  void shouldAppendDataLink() {
-    enricher.enrich(context, appender);
+  @Nested
+  class WithAnonymous {
 
-    verify(appender).appendLink("landingpageData", "https://scm-manager.org/scm/api/v2/landingpage/mydata");
-  }
+    @BeforeEach
+    void bindSubject() {
+      Subject subject = mock(Subject.class);
+      when(subject.getPrincipal()).thenReturn(SCMContext.USER_ANONYMOUS);
+      ThreadContext.bind(subject);
+    }
 
-  @Test
-  void shouldAppendEventsLink() {
-    enricher.enrich(context, appender);
+    @AfterEach
+    void removeSubject() {
+      ThreadContext.unbindSubject();
+    }
 
-    verify(appender).appendLink("landingpageEvents", "https://scm-manager.org/scm/api/v2/landingpage/myevents");
+    @Test
+    void shouldAppendTasksLink() {
+      enricher.enrich(context, appender);
+
+      verify(appender, never()).appendLink(any(), any());
+    }
   }
 }
