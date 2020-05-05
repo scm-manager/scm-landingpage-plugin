@@ -84,7 +84,7 @@ class PluginInstallationFailedEventSubscriberTest {
 
     PluginInstallationFailedEventSubscriber.PluginInstallationFailedEvent pluginInstalledEvent = eventCaptor.getValue();
     assertThat(pluginInstalledEvent.getType()).isEqualTo("PluginInstallationFailedEvent");
-    assertThat(pluginInstalledEvent.getPermission()).isEqualTo("plugin:manage");
+    assertThat(pluginInstalledEvent.getPermission()).isEqualTo("plugin:write");
     assertThat(pluginInstalledEvent.getPluginVersion()).isEqualTo("1.0");
     assertThat(pluginInstalledEvent.getPluginName()).isEqualTo(newPlugin.getDescriptor().getInformation().getDisplayName());
   }

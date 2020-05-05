@@ -46,7 +46,7 @@ public class PluginTaskProvider implements MyTaskProvider {
   @Override
   public Iterable<MyTask> getTasks() {
     List<PluginUpdateTask> tasks = new ArrayList<>();
-    if (PluginPermissions.manage().isPermitted()) {
+    if (PluginPermissions.write().isPermitted()) {
       List<InstalledPlugin> updatable = pluginManager.getUpdatable();
       int size = updatable.size();
       if (size > 0) {

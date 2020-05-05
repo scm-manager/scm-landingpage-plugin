@@ -37,7 +37,6 @@ import javax.inject.Inject;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.time.Instant;
 
 @Extension
 @EagerSingleton
@@ -54,7 +53,7 @@ public class PluginInstallationFailedEventSubscriber {
   public void handleEvent(PluginEvent pluginEvent) {
     if (pluginEvent.getEventType() == PluginEvent.PluginEventType.INSTALLATION_FAILED) {
       AvailablePlugin newPlugin = pluginEvent.getPlugin();
-      String permission = PluginPermissions.manage().asShiroString();
+      String permission = PluginPermissions.write().asShiroString();
       String pluginName = newPlugin.getDescriptor().getInformation().getDisplayName();
       String pluginVersion = newPlugin.getDescriptor().getInformation().getVersion();
 

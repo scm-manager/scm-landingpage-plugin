@@ -39,7 +39,6 @@ import javax.inject.Inject;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.time.Instant;
 import java.util.Optional;
 
 @Extension
@@ -60,7 +59,7 @@ public class PluginInstalledEventSubscriber {
     if (pluginEvent.getEventType() == PluginEvent.PluginEventType.INSTALLED) {
       AvailablePlugin newPlugin = pluginEvent.getPlugin();
       Optional<InstalledPlugin> installedPlugin = pluginManager.getInstalled(newPlugin.getDescriptor().getInformation().getName());
-      String permission = PluginPermissions.manage().asShiroString();
+      String permission = PluginPermissions.write().asShiroString();
       String pluginName = newPlugin.getDescriptor().getInformation().getDisplayName();
       String previousPluginVersion = null;
 

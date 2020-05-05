@@ -79,7 +79,7 @@ class PluginTaskProviderTest {
 
     @BeforeEach
     void assignPermissions() {
-      when(subject.isPermitted(PluginPermissions.manage().asShiroString())).thenReturn(true);
+      when(subject.isPermitted(PluginPermissions.write().asShiroString())).thenReturn(true);
     }
 
     @Test
