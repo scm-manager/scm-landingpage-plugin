@@ -29,7 +29,7 @@ import FavoriteRepositoryCard from "./FavoriteRepositoryCard";
 import {ExtensionProps} from "./MyData";
 
 const favoriteRepositoryData: ExtensionProps = {
-  render: (data: RepositoryDataType, key: any) => <FavoriteRepositoryCard data={data} key={key} />,
+  render: (data: RepositoryDataType, key: any) => data.repository && <FavoriteRepositoryCard data={data} key={key} />,
   title: "scm-landingpage-plugin.favoriteRepository.title",
   separatedEntries: true,
   type: "FavoriteRepositoryData",
