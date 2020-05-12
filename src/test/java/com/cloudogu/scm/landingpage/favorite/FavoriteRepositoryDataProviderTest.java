@@ -21,10 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.cloudogu.scm.landingpage.mydata;
+package com.cloudogu.scm.landingpage.favorite;
 
-import com.cloudogu.scm.landingpage.favorite.FavoriteRepository;
-import com.cloudogu.scm.landingpage.favorite.FavoriteRepositoryProvider;
+import com.cloudogu.scm.landingpage.mydata.FavoriteRepositoryData;
+import com.cloudogu.scm.landingpage.mydata.FavoriteRepositoryDataProvider;
+import com.cloudogu.scm.landingpage.mydata.MyData;
 import com.google.common.collect.ImmutableSet;
 import de.otto.edison.hal.HalRepresentation;
 import org.apache.shiro.subject.Subject;
@@ -33,14 +34,18 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryManager;
 import sonia.scm.repository.RepositoryTestData;
+import sonia.scm.store.InMemoryDataStore;
+import sonia.scm.store.InMemoryDataStoreFactory;
 import sonia.scm.web.api.RepositoryToHalMapper;
 
+import java.util.HashSet;
+
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -48,20 +53,30 @@ import static org.mockito.Mockito.when;
 class FavoriteRepositoryDataProviderTest {
 
   private final Repository REPOSITORY = RepositoryTestData.createHeartOfGold();
+  private final Repository OTHER_REPOSITORY = RepositoryTestData.create42Puzzle();
+
+  private static final String PRINCIPAL_A = "rick";
+  private static final String PRINCIPAL_B = "morty";
 
   @Mock
   private RepositoryManager repositoryManager;
   @Mock
   private RepositoryToHalMapper mapper;
   @Mock
-  private FavoriteRepositoryProvider favoriteRepositoryProvider;
-  @Mock
-  private FavoriteRepositoryProvider.FavoriteRepositoryStore store;
-  @Mock
   private Subject subject;
 
-  @InjectMocks
   private FavoriteRepositoryDataProvider dataProvider;
+
+  private InMemoryDataStore<FavoriteRepository> favoriteRepositoryInMemoryDataStore;
+  private FavoriteRepositoryProvider favoriteRepositoryProvider;
+
+  @BeforeEach
+  void initProvider() {
+    when(subject.getPrincipal()).thenReturn(PRINCIPAL_A);
+    favoriteRepositoryInMemoryDataStore = new InMemoryDataStore<>();
+    favoriteRepositoryProvider = new FavoriteRepositoryProvider(new InMemoryDataStoreFactory(favoriteRepositoryInMemoryDataStore));
+    dataProvider = new FavoriteRepositoryDataProvider(favoriteRepositoryProvider, repositoryManager, mapper);
+  }
 
   @BeforeEach
   void initSubject() {
@@ -76,8 +91,7 @@ class FavoriteRepositoryDataProviderTest {
   @Test
   void shouldReturnEmptyList() {
     FavoriteRepository favorite = new FavoriteRepository(ImmutableSet.of());
-    when(favoriteRepositoryProvider.get()).thenReturn(store);
-    when(store.get()).thenReturn(favorite);
+    favoriteRepositoryInMemoryDataStore.put(PRINCIPAL_A, favorite);
 
     Iterable<MyData> data = dataProvider.getData();
 
@@ -87,9 +101,8 @@ class FavoriteRepositoryDataProviderTest {
   @Test
   void shouldReturnFavoriteRepositories() {
     FavoriteRepository favorite = new FavoriteRepository(ImmutableSet.of(REPOSITORY.getId()));
+    favoriteRepositoryInMemoryDataStore.put(PRINCIPAL_A, favorite);
     HalRepresentation halRepresentation = new HalRepresentation();
-    when(favoriteRepositoryProvider.get()).thenReturn(store);
-    when(store.get()).thenReturn(favorite);
     when(repositoryManager.get(REPOSITORY.getId())).thenReturn(REPOSITORY);
     when(mapper.map(REPOSITORY)).thenReturn(halRepresentation);
 
@@ -97,5 +110,25 @@ class FavoriteRepositoryDataProviderTest {
 
     assertThat(data.getType()).isEqualTo(FavoriteRepositoryData.class.getSimpleName());
     assertThat(data.getRepository()).isEqualTo(halRepresentation);
+  }
+
+  @Test
+  void shouldRemoveRepositoryFromAllUsersFavorites() {
+    FavoriteRepository favorite = new FavoriteRepository(new HashSet<>(asList(REPOSITORY.getId(), OTHER_REPOSITORY.getId())));
+    favoriteRepositoryInMemoryDataStore.put(PRINCIPAL_A, favorite);
+    favoriteRepositoryInMemoryDataStore.put(PRINCIPAL_B, favorite);
+
+    assertThat(favoriteRepositoryProvider.get().get(PRINCIPAL_A).isFavorite(REPOSITORY)).isTrue();
+    assertThat(favoriteRepositoryProvider.get().get(PRINCIPAL_A).isFavorite(OTHER_REPOSITORY)).isTrue();
+    assertThat(favoriteRepositoryProvider.get().get(PRINCIPAL_B).isFavorite(REPOSITORY)).isTrue();
+    assertThat(favoriteRepositoryProvider.get().get(PRINCIPAL_B).isFavorite(OTHER_REPOSITORY)).isTrue();
+
+    favoriteRepositoryProvider.get().removeFromAll(REPOSITORY);
+
+    assertThat(favoriteRepositoryProvider.get().get(PRINCIPAL_A).isFavorite(REPOSITORY)).isFalse();
+    assertThat(favoriteRepositoryProvider.get().get(PRINCIPAL_A).isFavorite(OTHER_REPOSITORY)).isTrue();
+    assertThat(favoriteRepositoryProvider.get().get(PRINCIPAL_B).isFavorite(REPOSITORY)).isFalse();
+    assertThat(favoriteRepositoryProvider.get().get(PRINCIPAL_B).isFavorite(OTHER_REPOSITORY)).isTrue();
+
   }
 }

@@ -23,13 +23,14 @@
  */
 package com.cloudogu.scm.landingpage.favorite;
 
-import org.apache.shiro.SecurityUtils;
 import sonia.scm.repository.Repository;
 import sonia.scm.store.DataStore;
 import sonia.scm.store.DataStoreFactory;
 
 import javax.inject.Inject;
 import java.util.Map;
+
+import static org.apache.shiro.SecurityUtils.getSubject;
 
 public class FavoriteRepositoryProvider {
 
@@ -43,8 +44,7 @@ public class FavoriteRepositoryProvider {
   }
 
   public FavoriteRepositoryStore get() {
-    String principal = SecurityUtils.getSubject().getPrincipal().toString();
-    return new FavoriteRepositoryStore(principal);
+    return new FavoriteRepositoryStore(getSubject().getPrincipal().toString());
   }
 
   public class FavoriteRepositoryStore {
@@ -83,6 +83,10 @@ public class FavoriteRepositoryProvider {
     }
 
     public FavoriteRepository get() {
+      return get(this.principal);
+    }
+
+    public FavoriteRepository get(String principal) {
       FavoriteRepository favoriteRepository = store.get(principal);
       if (favoriteRepository == null) {
         favoriteRepository = new FavoriteRepository();

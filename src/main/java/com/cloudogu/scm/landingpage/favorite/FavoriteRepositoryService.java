@@ -58,7 +58,7 @@ public class FavoriteRepositoryService {
     }
   }
 
-  public void unfavorizeRepositoryForAllUsers(Repository repository) {
+  void unfavorizeRepositoryForAllUsers(Repository repository) {
     store.get().removeFromAll(repository);
   }
 }

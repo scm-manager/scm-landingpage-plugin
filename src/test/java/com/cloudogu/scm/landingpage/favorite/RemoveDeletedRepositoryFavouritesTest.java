@@ -24,31 +24,36 @@
 
 package com.cloudogu.scm.landingpage.favorite;
 
-import com.github.legman.Subscribe;
-import sonia.scm.EagerSingleton;
-import sonia.scm.plugin.Extension;
+import com.github.legman.EventBus;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import sonia.scm.HandlerEventType;
+import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryEvent;
+import sonia.scm.repository.RepositoryTestData;
 
-import javax.inject.Inject;
+import static org.mockito.Mockito.verify;
 
-import static sonia.scm.HandlerEventType.DELETE;
+@ExtendWith(MockitoExtension.class)
+class RemoveDeletedRepositoryFavouritesTest {
 
-@Extension
-@EagerSingleton
-public class RemoveDeletedRepositoryFavourites {
+  @Mock
+  FavoriteRepositoryService favoriteRepositoryService;
 
-  private final FavoriteRepositoryService favoriteRepositoryService;
+  @InjectMocks
+  RemoveDeletedRepositoryFavourites removeDeletedRepositoryFavourites;
 
-  @Inject
-  public RemoveDeletedRepositoryFavourites(FavoriteRepositoryService favoriteRepositoryService) {
-    this.favoriteRepositoryService = favoriteRepositoryService;
-  }
-
-  @Subscribe
-  public void handle(RepositoryEvent event) {
-    if (event.getEventType() == DELETE) {
-      this.favoriteRepositoryService.unfavorizeRepositoryForAllUsers(event.getItem());
-    }
+  @Test
+  void shouldHandlePostedEvent() {
+    Repository r = RepositoryTestData.createHeartOfGold();
+    RepositoryEvent re = new RepositoryEvent(HandlerEventType.DELETE, r);
+    EventBus eb = new EventBus();
+    eb.register(removeDeletedRepositoryFavourites);
+    eb.post(re);
+    verify(favoriteRepositoryService).unfavorizeRepositoryForAllUsers(r);
   }
 
 }
