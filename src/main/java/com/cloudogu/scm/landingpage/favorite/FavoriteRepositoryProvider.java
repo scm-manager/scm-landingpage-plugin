@@ -29,10 +29,11 @@ import sonia.scm.store.DataStore;
 import sonia.scm.store.DataStoreFactory;
 
 import javax.inject.Inject;
+import java.util.Map;
 
 public class FavoriteRepositoryProvider {
 
-  private static final String STORE_NAME = "favorite-repositories";
+  static final String STORE_NAME = "favorite-repositories";
 
   private final DataStore<FavoriteRepository> store;
 
@@ -52,6 +53,16 @@ public class FavoriteRepositoryProvider {
 
     private FavoriteRepositoryStore(String principal) {
       this.principal = principal;
+    }
+
+    public void removeFromAll(Repository repository) {
+      final Map<String, FavoriteRepository> all = store.getAll();
+      for (Map.Entry<String, FavoriteRepository> entry : all.entrySet()) {
+        final String principal = entry.getKey();
+        final FavoriteRepository favoriteRepository = entry.getValue();
+        favoriteRepository.remove(repository);
+        store.put(principal, favoriteRepository);
+      }
     }
 
     public void add(Repository repository) {
