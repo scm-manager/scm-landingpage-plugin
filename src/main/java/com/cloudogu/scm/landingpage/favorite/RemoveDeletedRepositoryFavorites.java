@@ -24,42 +24,31 @@
 
 package com.cloudogu.scm.landingpage.favorite;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import sonia.scm.HandlerEventType;
-import sonia.scm.repository.Repository;
+import com.github.legman.Subscribe;
+import sonia.scm.EagerSingleton;
+import sonia.scm.plugin.Extension;
 import sonia.scm.repository.RepositoryEvent;
-import sonia.scm.repository.RepositoryTestData;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import javax.inject.Inject;
 
-@ExtendWith(MockitoExtension.class)
-class RemoveDeletedRepositoryFavouritesTest {
+import static sonia.scm.HandlerEventType.DELETE;
 
-  @Mock
-  FavoriteRepositoryService favoriteRepositoryService;
+@Extension
+@EagerSingleton
+public class RemoveDeletedRepositoryFavorites {
 
-  @InjectMocks
-  RemoveDeletedRepositoryFavourites removeDeletedRepositoryFavourites;
+  private final FavoriteRepositoryService favoriteRepositoryService;
 
-  @Test
-  void shouldHandleDeleteEvent() {
-    Repository r = RepositoryTestData.createHeartOfGold();
-    RepositoryEvent re = new RepositoryEvent(HandlerEventType.DELETE, r);
-    removeDeletedRepositoryFavourites.handle(re);
-    verify(favoriteRepositoryService).unfavorizeRepositoryForAllUsers(r);
+  @Inject
+  public RemoveDeletedRepositoryFavorites(FavoriteRepositoryService favoriteRepositoryService) {
+    this.favoriteRepositoryService = favoriteRepositoryService;
   }
 
-  @Test
-  void shouldNotHandleOtherRepositoryEvents() {
-    Repository r = RepositoryTestData.createHeartOfGold();
-    RepositoryEvent re = new RepositoryEvent(HandlerEventType.CREATE, r);
-    removeDeletedRepositoryFavourites.handle(re);
-    verifyZeroInteractions(favoriteRepositoryService);
+  @Subscribe
+  public void handle(RepositoryEvent event) {
+    if (event.getEventType() == DELETE) {
+      this.favoriteRepositoryService.unfavorizeRepositoryForAllUsers(event.getItem());
+    }
   }
 
 }

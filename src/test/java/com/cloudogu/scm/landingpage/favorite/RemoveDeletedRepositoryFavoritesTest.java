@@ -24,31 +24,42 @@
 
 package com.cloudogu.scm.landingpage.favorite;
 
-import com.github.legman.Subscribe;
-import sonia.scm.EagerSingleton;
-import sonia.scm.plugin.Extension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import sonia.scm.HandlerEventType;
+import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryEvent;
+import sonia.scm.repository.RepositoryTestData;
 
-import javax.inject.Inject;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 
-import static sonia.scm.HandlerEventType.DELETE;
+@ExtendWith(MockitoExtension.class)
+class RemoveDeletedRepositoryFavoritesTest {
 
-@Extension
-@EagerSingleton
-public class RemoveDeletedRepositoryFavourites {
+  @Mock
+  FavoriteRepositoryService favoriteRepositoryService;
 
-  private final FavoriteRepositoryService favoriteRepositoryService;
+  @InjectMocks
+  RemoveDeletedRepositoryFavorites removeDeletedRepositoryFavorites;
 
-  @Inject
-  public RemoveDeletedRepositoryFavourites(FavoriteRepositoryService favoriteRepositoryService) {
-    this.favoriteRepositoryService = favoriteRepositoryService;
+  @Test
+  void shouldHandleDeleteEvent() {
+    Repository r = RepositoryTestData.createHeartOfGold();
+    RepositoryEvent re = new RepositoryEvent(HandlerEventType.DELETE, r);
+    removeDeletedRepositoryFavorites.handle(re);
+    verify(favoriteRepositoryService).unfavorizeRepositoryForAllUsers(r);
   }
 
-  @Subscribe
-  public void handle(RepositoryEvent event) {
-    if (event.getEventType() == DELETE) {
-      this.favoriteRepositoryService.unfavorizeRepositoryForAllUsers(event.getItem());
-    }
+  @Test
+  void shouldNotHandleOtherRepositoryEvents() {
+    Repository r = RepositoryTestData.createHeartOfGold();
+    RepositoryEvent re = new RepositoryEvent(HandlerEventType.CREATE, r);
+    removeDeletedRepositoryFavorites.handle(re);
+    verifyZeroInteractions(favoriteRepositoryService);
   }
 
 }
