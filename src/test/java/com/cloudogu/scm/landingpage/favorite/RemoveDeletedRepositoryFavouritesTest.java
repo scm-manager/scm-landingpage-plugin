@@ -35,6 +35,7 @@ import sonia.scm.repository.RepositoryEvent;
 import sonia.scm.repository.RepositoryTestData;
 
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 
 @ExtendWith(MockitoExtension.class)
 class RemoveDeletedRepositoryFavouritesTest {
@@ -46,11 +47,19 @@ class RemoveDeletedRepositoryFavouritesTest {
   RemoveDeletedRepositoryFavourites removeDeletedRepositoryFavourites;
 
   @Test
-  void shouldHandlePostedEvent() {
+  void shouldHandleDeleteEvent() {
     Repository r = RepositoryTestData.createHeartOfGold();
     RepositoryEvent re = new RepositoryEvent(HandlerEventType.DELETE, r);
     removeDeletedRepositoryFavourites.handle(re);
     verify(favoriteRepositoryService).unfavorizeRepositoryForAllUsers(r);
+  }
+
+  @Test
+  void shouldNotHandleOtherRepositoryEvents() {
+    Repository r = RepositoryTestData.createHeartOfGold();
+    RepositoryEvent re = new RepositoryEvent(HandlerEventType.CREATE, r);
+    removeDeletedRepositoryFavourites.handle(re);
+    verifyZeroInteractions(favoriteRepositoryService);
   }
 
 }
