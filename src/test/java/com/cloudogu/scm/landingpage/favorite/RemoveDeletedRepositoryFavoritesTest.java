@@ -48,17 +48,17 @@ class RemoveDeletedRepositoryFavoritesTest {
 
   @Test
   void shouldHandleDeleteEvent() {
-    Repository r = RepositoryTestData.createHeartOfGold();
-    RepositoryEvent re = new RepositoryEvent(HandlerEventType.DELETE, r);
-    removeDeletedRepositoryFavorites.handle(re);
-    verify(favoriteRepositoryService).unfavorizeRepositoryForAllUsers(r);
+    Repository repository = RepositoryTestData.createHeartOfGold();
+    RepositoryEvent repositoryEvent = new RepositoryEvent(HandlerEventType.DELETE, repository);
+    removeDeletedRepositoryFavorites.handle(repositoryEvent);
+    verify(favoriteRepositoryService).unfavorizeRepositoryForAllUsers(repository);
   }
 
   @Test
   void shouldNotHandleOtherRepositoryEvents() {
-    Repository r = RepositoryTestData.createHeartOfGold();
-    RepositoryEvent re = new RepositoryEvent(HandlerEventType.CREATE, r);
-    removeDeletedRepositoryFavorites.handle(re);
+    Repository repository = RepositoryTestData.createHeartOfGold();
+    RepositoryEvent repositoryEvent = new RepositoryEvent(HandlerEventType.CREATE, repository);
+    removeDeletedRepositoryFavorites.handle(repositoryEvent);
     verifyZeroInteractions(favoriteRepositoryService);
   }
 
