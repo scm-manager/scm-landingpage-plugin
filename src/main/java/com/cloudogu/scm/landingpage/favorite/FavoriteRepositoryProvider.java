@@ -58,10 +58,9 @@ public class FavoriteRepositoryProvider {
     public void removeFromAll(Repository repository) {
       final Map<String, FavoriteRepository> all = store.getAll();
       for (Map.Entry<String, FavoriteRepository> entry : all.entrySet()) {
-        final String principal = entry.getKey();
         final FavoriteRepository favoriteRepository = entry.getValue();
         favoriteRepository.remove(repository);
-        store.put(principal, favoriteRepository);
+        store.put(entry.getKey(), favoriteRepository);
       }
     }
 
