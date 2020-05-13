@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Change plugin permission "manage" to "write" ([#11](https://github.com/scm-manager/scm-landingpage-plugin/pull/11))
+- Deleted repositories are now also removed from all users' favourites. ([#12](https://github.com/scm-manager/scm-landingpage-plugin/pull/12))
 
 ## [1.0.0-rc1] - 2020-04-14
 
