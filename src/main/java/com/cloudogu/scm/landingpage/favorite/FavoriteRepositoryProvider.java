@@ -23,16 +23,18 @@
  */
 package com.cloudogu.scm.landingpage.favorite;
 
-import org.apache.shiro.SecurityUtils;
 import sonia.scm.repository.Repository;
 import sonia.scm.store.DataStore;
 import sonia.scm.store.DataStoreFactory;
 
 import javax.inject.Inject;
+import java.util.Map;
+
+import static org.apache.shiro.SecurityUtils.getSubject;
 
 public class FavoriteRepositoryProvider {
 
-  private static final String STORE_NAME = "favorite-repositories";
+  static final String STORE_NAME = "favorite-repositories";
 
   private final DataStore<FavoriteRepository> store;
 
@@ -42,8 +44,7 @@ public class FavoriteRepositoryProvider {
   }
 
   public FavoriteRepositoryStore get() {
-    String principal = SecurityUtils.getSubject().getPrincipal().toString();
-    return new FavoriteRepositoryStore(principal);
+    return new FavoriteRepositoryStore(getSubject().getPrincipal().toString());
   }
 
   public class FavoriteRepositoryStore {
@@ -52,6 +53,15 @@ public class FavoriteRepositoryProvider {
 
     private FavoriteRepositoryStore(String principal) {
       this.principal = principal;
+    }
+
+    public void removeFromAll(Repository repository) {
+      final Map<String, FavoriteRepository> all = store.getAll();
+      for (Map.Entry<String, FavoriteRepository> entry : all.entrySet()) {
+        final FavoriteRepository favoriteRepository = entry.getValue();
+        favoriteRepository.remove(repository);
+        store.put(entry.getKey(), favoriteRepository);
+      }
     }
 
     public void add(Repository repository) {
@@ -72,6 +82,10 @@ public class FavoriteRepositoryProvider {
     }
 
     public FavoriteRepository get() {
+      return get(this.principal);
+    }
+
+    public FavoriteRepository get(String principal) {
       FavoriteRepository favoriteRepository = store.get(principal);
       if (favoriteRepository == null) {
         favoriteRepository = new FavoriteRepository();

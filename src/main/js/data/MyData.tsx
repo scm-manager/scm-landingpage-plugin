@@ -69,7 +69,7 @@ const MyData: FC<Props> = ({ links }) => {
   const renderExtension: (extension: ExtensionProps) => any = extension => {
     const dataForExtension = content._embedded.data.filter(data => data.type === extension.type);
 
-    if (dataForExtension.length == 0 && !extension.emptyMessage) {
+    if (dataForExtension.length === 0 && !extension.emptyMessage) {
       return null;
     } else {
       return (
@@ -78,8 +78,7 @@ const MyData: FC<Props> = ({ links }) => {
           separatedEntries={extension.separatedEntries}
           emptyMessage={extension.emptyMessage}
         >
-          {content._embedded.data
-            .filter(data => data.type === extension.type)
+          {dataForExtension
             .map((data, key) => extension.render(data, key))}
         </CollapsibleContainer>
       );

@@ -21,19 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React from "react";
 
-import { binder } from "@scm-manager/ui-extensions";
-import { RepositoryDataType } from "../types";
-import FavoriteRepositoryCard from "./FavoriteRepositoryCard";
-import {ExtensionProps} from "./MyData";
+package com.cloudogu.scm.landingpage.favorite;
 
-const favoriteRepositoryData: ExtensionProps = {
-  render: (data: RepositoryDataType, key: any) => data.repository && <FavoriteRepositoryCard data={data} key={key} />,
-  title: "scm-landingpage-plugin.favoriteRepository.title",
-  separatedEntries: true,
-  type: "FavoriteRepositoryData",
-  emptyMessage: "scm-landingpage-plugin.favoriteRepository.noData"
-};
+import com.github.legman.Subscribe;
+import sonia.scm.EagerSingleton;
+import sonia.scm.plugin.Extension;
+import sonia.scm.repository.RepositoryEvent;
 
-binder.bind("landingpage.mydata", favoriteRepositoryData);
+import javax.inject.Inject;
+
+import static sonia.scm.HandlerEventType.DELETE;
+
+@Extension
+@EagerSingleton
+public class RemoveDeletedRepositoryFavorites {
+
+  private final FavoriteRepositoryService favoriteRepositoryService;
+
+  @Inject
+  public RemoveDeletedRepositoryFavorites(FavoriteRepositoryService favoriteRepositoryService) {
+    this.favoriteRepositoryService = favoriteRepositoryService;
+  }
+
+  @Subscribe
+  public void handle(RepositoryEvent event) {
+    if (event.getEventType() == DELETE) {
+      this.favoriteRepositoryService.unfavorizeRepositoryForAllUsers(event.getItem());
+    }
+  }
+
+}
