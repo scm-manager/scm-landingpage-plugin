@@ -83,8 +83,8 @@ class FavoriteRepositoryServiceTest {
   class WithRepositoryService {
     @BeforeEach
     void initRepositoryService() {
-      when(serviceFactory.create(REPOSITORY.getNamespaceAndName())).thenReturn(repositoryService);
-      when(repositoryService.getRepository()).thenReturn(REPOSITORY);
+      lenient().when(serviceFactory.create(REPOSITORY.getNamespaceAndName())).thenReturn(repositoryService);
+      lenient().when(repositoryService.getRepository()).thenReturn(REPOSITORY);
       lenient().when(storeProvider.get()).thenReturn(store);
     }
 
@@ -114,6 +114,13 @@ class FavoriteRepositoryServiceTest {
       doThrow(AuthorizationException.class).when(subject).checkPermission(anyString());
 
       assertThrows(AuthorizationException.class, () -> service.unfavorizeRepository(REPOSITORY.getNamespaceAndName()));
+    }
+
+    @Test
+    void shouldUnfavorizeRepositoryForAllUsers() {
+      service.unfavorizeRepositoryForAllUsers(REPOSITORY);
+
+      verify(store).removeFromAll(REPOSITORY);
     }
   }
 
