@@ -49,12 +49,12 @@ const MyEvents: FC<Props> = ({ links }) => {
       .catch(setError);
   }, []);
 
-  if (loading) {
-    return <Loading />;
-  }
-
   if (error) {
     return <ErrorNotification error={error} />;
+  }
+
+  if (loading) {
+    return <Loading />;
   }
 
   return (
