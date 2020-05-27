@@ -23,7 +23,7 @@
  */
 import React, { FC, ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { apiClient, ErrorNotification, Loading, Notification } from "@scm-manager/ui-components";
+import { apiClient, ErrorNotification, Loading } from "@scm-manager/ui-components";
 import styled from "styled-components";
 import { MyDataEntriesType } from "../types";
 import { binder } from "@scm-manager/ui-extensions";
@@ -78,8 +78,7 @@ const MyData: FC<Props> = ({ links }) => {
           separatedEntries={extension.separatedEntries}
           emptyMessage={extension.emptyMessage}
         >
-          {dataForExtension
-            .map((data, key) => extension.render(data, key))}
+          {dataForExtension.map((data, key) => extension.render(data, key))}
         </CollapsibleContainer>
       );
     }
@@ -87,12 +86,12 @@ const MyData: FC<Props> = ({ links }) => {
 
   const extensions: ExtensionProps[] = binder.getExtensions("landingpage.mydata");
 
-  if (loading) {
-    return <Loading />;
-  }
-
   if (error) {
     return <ErrorNotification error={error} />;
+  }
+
+  if (loading) {
+    return <Loading />;
   }
 
   return (
