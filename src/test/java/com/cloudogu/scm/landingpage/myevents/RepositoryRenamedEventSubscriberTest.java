@@ -12,9 +12,8 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import sonia.scm.HandlerEventType;
 import sonia.scm.repository.Repository;
-import sonia.scm.repository.RepositoryRenamedEvent;
+import sonia.scm.repository.RepositoryModificationEvent;
 import sonia.scm.user.User;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,7 +32,7 @@ class RepositoryRenamedEventSubscriberTest {
   private MyEventStore store;
 
   @Mock
-  private RepositoryRenamedEvent event;
+  private RepositoryModificationEvent event;
 
   @Mock
   private PrincipalCollection principalCollection;
@@ -63,7 +62,7 @@ class RepositoryRenamedEventSubscriberTest {
 
     when(event.getItem()).thenReturn(changedRepo);
     when(event.getOldItem()).thenReturn(REPOSITORY);
-    when(event.getItem()).thenReturn(REPOSITORY);
+    when(event.getItem()).thenReturn(changedRepo);
     when(subject.getPrincipals()).thenReturn(principalCollection);
     when(principalCollection.oneByType(User.class)).thenReturn(trillian);
 

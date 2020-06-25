@@ -30,6 +30,7 @@ import lombok.NoArgsConstructor;
 import org.apache.shiro.SecurityUtils;
 import sonia.scm.EagerSingleton;
 import sonia.scm.plugin.Extension;
+import sonia.scm.repository.RepositoryModificationEvent;
 import sonia.scm.repository.RepositoryPermissions;
 import sonia.scm.user.User;
 
@@ -50,12 +51,20 @@ public class RepositoryRenamedEventSubscriber {
   }
 
   @Subscribe
-  public void handleEvent(sonia.scm.repository.RepositoryRenamedEvent event) {
-    String oldRepository = event.getOldItem().getNamespace() + "/" + event.getOldItem().getName();
-    String newRepository = event.getItem().getNamespace() + "/" + event.getItem().getName();
-    User user = SecurityUtils.getSubject().getPrincipals().oneByType(User.class);
+  public void handleEvent(RepositoryModificationEvent event) {
+    if (isRepositoryRenamedEvent(event)) {
 
-    store.add(new RepositoryRenamedEvent(RepositoryPermissions.read(event.getItem()).asShiroString(), oldRepository, newRepository, user.getName(), user.getMail()));
+      String oldRepository = event.getOldItem().getNamespace() + "/" + event.getOldItem().getName();
+      String newRepository = event.getItem().getNamespace() + "/" + event.getItem().getName();
+      User user = SecurityUtils.getSubject().getPrincipals().oneByType(User.class);
+
+      store.add(new RepositoryRenamedEvent(RepositoryPermissions.read(event.getItem()).asShiroString(), oldRepository, newRepository, user.getName(), user.getMail()));
+    }
+  }
+
+  private boolean isRepositoryRenamedEvent(RepositoryModificationEvent event) {
+    return !event.getItem().getNamespace().equals(event.getOldItem().getNamespace())
+      || !event.getItem().getName().equals(event.getOldItem().getName());
   }
 
   @XmlRootElement
