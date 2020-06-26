@@ -29,6 +29,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.shiro.SecurityUtils;
 import sonia.scm.EagerSingleton;
+import sonia.scm.HandlerEventType;
 import sonia.scm.plugin.Extension;
 import sonia.scm.repository.RepositoryModificationEvent;
 import sonia.scm.repository.RepositoryPermissions;
@@ -53,7 +54,6 @@ public class RepositoryRenamedEventSubscriber {
   @Subscribe
   public void handleEvent(RepositoryModificationEvent event) {
     if (isRepositoryRenamedEvent(event)) {
-
       String oldRepository = event.getOldItem().getNamespace() + "/" + event.getOldItem().getName();
       String newRepository = event.getItem().getNamespace() + "/" + event.getItem().getName();
       User user = SecurityUtils.getSubject().getPrincipals().oneByType(User.class);
@@ -63,8 +63,9 @@ public class RepositoryRenamedEventSubscriber {
   }
 
   private boolean isRepositoryRenamedEvent(RepositoryModificationEvent event) {
-    return !event.getItem().getNamespace().equals(event.getOldItem().getNamespace())
-      || !event.getItem().getName().equals(event.getOldItem().getName());
+    return event.getEventType() == HandlerEventType.MODIFY
+      && (!event.getItem().getNamespace().equals(event.getOldItem().getNamespace())
+      || !event.getItem().getName().equals(event.getOldItem().getName()));
   }
 
   @XmlRootElement
