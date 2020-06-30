@@ -28,6 +28,7 @@ import de.otto.edison.hal.HalRepresentation;
 import sonia.scm.plugin.Extension;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryManager;
+import sonia.scm.repository.RepositoryPermissions;
 import sonia.scm.web.api.RepositoryToHalMapper;
 
 import javax.inject.Inject;
@@ -55,9 +56,11 @@ public class FavoriteRepositoryDataProvider implements MyDataProvider {
 
     List<MyData> data = new ArrayList<>();
     for (String repoId : repositoryIds) {
-      Repository repository = repositoryManager.get(repoId);
-      HalRepresentation repositoryDto = mapper.map(repository);
-      data.add(new FavoriteRepositoryData(repositoryDto));
+      if (RepositoryPermissions.read(repoId).isPermitted()) {
+        Repository repository = repositoryManager.get(repoId);
+        HalRepresentation repositoryDto = mapper.map(repository);
+        data.add(new FavoriteRepositoryData(repositoryDto));
+      }
     }
     return data;
   }

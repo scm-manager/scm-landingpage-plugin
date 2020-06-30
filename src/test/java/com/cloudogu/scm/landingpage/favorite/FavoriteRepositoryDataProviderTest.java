@@ -100,6 +100,7 @@ class FavoriteRepositoryDataProviderTest {
 
   @Test
   void shouldReturnFavoriteRepositories() {
+    when(subject.isPermitted("repository:read:" + REPOSITORY.getId())).thenReturn(true);
     FavoriteRepository favorite = new FavoriteRepository(ImmutableSet.of(REPOSITORY.getId()));
     favoriteRepositoryInMemoryDataStore.put(PRINCIPAL_A, favorite);
     HalRepresentation halRepresentation = new HalRepresentation();
