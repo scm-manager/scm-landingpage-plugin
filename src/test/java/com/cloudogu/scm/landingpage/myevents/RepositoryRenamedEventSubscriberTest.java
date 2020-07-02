@@ -35,11 +35,14 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import sonia.scm.HandlerEventType;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryModificationEvent;
 import sonia.scm.user.User;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -53,9 +56,6 @@ class RepositoryRenamedEventSubscriberTest {
 
   @Mock
   private MyEventStore store;
-
-  @Mock
-  private RepositoryModificationEvent event;
 
   @Mock
   private PrincipalCollection principalCollection;
@@ -77,15 +77,14 @@ class RepositoryRenamedEventSubscriberTest {
   }
 
   @Test
-  void shouldFireMyEvent() {
+  void shouldStoreRenameEventWhenRepositoryWasRenamed() {
     User trillian = new User("trillian", "Trillian", "tricia@hitchhiker.org");
     Repository changedRepo = REPOSITORY.clone();
     changedRepo.setNamespace("Hitchhiker");
     changedRepo.setName("Heart-Of-Gold");
 
-    when(event.getItem()).thenReturn(changedRepo);
-    when(event.getOldItem()).thenReturn(REPOSITORY);
-    when(event.getItem()).thenReturn(changedRepo);
+    RepositoryModificationEvent event = new RepositoryModificationEvent(HandlerEventType.MODIFY, changedRepo, REPOSITORY);
+
     when(subject.getPrincipals()).thenReturn(principalCollection);
     when(principalCollection.oneByType(User.class)).thenReturn(trillian);
 
@@ -101,4 +100,15 @@ class RepositoryRenamedEventSubscriberTest {
     assertThat(repositoryRenamedEvent.getUsername()).isEqualTo(trillian.getName());
   }
 
+  @Test
+  void shouldNotStoreEventWhenRepositoryWasNotRenamed() {
+    Repository changedRepo = REPOSITORY.clone();
+    changedRepo.setContact("dent");
+
+    RepositoryModificationEvent event = new RepositoryModificationEvent(HandlerEventType.MODIFY, changedRepo, REPOSITORY);
+
+    subscriber.handleEvent(event);
+
+    verify(store, never()).add(any());
+  }
 }
