@@ -42,6 +42,9 @@
         "title": "New repository: {{repository}}",
         "description": "Created by"
       },
+      "repositoryRenamed": {
+        "title": "Repository was renamed:"
+      },
       "pluginInstalled": {
         "title": "Plugin installation prepared: {{pluginName}}",
         "description": "New plugin version: {{version}}"
