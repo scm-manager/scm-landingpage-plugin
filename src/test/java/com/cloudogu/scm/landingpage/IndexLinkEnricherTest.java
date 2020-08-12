@@ -34,7 +34,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import sonia.scm.SCMContext;
 import sonia.scm.api.v2.resources.HalAppender;
 import sonia.scm.api.v2.resources.HalEnricherContext;
 import sonia.scm.api.v2.resources.ScmPathInfoStore;
@@ -110,7 +109,6 @@ class IndexLinkEnricherTest {
     @BeforeEach
     void bindSubject() {
       Subject subject = mock(Subject.class);
-      when(subject.getPrincipal()).thenReturn(SCMContext.USER_ANONYMOUS);
       ThreadContext.bind(subject);
     }
 
