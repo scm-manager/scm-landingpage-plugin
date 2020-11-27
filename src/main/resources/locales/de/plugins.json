@@ -42,6 +42,11 @@
         "title": "Neues Repository: {{repository}}",
         "description": "Erstellt von"
       },
+      "repositoryImport": {
+        "titleFailed": "Import fehlgeschlagen: {{repository}}",
+        "titleSuccess": "Import abgeschlossen: {{repository}}",
+        "description": "Gestartet von"
+      },
       "repositoryRenamed": {
         "title": "Repository wurde umbenannt:"
       },

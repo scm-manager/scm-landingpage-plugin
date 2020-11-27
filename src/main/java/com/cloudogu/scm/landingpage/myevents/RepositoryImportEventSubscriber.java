@@ -29,10 +29,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.shiro.SecurityUtils;
 import sonia.scm.EagerSingleton;
-import sonia.scm.HandlerEventType;
 import sonia.scm.plugin.Extension;
 import sonia.scm.repository.Repository;
-import sonia.scm.repository.RepositoryEvent;
 import sonia.scm.repository.RepositoryPermissions;
 import sonia.scm.user.User;
 
@@ -43,43 +41,43 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @Extension
 @EagerSingleton
-public class RepositoryCreatedEventSubscriber {
+public class RepositoryImportEventSubscriber {
 
   private final MyEventStore store;
 
   @Inject
-  public RepositoryCreatedEventSubscriber(MyEventStore store) {
+  public RepositoryImportEventSubscriber(MyEventStore store) {
     this.store = store;
   }
 
   @Subscribe
-  public void handleEvent(RepositoryEvent event) {
-    if (event.getEventType() == HandlerEventType.CREATE) {
-      Repository eventRepo = event.getItem();
-      String permission = RepositoryPermissions.read(event.getItem()).asShiroString();
-      String repository = eventRepo.getNamespace() + "/" + eventRepo.getName();
-      User creator = SecurityUtils.getSubject().getPrincipals().oneByType(User.class);
+  public void handleEvent(sonia.scm.repository.RepositoryImportEvent event) {
+    Repository eventRepo = event.getItem();
+    String permission = RepositoryPermissions.read(event.getItem()).asShiroString();
+    String repository = eventRepo.getNamespace() + "/" + eventRepo.getName();
+    User creator = SecurityUtils.getSubject().getPrincipals().oneByType(User.class);
 
-      store.add(new RepositoryCreatedEvent(permission, repository, creator.getName(), creator.getDisplayName(), creator.getMail()));
-    }
+    store.add(new RepositoryImportEvent(permission, repository, creator.getName(), creator.getDisplayName(), creator.getMail(), event.isFailed()));
   }
 
   @XmlRootElement
   @XmlAccessorType(XmlAccessType.FIELD)
   @Getter
   @NoArgsConstructor
-  static class RepositoryCreatedEvent extends MyEvent {
+  static class RepositoryImportEvent extends MyEvent {
     private String repository;
     private String creatorName;
     private String creatorDisplayName;
     private String creatorMail;
+    private boolean failed;
 
-    RepositoryCreatedEvent(String permission, String repository, String creatorName, String creatorDisplayName, String creatorMail) {
-      super(RepositoryCreatedEvent.class.getSimpleName(), permission);
+    RepositoryImportEvent(String permission, String repository, String creatorName, String creatorDisplayName, String creatorMail, boolean failed) {
+      super(RepositoryImportEvent.class.getSimpleName(), permission);
       this.repository = repository;
       this.creatorName = creatorName;
       this.creatorDisplayName = creatorDisplayName;
       this.creatorMail = creatorMail;
+      this.failed = failed;
     }
   }
 }
