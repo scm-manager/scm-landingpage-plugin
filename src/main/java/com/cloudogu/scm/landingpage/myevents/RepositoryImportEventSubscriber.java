@@ -57,7 +57,7 @@ public class RepositoryImportEventSubscriber {
     String repository = eventRepo.getNamespace() + "/" + eventRepo.getName();
     User creator = SecurityUtils.getSubject().getPrincipals().oneByType(User.class);
 
-    store.add(new RepositoryImportEvent(permission, repository, creator.getName(), creator.getDisplayName(), creator.getMail(), event.isFailed()));
+    store.add(new RepositoryImportEvent(permission, repository, creator.getName(), creator.getDisplayName(), creator.getMail(), event.isFailed(), event.getLogId()));
   }
 
   @XmlRootElement
@@ -70,14 +70,16 @@ public class RepositoryImportEventSubscriber {
     private String creatorDisplayName;
     private String creatorMail;
     private boolean failed;
+    private String logId;
 
-    RepositoryImportEvent(String permission, String repository, String creatorName, String creatorDisplayName, String creatorMail, boolean failed) {
+    RepositoryImportEvent(String permission, String repository, String creatorName, String creatorDisplayName, String creatorMail, boolean failed, String logId) {
       super(RepositoryImportEvent.class.getSimpleName(), permission);
       this.repository = repository;
       this.creatorName = creatorName;
       this.creatorDisplayName = creatorDisplayName;
       this.creatorMail = creatorMail;
       this.failed = failed;
+      this.logId = logId;
     }
   }
 }
