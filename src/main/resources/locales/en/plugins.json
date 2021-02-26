@@ -45,7 +45,8 @@
       "repositoryImport": {
         "titleFailed": "Import failed: {{repository}}",
         "titleSuccess": "Import finished: {{repository}}",
-        "description": "Started by"
+        "description": "Started by",
+        "logLink": "import log"
       },
       "repositoryRenamed": {
         "title": "Repository was renamed:"

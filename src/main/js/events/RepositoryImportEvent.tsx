@@ -27,6 +27,7 @@ import styled from "styled-components";
 import { CardColumnSmall, Icon, DateFromNow, AvatarImage } from "@scm-manager/ui-components";
 import { binder } from "@scm-manager/ui-extensions";
 import { MyEventComponent, MyEventType } from "../types";
+import { Link } from "react-router-dom";
 
 type RepositoryImportEventType = MyEventType & {
   repository: string;
@@ -35,6 +36,7 @@ type RepositoryImportEventType = MyEventType & {
   creatorMail: string;
   date: Date;
   failed: boolean;
+  logId?: string;
 };
 
 const StyledGravatar = styled(AvatarImage)`
@@ -65,10 +67,25 @@ const RepositoryImportEvent: MyEventComponent<RepositoryImportEventType> = ({ ev
       )}
     </strong>
   );
+
+  let logLink;
+  if (event.logId) {
+    logLink = (
+      <>
+        {" ("}
+        <Link to={`/importlog/${event.logId}`}>
+          {t("scm-landingpage-plugin.myevents.repositoryImport.logLink")}
+        </Link>
+        )
+      </>
+    );
+  }
+
   const footerLeft = (
     <>
       {t("scm-landingpage-plugin.myevents.repositoryImport.description")}{" "}
       <span className="has-text-info">{event.creatorDisplayName}</span>
+      {logLink}
     </>
   );
 
