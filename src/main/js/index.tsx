@@ -47,7 +47,9 @@ type HomeRouteProps = {
 
 const HomeRoute: FC<HomeRouteProps> = props => {
   return (
-    <ProtectedRoute authenticated={props.authenticated} path={"/home"} component={() => <Home links={props.links} />} />
+    <ProtectedRoute authenticated={props.authenticated} path={"/home"}>
+      <Home links={props.links} />
+    </ProtectedRoute>
   );
 };
 
