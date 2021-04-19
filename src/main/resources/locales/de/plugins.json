@@ -67,7 +67,7 @@
         "title": "Plugin-Center nicht erreichbar"
       },
       "healthCheckFailure": {
-        "title": "Fehlgeschlagen: {{repository}}",
+        "title": "Fehlerhaft: {{repository}}",
         "description": "Die Überprüfung des Repositories ist fehlgeschlagen"
       },
       "healthCheckSucceeded": {

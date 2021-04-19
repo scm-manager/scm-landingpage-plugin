@@ -67,7 +67,7 @@
         "title": "Plugin center not available"
       },
       "healthCheckFailure": {
-        "title": "Failure: {{repository}}",
+        "title": "Unhealthy: {{repository}}",
         "description": "The health check for this repository failed"
       },
       "healthCheckSucceeded": {
