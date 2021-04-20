@@ -68,11 +68,11 @@
       },
       "healthCheckFailure": {
         "title": "Fehlerhaft: {{repository}}",
-        "description": "Die Überprüfung des Repositories ist fehlgeschlagen"
+        "description": "Die Integritätsprüfung des Repositories ist fehlgeschlagen"
       },
       "healthCheckSucceeded": {
-        "title": "In Ordnung: {{repository}}",
-        "description": "Die Überprüfung des Repositories hat keine Fehler mehr festgestellt"
+        "title": "Fehlerfrei: {{repository}}",
+        "description": "Die Integritätsprüfung des Repositories hat keine Fehler festgestellt"
       }
     }
   }
