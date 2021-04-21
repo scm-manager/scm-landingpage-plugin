@@ -65,6 +65,14 @@
       },
       "pluginCenterNotAvailable": {
         "title": "Plugin center not available"
+      },
+      "healthCheckFailure": {
+        "title": "Unhealthy: {{repository}}",
+        "description": "The health check for this repository failed"
+      },
+      "healthCheckSucceeded": {
+        "title": "Healthy: {{repository}}",
+        "description": "The health check for this repository reported no failures any more"
       }
     }
   }

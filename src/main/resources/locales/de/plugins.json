@@ -65,6 +65,14 @@
       },
       "pluginCenterNotAvailable": {
         "title": "Plugin-Center nicht erreichbar"
+      },
+      "healthCheckFailure": {
+        "title": "Fehlerhaft: {{repository}}",
+        "description": "Die Integritätsprüfung des Repositories ist fehlgeschlagen"
+      },
+      "healthCheckSucceeded": {
+        "title": "Fehlerfrei: {{repository}}",
+        "description": "Die Integritätsprüfung des Repositories hat keine Fehler festgestellt"
       }
     }
   }

@@ -36,6 +36,8 @@ import "./events/PluginInstallationFailedEvent";
 import "./events/PluginCenterNotAvailableEvent";
 import "./events/RepositoryRenamedEvent";
 import "./events/RepositoryImportEvent";
+import "./events/HealthCheckFailureEvent";
+import "./events/HealthCheckSucceededEvent";
 import "./data/MyFavoriteRepositoriesData";
 import { RepositoryDataType } from "./types";
 import { Links } from "@scm-manager/ui-types";

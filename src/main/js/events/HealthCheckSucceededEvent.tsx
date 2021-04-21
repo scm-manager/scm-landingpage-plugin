@@ -22,19 +22,36 @@
  * SOFTWARE.
  */
 
+import { MyEventComponent, MyEventsType } from "../types";
+import { CardColumnSmall, Icon } from "@scm-manager/ui-components";
+import React from "react";
+import { useTranslation } from "react-i18next";
+import { binder } from "@scm-manager/ui-extensions";
 
-plugins {
-  id 'org.scm-manager.smp' version '0.8.0'
-}
+type HealthCheckSucceededEventType = MyEventsType & {
+  repository: string;
+};
 
-dependencies {
-}
+const HealthCheckSucceededEvent: MyEventComponent<HealthCheckSucceededEventType> = ({ event }) => {
+  const [t] = useTranslation("plugins");
+  const link = "/repo/" + event.repository + "/settings/general";
+  const content = (
+    <strong className="is-marginless">
+      {t("scm-landingpage-plugin.myevents.healthCheckSucceeded.title", { repository: event.repository })}
+    </strong>
+  );
 
-scmPlugin {
-  scmVersion = "2.16.1-SNAPSHOT"
-  displayName = "Landingpage"
-  description = "Creates a personal landingpage for each user"
-  author = "Cloudogu GmbH"
-  category = "Information"
+  return (
+    <CardColumnSmall
+      link={link}
+      avatar={<Icon name={"thumbs-up"} className="fa-2x" />}
+      contentLeft={content}
+      contentRight={""}
+      footer={t("scm-landingpage-plugin.myevents.healthCheckSucceeded.description")}
+    />
+  );
+};
 
-}
+HealthCheckSucceededEvent.type = "HealthCheckSucceededEvent";
+
+binder.bind("landingpage.myevents", HealthCheckSucceededEvent);
