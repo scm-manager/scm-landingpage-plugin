@@ -21,41 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React, { FC } from "react";
-import { useTranslation } from "react-i18next";
-import CollapsibleContainer from "../CollapsibleContainer";
-import { ErrorNotification, Loading } from "@scm-manager/ui-components";
-import MyEvent from "./MyEvent";
-import { Link, Links } from "@scm-manager/ui-types";
-import { useMyEvents } from "./myEvents";
+import { useQuery } from "react-query";
+import { apiClient } from "@scm-manager/ui-components";
+import { MyDataEntriesType } from "../types";
 
-type Props = {
-  links: Links;
-};
+type MyData = MyDataEntriesType;
 
-const MyEvents: FC<Props> = ({ links }) => {
-  const [t] = useTranslation("plugins");
-  const { data, error, isLoading } = useMyEvents((links?.landingpageEvents as Link)?.href);
-
-  if (error) {
-    return <ErrorNotification error={error} />;
-  }
-
-  if (isLoading) {
-    return <Loading />;
-  }
-
-  return (
-    <CollapsibleContainer
-      title={t("scm-landingpage-plugin.myevents.title")}
-      separatedEntries={false}
-      emptyMessage={t("scm-landingpage-plugin.myevents.noData")}
-    >
-      {data?._embedded?.events?.map((event, index) => (
-        <MyEvent key={index} event={event} />
-      ))}
-    </CollapsibleContainer>
+export const useMyData = (link: string) => {
+  const { error, isLoading, data } = useQuery<MyData, Error>(["landingpage", "myData"], () =>
+    apiClient.get(link).then(response => response.json())
   );
-};
 
-export default MyEvents;
+  return {
+    error,
+    isLoading,
+    data
+  };
+};

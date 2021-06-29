@@ -21,14 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React, { FC, ReactElement, useEffect, useState } from "react";
+import React, { FC, ReactElement } from "react";
 import { useTranslation } from "react-i18next";
-import { apiClient, ErrorNotification, Loading } from "@scm-manager/ui-components";
+import { ErrorNotification, Loading } from "@scm-manager/ui-components";
 import styled from "styled-components";
-import { MyDataEntriesType } from "../types";
 import { binder } from "@scm-manager/ui-extensions";
 import CollapsibleContainer from "../CollapsibleContainer";
 import { Link, Links } from "@scm-manager/ui-types";
+import { useMyData } from "./myData";
 
 const Headline = styled.h3`
   font-size: 1.25rem;
@@ -52,24 +52,12 @@ export type ExtensionProps = {
 
 const MyData: FC<Props> = ({ links }) => {
   const [t] = useTranslation("plugins");
-  const [content, setContent] = useState<MyDataEntriesType>({ _embedded: { data: [] } });
-  const [error, setError] = useState<Error | undefined>(undefined);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    setLoading(true);
-    apiClient
-      .get((links?.landingpageData as Link)?.href)
-      .then(r => r.json())
-      .then(setContent)
-      .then(() => setLoading(false))
-      .catch(setError);
-  }, []);
+  const { data, error, isLoading } = useMyData((links?.landingpageData as Link)?.href);
 
   const renderExtension: (extension: ExtensionProps) => any = extension => {
-    const dataForExtension = content._embedded.data.filter(data => data.type === extension.type);
+    const dataForExtension = data?._embedded.data.filter(data => data.type === extension.type);
 
-    if (dataForExtension.length === 0 && !extension.emptyMessage) {
+    if (dataForExtension?.length === 0 && !extension.emptyMessage) {
       return null;
     } else {
       return (
@@ -78,7 +66,7 @@ const MyData: FC<Props> = ({ links }) => {
           separatedEntries={extension.separatedEntries}
           emptyMessage={extension.emptyMessage}
         >
-          {dataForExtension.map((data, key) => extension.render(data, key))}
+          {dataForExtension?.map((dataEntry, key) => extension.render(dataEntry, key))}
         </CollapsibleContainer>
       );
     }
@@ -90,7 +78,7 @@ const MyData: FC<Props> = ({ links }) => {
     return <ErrorNotification error={error} />;
   }
 
-  if (loading) {
+  if (isLoading) {
     return <Loading />;
   }
 
