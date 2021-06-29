@@ -36,5 +36,4 @@ scmPlugin {
   description = "Creates a personal landingpage for each user"
   author = "Cloudogu GmbH"
   category = "Information"
-
 }
