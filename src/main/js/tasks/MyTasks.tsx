@@ -21,13 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React, { FC, useEffect, useState } from "react";
+import React, { FC } from "react";
 import CollapsibleContainer from "../CollapsibleContainer";
 import { useTranslation } from "react-i18next";
-import { apiClient, ErrorNotification, Loading } from "@scm-manager/ui-components";
+import { ErrorNotification, Loading } from "@scm-manager/ui-components";
 import MyTask from "./MyTask";
-import { MyTasksType } from "../types";
 import { Link, Links } from "@scm-manager/ui-types";
+import { useMyTasks } from "./myTasks";
 
 type Props = {
   links: Links;
@@ -35,25 +35,13 @@ type Props = {
 
 const MyTasks: FC<Props> = ({ links }) => {
   const [t] = useTranslation("plugins");
-  const [content, setContent] = useState<MyTasksType>({ _embedded: { tasks: [] } });
-  const [error, setError] = useState<Error | undefined>(undefined);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    setLoading(true);
-    apiClient
-      .get((links?.landingpageTasks as Link)?.href)
-      .then(r => r.json())
-      .then(setContent)
-      .then(() => setLoading(false))
-      .catch(setError);
-  }, []);
+  const { data, error, isLoading } = useMyTasks((links?.landingpageTasks as Link)?.href);
 
   if (error) {
     return <ErrorNotification error={error} />;
   }
 
-  if (loading) {
+  if (isLoading) {
     return <Loading />;
   }
 
@@ -63,7 +51,7 @@ const MyTasks: FC<Props> = ({ links }) => {
       separatedEntries={false}
       emptyMessage={t("scm-landingpage-plugin.mytasks.noData")}
     >
-      {content?._embedded?.tasks.map((task, key) => (
+      {data?._embedded?.tasks.map((task, key) => (
         <MyTask key={key} task={task} />
       ))}
     </CollapsibleContainer>
