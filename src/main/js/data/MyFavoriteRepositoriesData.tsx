@@ -26,7 +26,7 @@ import React from "react";
 import { binder } from "@scm-manager/ui-extensions";
 import { RepositoryDataType } from "../types";
 import FavoriteRepositoryCard from "./FavoriteRepositoryCard";
-import {ExtensionProps} from "./MyData";
+import { ExtensionProps } from "./MyData";
 
 const favoriteRepositoryData: ExtensionProps = {
   render: (data: RepositoryDataType, key: any) => data.repository && <FavoriteRepositoryCard data={data} key={key} />,

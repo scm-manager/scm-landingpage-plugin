@@ -50,12 +50,21 @@ export type ExtensionProps = {
   emptyMessage?: string;
 };
 
+const Separator = styled.div`
+  border-bottom: 1px solid rgb(219, 219, 219, 0.5);
+  margin: 0 1rem;
+`;
+
+const Box = styled.div`
+  padding: 0.5rem;
+`;
+
 const MyData: FC<Props> = ({ links }) => {
   const [t] = useTranslation("plugins");
   const { data, error, isLoading } = useMyData((links?.landingpageData as Link)?.href);
 
   const renderExtension: (extension: ExtensionProps) => any = extension => {
-    const dataForExtension = data?._embedded.data.filter(data => data.type === extension.type);
+    const dataForExtension = data?._embedded.data.filter(entry => entry.type === extension.type);
 
     if (dataForExtension?.length === 0 && !extension.emptyMessage) {
       return null;
@@ -66,7 +75,13 @@ const MyData: FC<Props> = ({ links }) => {
           separatedEntries={extension.separatedEntries}
           emptyMessage={extension.emptyMessage}
         >
-          {dataForExtension?.map((dataEntry, key) => extension.render(dataEntry, key))}
+          <Box className="box">
+            {dataForExtension?.map((dataEntry, key) => (
+              <>
+                {extension.render(dataEntry, key)} {key + 1 !== dataForExtension.length ? <Separator /> : null}
+              </>
+            ))}
+          </Box>
         </CollapsibleContainer>
       );
     }

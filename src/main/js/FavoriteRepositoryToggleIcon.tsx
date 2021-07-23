@@ -21,11 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React, { FC, useEffect, useState } from "react";
+import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { Link, Repository } from "@scm-manager/ui-types";
-import { apiClient, Icon } from "@scm-manager/ui-components";
+import { Repository } from "@scm-manager/ui-types";
+import { Icon } from "@scm-manager/ui-components";
+import { useFavoriteRepository } from "./favoriteRepository";
 
 type Props = {
   repository: Repository;
@@ -35,45 +36,33 @@ type Props = {
 const SpanWithPointer = styled.span`
   pointer-events: all;
   cursor: pointer;
+  z-index: 1;
 `;
 
 const FavoriteRepositoryToggleIcon: FC<Props> = ({ repository, classes }) => {
   const [t] = useTranslation("plugins");
-  const [favorite, setFavorite] = useState(false);
-  const [link, setLink] = useState("");
-
-  useEffect(() => {
-    setFavorite(!!repository?._links?.unfavorize);
-    setLink(getLink(repository));
-  }, []);
-
-  const getLink: (repository: Repository) => string = (repository: Repository) => {
-    const currentLink = (repository?._links?.unfavorize || repository?._links?.favorize) as Link;
-    return currentLink.href;
-  };
+  const { favorize, unfavorize } = useFavoriteRepository(repository);
 
   const toggleFavoriteStatus = () => {
-    apiClient
-      .post(link)
-      .then(() => apiClient.get((repository._links.self as Link).href))
-      .then(response => response.json())
-      .then(updatedRepository => {
-        setFavorite(!favorite);
-        setLink(getLink(updatedRepository));
-      });
+    if (favorize) {
+      favorize();
+    }
+    if (unfavorize) {
+      unfavorize();
+    }
   };
 
   return (
     <SpanWithPointer onClick={() => toggleFavoriteStatus()}>
       <Icon
         title={
-          favorite
+          unfavorize
             ? t("scm-landingpage-plugin.favoriteRepository.unstar")
             : t("scm-landingpage-plugin.favoriteRepository.star")
         }
-        iconStyle={favorite ? "fas" : "far"}
+        iconStyle={unfavorize ? "fas" : "far"}
         name="star"
-        color={favorite ? "warning" : "dark"}
+        color={unfavorize ? "warning" : "dark"}
         className={classes}
       />
     </SpanWithPointer>
