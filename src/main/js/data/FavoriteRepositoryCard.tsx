@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 import React, { FC } from "react";
-import classNames from "classnames";
 import styled from "styled-components";
 import { RepositoryEntry } from "@scm-manager/ui-components";
 import { RepositoryDataType } from "../types";
@@ -43,11 +42,9 @@ const RepositoryEntryWrapper = styled.div`
 
 const FavoriteRepositoryCard: FC<Props> = ({ data }) => {
   return (
-    <div className={classNames("card-columns", "content")}>
-      <RepositoryEntryWrapper className={classNames("box", "box-link-shadow", "column", "is-clipped")}>
-        <RepositoryEntry repository={data.repository} />
-      </RepositoryEntryWrapper>
-    </div>
+    <RepositoryEntryWrapper>
+      <RepositoryEntry repository={data.repository} />
+    </RepositoryEntryWrapper>
   );
 };
 

@@ -21,41 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React, { FC } from "react";
-import { useTranslation } from "react-i18next";
-import CollapsibleContainer from "../CollapsibleContainer";
-import { ErrorNotification, Loading } from "@scm-manager/ui-components";
-import MyEvent from "./MyEvent";
-import { Link, Links } from "@scm-manager/ui-types";
-import { useMyEvents } from "./useMyEvents";
 
-type Props = {
-  links: Links;
+import { apiClient } from "@scm-manager/ui-components";
+import { Link, Repository } from "@scm-manager/ui-types";
+import { useMutation, useQueryClient } from "react-query";
+
+export const useFavoriteRepository = (repository: Repository) => {
+  const queryClient = useQueryClient();
+
+  const invalidateQueries = () => {
+    return Promise.all([
+      queryClient.invalidateQueries(["landingpage", "myData"]),
+      queryClient.invalidateQueries(["repository", repository.namespace, repository.name]),
+      queryClient.invalidateQueries(["repositories"])
+    ]).then(() => undefined);
+  };
+
+  const { mutate, isLoading, error } = useMutation<unknown, Error, Link>(link => apiClient.post(link.href, {}), {
+    onSuccess: invalidateQueries
+  });
+
+  return {
+    favorize: repository._links.favorize ? () => mutate(repository._links.favorize as Link) : undefined,
+    unfavorize: repository._links.unfavorize ? () => mutate(repository._links.unfavorize as Link) : undefined,
+    isLoading,
+    error
+  };
 };
-
-const MyEvents: FC<Props> = ({ links }) => {
-  const [t] = useTranslation("plugins");
-  const { data, error, isLoading } = useMyEvents((links?.landingpageEvents as Link)?.href);
-
-  if (error) {
-    return <ErrorNotification error={error} />;
-  }
-
-  if (isLoading) {
-    return <Loading />;
-  }
-
-  return (
-    <CollapsibleContainer
-      title={t("scm-landingpage-plugin.myevents.title")}
-      separatedEntries={false}
-      emptyMessage={t("scm-landingpage-plugin.myevents.noData")}
-    >
-      {data?._embedded?.events?.map((event, index) => (
-        <MyEvent key={index} event={event} />
-      ))}
-    </CollapsibleContainer>
-  );
-};
-
-export default MyEvents;

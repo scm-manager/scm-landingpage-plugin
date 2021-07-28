@@ -23,12 +23,12 @@
  */
 import React, { FC, ReactElement } from "react";
 import { useTranslation } from "react-i18next";
-import { ErrorNotification, Loading } from "@scm-manager/ui-components";
+import { ErrorNotification, Loading, Notification } from "@scm-manager/ui-components";
 import styled from "styled-components";
 import { binder } from "@scm-manager/ui-extensions";
 import CollapsibleContainer from "../CollapsibleContainer";
 import { Link, Links } from "@scm-manager/ui-types";
-import { useMyData } from "./myData";
+import { useMyData } from "./useMyData";
 
 const Headline = styled.h3`
   font-size: 1.25rem;
@@ -50,12 +50,21 @@ export type ExtensionProps = {
   emptyMessage?: string;
 };
 
+const Separator = styled.div`
+  border-bottom: 1px solid rgb(219, 219, 219, 0.5);
+  margin: 0 1rem;
+`;
+
+const Box = styled.div`
+  padding: 0.5rem;
+`;
+
 const MyData: FC<Props> = ({ links }) => {
   const [t] = useTranslation("plugins");
   const { data, error, isLoading } = useMyData((links?.landingpageData as Link)?.href);
 
   const renderExtension: (extension: ExtensionProps) => any = extension => {
-    const dataForExtension = data?._embedded.data.filter(data => data.type === extension.type);
+    const dataForExtension = data?._embedded.data.filter(entry => entry.type === extension.type);
 
     if (dataForExtension?.length === 0 && !extension.emptyMessage) {
       return null;
@@ -66,7 +75,17 @@ const MyData: FC<Props> = ({ links }) => {
           separatedEntries={extension.separatedEntries}
           emptyMessage={extension.emptyMessage}
         >
-          {dataForExtension?.map((dataEntry, key) => extension.render(dataEntry, key))}
+          {(dataForExtension?.length || 0) > 0 ? (
+            <Box className="box">
+              {dataForExtension?.map((dataEntry, key) => (
+                <>
+                  {extension.render(dataEntry, key)} {key + 1 !== dataForExtension.length ? <Separator /> : null}
+                </>
+              ))}
+            </Box>
+          ) : (
+            <Notification>{t("scm-landingpage-plugin.favoriteRepository.noData")}</Notification>
+          )}
         </CollapsibleContainer>
       );
     }
