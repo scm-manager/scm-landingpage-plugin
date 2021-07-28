@@ -27,7 +27,7 @@ import CollapsibleContainer from "../CollapsibleContainer";
 import { ErrorNotification, Loading } from "@scm-manager/ui-components";
 import MyEvent from "./MyEvent";
 import { Link, Links } from "@scm-manager/ui-types";
-import { useMyEvents } from "./myEvents";
+import { useMyEvents } from "./useMyEvents";
 
 type Props = {
   links: Links;

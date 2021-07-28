@@ -23,12 +23,12 @@
  */
 import React, { FC, ReactElement } from "react";
 import { useTranslation } from "react-i18next";
-import { ErrorNotification, Loading } from "@scm-manager/ui-components";
+import { ErrorNotification, Loading, Notification } from "@scm-manager/ui-components";
 import styled from "styled-components";
 import { binder } from "@scm-manager/ui-extensions";
 import CollapsibleContainer from "../CollapsibleContainer";
 import { Link, Links } from "@scm-manager/ui-types";
-import { useMyData } from "./myData";
+import { useMyData } from "./useMyData";
 
 const Headline = styled.h3`
   font-size: 1.25rem;
@@ -75,13 +75,17 @@ const MyData: FC<Props> = ({ links }) => {
           separatedEntries={extension.separatedEntries}
           emptyMessage={extension.emptyMessage}
         >
-          <Box className="box">
-            {dataForExtension?.map((dataEntry, key) => (
-              <>
-                {extension.render(dataEntry, key)} {key + 1 !== dataForExtension.length ? <Separator /> : null}
-              </>
-            ))}
-          </Box>
+          {(dataForExtension?.length || 0) > 0 ? (
+            <Box className="box">
+              {dataForExtension?.map((dataEntry, key) => (
+                <>
+                  {extension.render(dataEntry, key)} {key + 1 !== dataForExtension.length ? <Separator /> : null}
+                </>
+              ))}
+            </Box>
+          ) : (
+            <Notification>{t("scm-landingpage-plugin.favoriteRepository.noData")}</Notification>
+          )}
         </CollapsibleContainer>
       );
     }

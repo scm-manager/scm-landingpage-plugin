@@ -31,37 +31,20 @@ export const useFavoriteRepository = (repository: Repository) => {
 
   const invalidateQueries = () => {
     return Promise.all([
-        queryClient.invalidateQueries(["landingpage", "myData"]),
-        queryClient.invalidateQueries(["repository", repository.namespace, repository.name]),
-        queryClient.invalidateQueries(["repositories"]),
-      ]);
+      queryClient.invalidateQueries(["landingpage", "myData"]),
+      queryClient.invalidateQueries(["repository", repository.namespace, repository.name]),
+      queryClient.invalidateQueries(["repositories"])
+    ]).then(() => undefined);
   };
 
-  const { mutate: favorize, isLoading: isLoadingFavorize, error: favorizeError } = useMutation<unknown, Error>(
-    () => {
-      return apiClient.post((repository?._links?.favorize as Link).href, {});
-    },
-    {
-      onSuccess: invalidateQueries
-    }
-  );
-
-  const { mutate: unfavorize, isLoading: isLoadingUnfavorize, error: unfavorizeError } = useMutation<
-    unknown,
-    Error
-  >(
-    () => {
-      return apiClient.post((repository?._links?.unfavorize as Link).href, {});
-    },
-    {
-      onSuccess: invalidateQueries
-    }
-  );
+  const { mutate, isLoading, error } = useMutation<unknown, Error, Link>(link => apiClient.post(link.href, {}), {
+    onSuccess: invalidateQueries
+  });
 
   return {
-    favorize: repository._links.favorize ? () => favorize() : undefined,
-    unfavorize: repository._links.unfavorize ? () => unfavorize() : undefined,
-    isLoading: isLoadingFavorize || isLoadingUnfavorize,
-    error: favorizeError || unfavorizeError
+    favorize: repository._links.favorize ? () => mutate(repository._links.favorize as Link) : undefined,
+    unfavorize: repository._links.unfavorize ? () => mutate(repository._links.unfavorize as Link) : undefined,
+    isLoading,
+    error
   };
 };

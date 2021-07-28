@@ -27,7 +27,7 @@ import { useTranslation } from "react-i18next";
 import { ErrorNotification, Loading } from "@scm-manager/ui-components";
 import MyTask from "./MyTask";
 import { Link, Links } from "@scm-manager/ui-types";
-import { useMyTasks } from "./myTasks";
+import { useMyTasks } from "./useMyTasks";
 
 type Props = {
   links: Links;
