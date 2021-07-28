@@ -30,9 +30,11 @@ export const useFavoriteRepository = (repository: Repository) => {
   const queryClient = useQueryClient();
 
   const invalidateQueries = () => {
-    queryClient.invalidateQueries(["repository", repository.namespace, repository.name]);
-    queryClient.invalidateQueries(["landingpage", "myData"]);
-    return queryClient.invalidateQueries(["repositories"]);
+    return Promise.all([
+        queryClient.invalidateQueries(["landingpage", "myData"]),
+        queryClient.invalidateQueries(["repository", repository.namespace, repository.name]),
+        queryClient.invalidateQueries(["repositories"]),
+      ]);
   };
 
   const { mutate: favorize, isLoading: isLoadingFavorize, error: favorizeError } = useMutation<unknown, Error>(

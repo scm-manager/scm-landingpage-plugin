@@ -36,6 +36,7 @@ type Props = {
 const SpanWithPointer = styled.span`
   pointer-events: all;
   cursor: pointer;
+  margin-right: 0.25rem;
   z-index: 1;
 `;
 
