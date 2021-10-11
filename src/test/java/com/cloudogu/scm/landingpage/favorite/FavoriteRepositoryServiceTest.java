@@ -35,6 +35,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import sonia.scm.repository.Repository;
+import sonia.scm.repository.RepositoryManager;
 import sonia.scm.repository.RepositoryTestData;
 import sonia.scm.repository.api.RepositoryService;
 import sonia.scm.repository.api.RepositoryServiceFactory;
@@ -62,6 +63,9 @@ class FavoriteRepositoryServiceTest {
 
   @Mock
   private RepositoryService repositoryService;
+
+  @Mock
+  private RepositoryManager repositoryManager;
 
   @Mock
   private Subject subject;

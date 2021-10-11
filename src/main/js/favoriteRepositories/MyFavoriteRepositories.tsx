@@ -23,9 +23,50 @@
  */
 
 import React, { FC } from "react";
+import { useFavoriteRepositories } from "./favoriteRepository";
+import { ErrorNotification, GroupEntries, Loading, Notification, RepositoryEntry } from "@scm-manager/ui-components";
+import { useTranslation } from "react-i18next";
+import classNames from "classnames";
 
 const MyFavoriteRepositories: FC = () => {
-  return <h1>Hello World</h1>;
+  const { data, error, isLoading } = useFavoriteRepositories();
+  const [t] = useTranslation("plugins");
+
+  const header = (
+    <div className={classNames("is-flex", "is-align-items-center", "is-size-6", "has-text-weight-bold", "p-3")}>
+      {t("scm-landingpage-plugin.favoriteRepository.title")}
+    </div>
+  );
+
+  if (error) {
+    return (
+      <>
+        {header}
+        <ErrorNotification error={error} />
+      </>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <>
+        {header}
+        <Loading />
+      </>
+    );
+  }
+
+  if (!data || !data.repositories || data.repositories.length === 0) {
+    return (
+      <>
+        {header}
+        <Notification type="info">{t("scm-landingpage-plugin.favoriteRepository.noData")}</Notification>
+      </>
+    );
+  }
+
+  const entries = data.repositories.map((repository, index) => <RepositoryEntry repository={repository} key={index} />);
+  return <GroupEntries namespaceHeader={t("scm-landingpage-plugin.favoriteRepository.title")} elements={entries} />;
 };
 
 export default MyFavoriteRepositories;

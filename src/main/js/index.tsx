@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 import { binder } from "@scm-manager/ui-extensions";
-import FavoriteRepositoryToggleIcon from "./FavoriteRepositoryToggleIcon";
+import FavoriteRepositoryToggleIcon from "./favoriteRepositories/FavoriteRepositoryToggleIcon";
 import React, { FC } from "react";
 import "./tasks/PluginUpdateTask";
 import "./events/RepositoryPushEvent";
@@ -34,13 +34,13 @@ import "./events/RepositoryRenamedEvent";
 import "./events/RepositoryImportEvent";
 import "./events/HealthCheckFailureEvent";
 import "./events/HealthCheckSucceededEvent";
-import { RepositoryDataType } from "./types";
 import MyData from "./data/MyData";
 import MyTasks from "./tasks/MyTasks";
 import MyEvents from "./events/MyEvents";
 import MyFavoriteRepositories from "./favoriteRepositories/MyFavoriteRepositories";
+import { Repository } from "@scm-manager/ui-types";
 
-const LargeToggleIcon: FC<RepositoryDataType> = props => (
+const LargeToggleIcon: FC<{ repository: Repository }> = props => (
   <FavoriteRepositoryToggleIcon repository={props.repository} classes="fa-2x" />
 );
 

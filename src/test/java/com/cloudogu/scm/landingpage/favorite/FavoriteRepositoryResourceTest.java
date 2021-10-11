@@ -52,7 +52,7 @@ class FavoriteRepositoryResourceTest {
 
   @BeforeEach
   void init() {
-    FavoriteRepositoryResource resource = new FavoriteRepositoryResource(service);
+    FavoriteRepositoryResource resource = new FavoriteRepositoryResource(service, mapper);
 
     dispatcher = new RestDispatcher();
     dispatcher.addSingletonResource(resource);
