@@ -23,24 +23,13 @@
  */
 import React, { FC, ReactElement } from "react";
 import { useTranslation } from "react-i18next";
+import { useIndexLinks } from "@scm-manager/ui-api";
 import { ErrorNotification, Loading, Notification } from "@scm-manager/ui-components";
 import styled from "styled-components";
 import { binder } from "@scm-manager/ui-extensions";
 import CollapsibleContainer from "../CollapsibleContainer";
-import { Link, Links } from "@scm-manager/ui-types";
+import { Link } from "@scm-manager/ui-types";
 import { useMyData } from "./useMyData";
-
-const Headline = styled.h3`
-  font-size: 1.25rem;
-  margin-bottom: 1rem;
-  & small {
-    font-size: 0.875rem;
-  }
-`;
-
-type Props = {
-  links: Links;
-};
 
 export type ExtensionProps = {
   title: string;
@@ -59,8 +48,9 @@ const Box = styled.div`
   padding: 0.5rem;
 `;
 
-const MyData: FC<Props> = ({ links }) => {
+const MyData: FC = () => {
   const [t] = useTranslation("plugins");
+  const links = useIndexLinks();
   const { data, error, isLoading } = useMyData((links?.landingpageData as Link)?.href);
 
   const renderExtension: (extension: ExtensionProps) => any = extension => {
@@ -93,6 +83,10 @@ const MyData: FC<Props> = ({ links }) => {
 
   const extensions: ExtensionProps[] = binder.getExtensions("landingpage.mydata");
 
+  if (!extensions.length) {
+    return null;
+  }
+
   if (error) {
     return <ErrorNotification error={error} />;
   }
@@ -101,12 +95,7 @@ const MyData: FC<Props> = ({ links }) => {
     return <Loading />;
   }
 
-  return (
-    <>
-      <Headline>{t("scm-landingpage-plugin.mydata.title")}</Headline>
-      {extensions.map(renderExtension)}
-    </>
-  );
+  return <>{extensions.map(renderExtension)}</>;
 };
 
 export default MyData;

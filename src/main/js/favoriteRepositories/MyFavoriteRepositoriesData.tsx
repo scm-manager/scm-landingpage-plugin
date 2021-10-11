@@ -21,19 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React from "react";
+// import React from "react";
 
-import { binder } from "@scm-manager/ui-extensions";
-import { RepositoryDataType } from "../types";
-import FavoriteRepositoryCard from "./FavoriteRepositoryCard";
-import { ExtensionProps } from "./MyData";
-
-const favoriteRepositoryData: ExtensionProps = {
-  render: (data: RepositoryDataType, key: any) => data.repository && <FavoriteRepositoryCard data={data} key={key} />,
-  title: "scm-landingpage-plugin.favoriteRepository.title",
-  separatedEntries: true,
-  type: "FavoriteRepositoryData",
-  emptyMessage: "scm-landingpage-plugin.favoriteRepository.noData"
-};
-
-binder.bind("landingpage.mydata", favoriteRepositoryData);
+// import { binder } from "@scm-manager/ui-extensions";
+// import { RepositoryDataType } from "../types";
+// import FavoriteRepositoryCard from "./FavoriteRepositoryCard";
+// import { ExtensionProps } from "./MyData";
+//
+// const favoriteRepositoryData: ExtensionProps = {
+//   render: (data: RepositoryDataType, key: any) => data.repository && <FavoriteRepositoryCard data={data} key={key} />,
+//   title: "scm-landingpage-plugin.favoriteRepository.title",
+//   separatedEntries: true,
+//   type: "FavoriteRepositoryData",
+//   emptyMessage: "scm-landingpage-plugin.favoriteRepository.noData"
+// };
+//
+// binder.bind("landingpage.mydata", favoriteRepositoryData);

@@ -26,15 +26,13 @@ import CollapsibleContainer from "../CollapsibleContainer";
 import { useTranslation } from "react-i18next";
 import { ErrorNotification, Loading } from "@scm-manager/ui-components";
 import MyTask from "./MyTask";
-import { Link, Links } from "@scm-manager/ui-types";
+import { Link } from "@scm-manager/ui-types";
 import { useMyTasks } from "./useMyTasks";
+import { useIndexLinks } from "@scm-manager/ui-api";
 
-type Props = {
-  links: Links;
-};
-
-const MyTasks: FC<Props> = ({ links }) => {
+const MyTasks: FC = () => {
   const [t] = useTranslation("plugins");
+  const links = useIndexLinks();
   const { data, error, isLoading } = useMyTasks((links?.landingpageTasks as Link)?.href);
 
   if (error) {

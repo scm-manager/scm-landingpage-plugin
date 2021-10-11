@@ -25,7 +25,6 @@ import { binder } from "@scm-manager/ui-extensions";
 import FavoriteRepositoryToggleIcon from "./FavoriteRepositoryToggleIcon";
 import React, { FC } from "react";
 import "./tasks/PluginUpdateTask";
-import "./data/FavoriteRepositoryCard";
 import "./events/RepositoryPushEvent";
 import "./events/RepositoryCreatedEvent";
 import "./events/PluginInstalledEvent";
@@ -35,8 +34,11 @@ import "./events/RepositoryRenamedEvent";
 import "./events/RepositoryImportEvent";
 import "./events/HealthCheckFailureEvent";
 import "./events/HealthCheckSucceededEvent";
-import "./data/MyFavoriteRepositoriesData";
 import { RepositoryDataType } from "./types";
+import MyData from "./data/MyData";
+import MyTasks from "./tasks/MyTasks";
+import MyEvents from "./events/MyEvents";
+import MyFavoriteRepositories from "./favoriteRepositories/MyFavoriteRepositories";
 
 const LargeToggleIcon: FC<RepositoryDataType> = props => (
   <FavoriteRepositoryToggleIcon repository={props.repository} classes="fa-2x" />
@@ -44,3 +46,7 @@ const LargeToggleIcon: FC<RepositoryDataType> = props => (
 
 binder.bind("repository.card.beforeTitle", FavoriteRepositoryToggleIcon);
 binder.bind("repository.afterTitle", LargeToggleIcon);
+binder.bind("repository.overview.top", MyFavoriteRepositories);
+binder.bind("repository.overview.left", MyTasks, { priority: 1000 });
+binder.bind("repository.overview.left", MyEvents, { priority: 1000 });
+binder.bind("repository.overview.left", MyData, { priority: 1000 });

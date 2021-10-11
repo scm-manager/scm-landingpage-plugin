@@ -21,39 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 import React, { FC } from "react";
-import { useTranslation } from "react-i18next";
-import CollapsibleContainer from "../CollapsibleContainer";
-import { ErrorNotification, Loading } from "@scm-manager/ui-components";
-import MyEvent from "./MyEvent";
-import { Link } from "@scm-manager/ui-types";
-import { useMyEvents } from "./useMyEvents";
-import { useIndexLinks } from "@scm-manager/ui-api";
 
-const MyEvents: FC = () => {
-  const [t] = useTranslation("plugins");
-  const links = useIndexLinks();
-  const { data, error, isLoading } = useMyEvents((links?.landingpageEvents as Link)?.href);
-
-  if (error) {
-    return <ErrorNotification error={error} />;
-  }
-
-  if (isLoading) {
-    return <Loading />;
-  }
-
-  return (
-    <CollapsibleContainer
-      title={t("scm-landingpage-plugin.myevents.title")}
-      separatedEntries={false}
-      emptyMessage={t("scm-landingpage-plugin.myevents.noData")}
-    >
-      {data?._embedded?.events?.map((event, index) => (
-        <MyEvent key={index} event={event} />
-      ))}
-    </CollapsibleContainer>
-  );
+const MyFavoriteRepositories: FC = () => {
+  return <h1>Hello World</h1>;
 };
 
-export default MyEvents;
+export default MyFavoriteRepositories;

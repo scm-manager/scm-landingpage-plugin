@@ -1,21 +1,11 @@
 {
   "scm-landingpage-plugin": {
-    "navigation": {
-      "home": "mySCM"
-    },
-    "home": {
-      "title": "mySCM",
-      "subtitle": "My tasks and repositories"
-    },
     "emptyMessage": {
       "default": "No data available"
     },
     "mytasks": {
       "title": "My tasks",
       "noData": "No tasks available"
-    },
-    "mydata": {
-      "title": "My data"
     },
     "favoriteRepository": {
       "title": "Favorite repositories",
