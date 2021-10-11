@@ -34,6 +34,7 @@ import sonia.scm.repository.NamespaceAndName;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryTestData;
 import sonia.scm.web.RestDispatcher;
+import sonia.scm.web.api.RepositoryToHalMapper;
 
 import java.net.URISyntaxException;
 
@@ -47,6 +48,9 @@ class FavoriteRepositoryResourceTest {
 
   @Mock
   private FavoriteRepositoryService service;
+
+  @Mock
+  private RepositoryToHalMapper mapper;
 
   private RestDispatcher dispatcher;
 
