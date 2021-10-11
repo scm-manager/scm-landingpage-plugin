@@ -48,6 +48,7 @@ const MyTasks: FC = () => {
       title={t("scm-landingpage-plugin.mytasks.title")}
       separatedEntries={false}
       emptyMessage={t("scm-landingpage-plugin.mytasks.noData")}
+      collapsedCountDisplay={data?._embedded?.tasks?.length}
     >
       {data?._embedded?.tasks.map((task, key) => (
         <MyTask key={key} task={task} />
