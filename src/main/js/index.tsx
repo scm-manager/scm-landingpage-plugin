@@ -23,10 +23,7 @@
  */
 import { binder } from "@scm-manager/ui-extensions";
 import FavoriteRepositoryToggleIcon from "./FavoriteRepositoryToggleIcon";
-import Home from "./Home";
 import React, { FC } from "react";
-import { PrimaryNavigationLink, ProtectedRoute } from "@scm-manager/ui-components";
-import { useTranslation } from "react-i18next";
 import "./tasks/PluginUpdateTask";
 import "./data/FavoriteRepositoryCard";
 import "./events/RepositoryPushEvent";
@@ -40,25 +37,6 @@ import "./events/HealthCheckFailureEvent";
 import "./events/HealthCheckSucceededEvent";
 import "./data/MyFavoriteRepositoriesData";
 import { RepositoryDataType } from "./types";
-import { Links } from "@scm-manager/ui-types";
-
-type HomeRouteProps = {
-  authenticated: boolean;
-  links: Links;
-};
-
-const HomeRoute: FC<HomeRouteProps> = props => {
-  return (
-    <ProtectedRoute authenticated={props.authenticated} path={"/home"}>
-      <Home links={props.links} />
-    </ProtectedRoute>
-  );
-};
-
-const HomeNavigation: FC = () => {
-  const [t] = useTranslation("plugins");
-  return <PrimaryNavigationLink label={t("scm-landingpage-plugin.navigation.home")} to={"/home"} match={"/home"} />;
-};
 
 const LargeToggleIcon: FC<RepositoryDataType> = props => (
   <FavoriteRepositoryToggleIcon repository={props.repository} classes="fa-2x" />
@@ -66,6 +44,3 @@ const LargeToggleIcon: FC<RepositoryDataType> = props => (
 
 binder.bind("repository.card.beforeTitle", FavoriteRepositoryToggleIcon);
 binder.bind("repository.afterTitle", LargeToggleIcon);
-binder.bind("main.route", HomeRoute);
-binder.bind("main.redirect", () => "/home");
-binder.bind("primary-navigation.first-menu", HomeNavigation);
