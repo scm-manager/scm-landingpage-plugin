@@ -44,10 +44,6 @@ const Separator = styled.div`
   margin: 0 1rem;
 `;
 
-const Box = styled.div`
-  padding: 0.5rem;
-`;
-
 const MyData: FC = () => {
   const [t] = useTranslation("plugins");
   const links = useIndexLinks();
@@ -66,13 +62,13 @@ const MyData: FC = () => {
           emptyMessage={extension.emptyMessage}
         >
           {(dataForExtension?.length || 0) > 0 ? (
-            <Box className="box">
+            <div className="p-2">
               {dataForExtension?.map((dataEntry, key) => (
                 <>
                   {extension.render(dataEntry, key)} {key + 1 !== dataForExtension.length ? <Separator /> : null}
                 </>
               ))}
-            </Box>
+            </div>
           ) : (
             <Notification>{t("scm-landingpage-plugin.favoriteRepository.noData")}</Notification>
           )}

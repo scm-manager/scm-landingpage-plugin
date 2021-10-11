@@ -29,6 +29,7 @@ import MyEvent from "./MyEvent";
 import { Link } from "@scm-manager/ui-types";
 import { useMyEvents } from "./useMyEvents";
 import { useIndexLinks } from "@scm-manager/ui-api";
+import ScrollContainer from "../ScrollContainer";
 
 const MyEvents: FC = () => {
   const [t] = useTranslation("plugins");
@@ -49,9 +50,11 @@ const MyEvents: FC = () => {
       separatedEntries={false}
       emptyMessage={t("scm-landingpage-plugin.myevents.noData")}
     >
-      {data?._embedded?.events?.map((event, index) => (
-        <MyEvent key={index} event={event} />
-      ))}
+      <ScrollContainer>
+        {data?._embedded?.events?.map((event, index) => (
+          <MyEvent key={index} event={event} />
+        ))}
+      </ScrollContainer>
     </CollapsibleContainer>
   );
 };

@@ -48,5 +48,5 @@ binder.bind("repository.card.beforeTitle", FavoriteRepositoryToggleIcon);
 binder.bind("repository.afterTitle", LargeToggleIcon);
 binder.bind("repository.overview.top", MyFavoriteRepositories);
 binder.bind("repository.overview.left", MyTasks, { priority: 1000 });
-binder.bind("repository.overview.left", MyEvents, { priority: 1000 });
-binder.bind("repository.overview.left", MyData, { priority: 1000 });
+binder.bind("repository.overview.left", MyEvents, { priority: 10 });
+binder.bind("repository.overview.left", MyData, { priority: 100 });
