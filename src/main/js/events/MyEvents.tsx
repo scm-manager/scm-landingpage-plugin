@@ -49,7 +49,7 @@ const MyEvents: FC = () => {
       title={t("scm-landingpage-plugin.myevents.title")}
       separatedEntries={false}
       emptyMessage={t("scm-landingpage-plugin.myevents.noData")}
-      collapsedCountDisplay={data?._embedded?.events?.length}
+      count={data?._embedded?.events?.length}
     >
       <ScrollContainer>
         {data?._embedded?.events?.map((event, index) => (

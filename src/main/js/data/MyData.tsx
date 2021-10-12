@@ -60,7 +60,7 @@ const MyData: FC = () => {
           title={t(extension.title)}
           separatedEntries={extension.separatedEntries}
           emptyMessage={extension.emptyMessage}
-          collapsedCountDisplay={dataForExtension?.length}
+          count={dataForExtension?.length}
         >
           {(dataForExtension?.length || 0) > 0 ? (
             <div className="p-2">
