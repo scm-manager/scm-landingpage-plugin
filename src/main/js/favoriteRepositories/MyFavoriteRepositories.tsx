@@ -25,21 +25,12 @@
 import React, { FC } from "react";
 import { useFavoriteRepositories } from "./favoriteRepository";
 import { ErrorNotification, GroupEntries, Loading, Notification, RepositoryEntry } from "@scm-manager/ui-components";
-import { extensionPoints } from "@scm-manager/ui-extensions";
 import { useTranslation } from "react-i18next";
 import classNames from "classnames";
 
-const MyFavoriteRepositories: FC<extensionPoints.RepositoryOverviewTopExtensionProps> = ({
-  page,
-  search,
-  namespace
-}) => {
+const MyFavoriteRepositories: FC = () => {
   const { data, error, isLoading } = useFavoriteRepositories();
   const [t] = useTranslation("plugins");
-
-  if (page > 1 || !!search || !!namespace) {
-    return null;
-  }
 
   const header = (
     <div className={classNames("is-flex", "is-align-items-center", "is-size-6", "has-text-weight-bold", "p-3")}>

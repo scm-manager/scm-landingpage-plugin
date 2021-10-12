@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { binder } from "@scm-manager/ui-extensions";
+import { binder, extensionPoints } from "@scm-manager/ui-extensions";
 import FavoriteRepositoryToggleIcon from "./favoriteRepositories/FavoriteRepositoryToggleIcon";
 import React, { FC } from "react";
 import "./tasks/PluginUpdateTask";
@@ -46,7 +46,11 @@ const LargeToggleIcon: FC<{ repository: Repository }> = props => (
 
 binder.bind("repository.card.beforeTitle", FavoriteRepositoryToggleIcon);
 binder.bind("repository.afterTitle", LargeToggleIcon);
-binder.bind("repository.overview.top", MyFavoriteRepositories);
+binder.bind<extensionPoints.RepositoryOverviewTopExtensionProps>(
+  "repository.overview.top",
+  MyFavoriteRepositories,
+  ({ page, search, namespace }) => page === 1 && !search && !namespace
+);
 binder.bind("repository.overview.left", MyTasks, { priority: 1000 });
 binder.bind("repository.overview.left", MyEvents, { priority: 10 });
 binder.bind("repository.overview.left", MyData, { priority: 100 });
