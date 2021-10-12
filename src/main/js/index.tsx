@@ -38,19 +38,56 @@ import MyData from "./data/MyData";
 import MyTasks from "./tasks/MyTasks";
 import MyEvents from "./events/MyEvents";
 import MyFavoriteRepositories from "./favoriteRepositories/MyFavoriteRepositories";
-import { Repository } from "@scm-manager/ui-types";
+import { Links, Repository } from "@scm-manager/ui-types";
+import { ProtectedRoute } from "@scm-manager/ui-components";
+import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
+import ConfigPage from "./config/ConfigPage";
+
+type ConfigRouteProps = {
+  authenticated: boolean;
+  links: Links;
+};
+
+const ConfigRoute: FC<ConfigRouteProps> = props => {
+  return (
+    <ProtectedRoute authenticated={props.authenticated} path={"/landingPageConfig"}>
+      <ConfigPage />
+    </ProtectedRoute>
+  );
+};
 
 const LargeToggleIcon: FC<{ repository: Repository }> = props => (
   <FavoriteRepositoryToggleIcon repository={props.repository} classes="fa-2x" />
 );
 
+const Subtitle: FC = () => {
+  const [t] = useTranslation("plugins");
+  return t("scm-landingpage-plugin.subtitle");
+};
+
+const Title: FC = () => {
+  const [t] = useTranslation("plugins");
+  return (
+    <>
+      {t("scm-landingpage-plugin.title")}
+      <Link to="/landingPageConfig">
+        <i className="fa fa-cog fa-fw is-size-6 ml-2 has-text-is-link" />
+      </Link>
+    </>
+  );
+};
+
 binder.bind("repository.card.beforeTitle", FavoriteRepositoryToggleIcon);
 binder.bind("repository.afterTitle", LargeToggleIcon);
-binder.bind<extensionPoints.RepositoryOverviewTopExtensionProps>(
+binder.bind<extensionPoints.RepositoryOverviewTopExtension>(
   "repository.overview.top",
   MyFavoriteRepositories,
   ({ page, search, namespace }) => page === 1 && !search && !namespace
 );
-binder.bind("repository.overview.left", MyTasks, { priority: 1000 });
-binder.bind("repository.overview.left", MyEvents, { priority: 10 });
-binder.bind("repository.overview.left", MyData, { priority: 100 });
+binder.bind<extensionPoints.RepositoryOverviewLeftExtension>("repository.overview.left", MyTasks, { priority: 1000 });
+binder.bind<extensionPoints.RepositoryOverviewLeftExtension>("repository.overview.left", MyEvents, { priority: 10 });
+binder.bind<extensionPoints.RepositoryOverviewLeftExtension>("repository.overview.left", MyData, { priority: 100 });
+binder.bind("main.route", ConfigRoute);
+binder.bind<extensionPoints.RepositoryOverviewTitleExtension>("repository.overview.title", Title);
+binder.bind<extensionPoints.RepositoryOverviewSubtitleExtension>("repository.overview.subtitle", Subtitle);

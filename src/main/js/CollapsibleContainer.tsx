@@ -31,6 +31,8 @@ type Props = {
   separatedEntries: boolean;
   emptyMessage?: string;
   count?: number;
+  initiallyCollapsed?: boolean;
+  onCollapseToggle?: () => void;
 };
 
 const Container = styled.div`
@@ -57,8 +59,16 @@ const Separator = styled.hr`
   margin: 0.5rem 0;
 `;
 
-const CollapsibleContainer: FC<Props> = ({ title, count, separatedEntries, emptyMessage, children }) => {
-  const [collapsed, setCollapsed] = useState(false);
+const CollapsibleContainer: FC<Props> = ({
+  title,
+  count,
+  initiallyCollapsed,
+  separatedEntries,
+  emptyMessage,
+  children,
+  onCollapseToggle
+}) => {
+  const [collapsed, setCollapsed] = useState(initiallyCollapsed);
 
   const icon = collapsed ? "angle-right" : "angle-down";
   let content = null;
@@ -73,9 +83,15 @@ const CollapsibleContainer: FC<Props> = ({ title, count, separatedEntries, empty
     }
   }
 
+  const onClick = () => {
+    const newState = !collapsed;
+    setCollapsed(newState);
+    onCollapseToggle && onCollapseToggle();
+  };
+
   return (
     <Container>
-      <div className="has-cursor-pointer" onClick={() => setCollapsed(!collapsed)}>
+      <div className="has-cursor-pointer" onClick={onClick}>
         <Headline>
           <Icon name={icon} color="default" /> {title} <span>({count || 0})</span>
         </Headline>

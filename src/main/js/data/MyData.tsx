@@ -30,6 +30,7 @@ import { binder } from "@scm-manager/ui-extensions";
 import CollapsibleContainer from "../CollapsibleContainer";
 import { Link } from "@scm-manager/ui-types";
 import { useMyData } from "./useMyData";
+import { useConfig } from "../config/hooks";
 
 export type ExtensionProps = {
   title: string;
@@ -48,11 +49,12 @@ const MyData: FC = () => {
   const [t] = useTranslation("plugins");
   const links = useIndexLinks();
   const { data, error, isLoading } = useMyData((links?.landingpageData as Link)?.href);
+  const { isDisplayed, toggleCollapsed, isCollapsed } = useConfig();
 
   const renderExtension: (extension: ExtensionProps) => any = extension => {
     const dataForExtension = data?._embedded.data.filter(entry => entry.type === extension.type);
 
-    if (dataForExtension?.length === 0 && !extension.emptyMessage) {
+    if (!isDisplayed(extension.type) || (dataForExtension?.length === 0 && !extension.emptyMessage)) {
       return null;
     } else {
       return (
@@ -61,15 +63,15 @@ const MyData: FC = () => {
           separatedEntries={extension.separatedEntries}
           emptyMessage={extension.emptyMessage}
           count={dataForExtension?.length}
+          initiallyCollapsed={isCollapsed(extension.type)}
+          onCollapseToggle={() => toggleCollapsed(extension.type)}
         >
           {(dataForExtension?.length || 0) > 0 ? (
-            <div className="p-2">
-              {dataForExtension?.map((dataEntry, key) => (
-                <>
-                  {extension.render(dataEntry, key)} {key + 1 !== dataForExtension.length ? <Separator /> : null}
-                </>
-              ))}
-            </div>
+            dataForExtension?.map((dataEntry, key) => (
+              <>
+                {extension.render(dataEntry, key)} {key + 1 !== dataForExtension.length ? <Separator /> : null}
+              </>
+            ))
           ) : (
             <Notification>{t("scm-landingpage-plugin.favoriteRepository.noData")}</Notification>
           )}

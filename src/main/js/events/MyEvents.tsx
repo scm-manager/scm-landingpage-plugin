@@ -30,11 +30,17 @@ import { Link } from "@scm-manager/ui-types";
 import { useMyEvents } from "./useMyEvents";
 import { useIndexLinks } from "@scm-manager/ui-api";
 import ScrollContainer from "../ScrollContainer";
+import { useConfig } from "../config/hooks";
 
 const MyEvents: FC = () => {
   const [t] = useTranslation("plugins");
   const links = useIndexLinks();
   const { data, error, isLoading } = useMyEvents((links?.landingpageEvents as Link)?.href);
+  const { toggleCollapsed, isCollapsed, isDisplayed } = useConfig();
+
+  if (!isDisplayed("myevents")) {
+    return null;
+  }
 
   if (error) {
     return <ErrorNotification error={error} />;
@@ -50,6 +56,8 @@ const MyEvents: FC = () => {
       separatedEntries={false}
       emptyMessage={t("scm-landingpage-plugin.myevents.noData")}
       count={data?._embedded?.events?.length}
+      initiallyCollapsed={isCollapsed("myevents")}
+      onCollapseToggle={() => toggleCollapsed("myevents")}
     >
       <ScrollContainer>
         {data?._embedded?.events?.map((event, index) => (

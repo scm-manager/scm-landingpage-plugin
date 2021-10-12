@@ -1,5 +1,11 @@
 {
   "scm-landingpage-plugin": {
+    "title": "mySCM",
+    "subtitle": "Repositories, tasks and events",
+    "config": {
+      "title": "mySCM Configuration",
+      "subtitle": "Displayed Content"
+    },
     "emptyMessage": {
       "default": "No data available"
     },

@@ -27,10 +27,16 @@ import { useFavoriteRepositories } from "./favoriteRepository";
 import { ErrorNotification, GroupEntries, Loading, Notification, RepositoryEntry } from "@scm-manager/ui-components";
 import { useTranslation } from "react-i18next";
 import classNames from "classnames";
+import { useConfig } from "../config/hooks";
 
 const MyFavoriteRepositories: FC = () => {
   const { data, error, isLoading } = useFavoriteRepositories();
   const [t] = useTranslation("plugins");
+  const { isDisplayed } = useConfig();
+
+  if (!isDisplayed("favoriteRepository")) {
+    return null;
+  }
 
   const header = (
     <div className={classNames("is-flex", "is-align-items-center", "is-size-6", "has-text-weight-bold", "p-3")}>

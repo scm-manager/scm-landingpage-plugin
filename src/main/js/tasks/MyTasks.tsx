@@ -29,11 +29,17 @@ import MyTask from "./MyTask";
 import { Link } from "@scm-manager/ui-types";
 import { useMyTasks } from "./useMyTasks";
 import { useIndexLinks } from "@scm-manager/ui-api";
+import { useConfig } from "../config/hooks";
 
 const MyTasks: FC = () => {
   const [t] = useTranslation("plugins");
   const links = useIndexLinks();
   const { data, error, isLoading } = useMyTasks((links?.landingpageTasks as Link)?.href);
+  const { toggleCollapsed, isCollapsed, isDisplayed } = useConfig();
+
+  if (!isDisplayed("mytasks")) {
+    return null;
+  }
 
   if (error) {
     return <ErrorNotification error={error} />;
@@ -49,6 +55,8 @@ const MyTasks: FC = () => {
       separatedEntries={false}
       emptyMessage={t("scm-landingpage-plugin.mytasks.noData")}
       count={data?._embedded?.tasks?.length}
+      initiallyCollapsed={isCollapsed("mytasks")}
+      onCollapseToggle={() => toggleCollapsed("mytasks")}
     >
       {data?._embedded?.tasks.map((task, key) => (
         <MyTask key={key} task={task} />
