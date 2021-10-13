@@ -23,7 +23,7 @@
  */
 import React, { FC, useState } from "react";
 import styled from "styled-components";
-import { Icon } from "@scm-manager/ui-components";
+import { Icon, Tag } from "@scm-manager/ui-components";
 import EmptyMessage from "./EmptyMessage";
 
 type Props = {
@@ -93,7 +93,7 @@ const CollapsibleContainer: FC<Props> = ({
     <Container>
       <div className="has-cursor-pointer" onClick={onClick}>
         <Headline>
-          <Icon name={icon} color="default" /> {title} <span>({count || 0})</span>
+          <Icon name={icon} color="default" /> {title} <Tag color="info">{count || 0}</Tag>
         </Headline>
         <Separator />
       </div>
