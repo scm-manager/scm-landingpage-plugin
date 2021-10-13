@@ -44,7 +44,7 @@ const HealthCheckSucceededEvent: MyEventComponent<HealthCheckSucceededEventType>
   return (
     <CardColumnSmall
       link={link}
-      avatar={<Icon name={"thumbs-up"} className="fa-2x" />}
+      avatar={<Icon name={"thumbs-up"} className="fa-lg mt-5" />}
       contentLeft={content}
       contentRight={""}
       footer={t("scm-landingpage-plugin.myevents.healthCheckSucceeded.description")}

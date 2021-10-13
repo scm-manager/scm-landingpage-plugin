@@ -34,13 +34,13 @@ type PluginCenterEventType = MyEventType & {
 const PluginCenterNotAvailableEvent: MyEventComponent<PluginCenterEventType> = ({ event }) => {
   const [t] = useTranslation("plugins");
   const link = "/admin/plugins/available/";
-  const icon = <Icon name="puzzle-piece fa-fw fa-2x" color="inherit" />;
+  const icon = <Icon name="puzzle-piece fa-fw fa-lg mt-5" color="inherit" />;
   const content = (
     <strong className="is-marginless">{t("scm-landingpage-plugin.myevents.pluginCenterNotAvailable.title")}</strong>
   );
 
   return (
-    <CardColumnSmall link={link} avatar={icon} contentLeft={content} contentRight={<DateFromNow date={event.date} />} />
+    <CardColumnSmall link={link} avatar={icon} contentLeft={content} contentRight={<small><DateFromNow date={event.date} /></small>} />
   );
 };
 
