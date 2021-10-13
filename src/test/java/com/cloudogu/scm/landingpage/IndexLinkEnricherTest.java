@@ -125,7 +125,7 @@ class IndexLinkEnricherTest {
     }
 
     @Test
-    void shouldAppendTasksLink() {
+    void shouldNotAppendLinks() {
       enricher.enrich(context, appender);
 
       verify(appender, never()).appendLink(any(), any());
@@ -148,7 +148,7 @@ class IndexLinkEnricherTest {
     }
 
     @Test
-    void shouldAppendTasksLink() {
+    void shouldNotAppendLinks() {
       enricher.enrich(context, appender);
 
       verify(appender, never()).appendLink(any(), any());

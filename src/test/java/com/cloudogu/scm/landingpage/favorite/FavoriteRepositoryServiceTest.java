@@ -24,9 +24,8 @@
 package com.cloudogu.scm.landingpage.favorite;
 
 import org.apache.shiro.authz.AuthorizationException;
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ThreadContext;
-import org.junit.jupiter.api.AfterEach;
+import org.github.sdorra.jse.ShiroExtension;
+import org.github.sdorra.jse.SubjectAware;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -40,14 +39,17 @@ import sonia.scm.repository.RepositoryTestData;
 import sonia.scm.repository.api.RepositoryService;
 import sonia.scm.repository.api.RepositoryServiceFactory;
 
+import java.util.Collections;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@SubjectAware("Trillian")
+@ExtendWith({MockitoExtension.class, ShiroExtension.class})
 class FavoriteRepositoryServiceTest {
 
   private final Repository REPOSITORY = RepositoryTestData.createHeartOfGold();
@@ -67,21 +69,8 @@ class FavoriteRepositoryServiceTest {
   @Mock
   private RepositoryManager repositoryManager;
 
-  @Mock
-  private Subject subject;
-
   @InjectMocks
   private FavoriteRepositoryService service;
-
-  @BeforeEach
-  void initSubject() {
-    ThreadContext.bind(subject);
-  }
-
-  @AfterEach
-  void tearDownSubject() {
-    ThreadContext.unbindSubject();
-  }
 
   @Nested
   class WithRepositoryService {
@@ -93,6 +82,7 @@ class FavoriteRepositoryServiceTest {
     }
 
     @Test
+    @SubjectAware(permissions = "repository:read:*")
     void shouldFavorizeRepositoryForUser() {
       service.favorizeRepository(REPOSITORY.getNamespaceAndName());
 
@@ -101,12 +91,11 @@ class FavoriteRepositoryServiceTest {
 
     @Test
     void shouldThrowAuthorizationExceptionIfNotPermittedToFavorize() {
-      doThrow(AuthorizationException.class).when(subject).checkPermission(anyString());
-
       assertThrows(AuthorizationException.class, () -> service.favorizeRepository(REPOSITORY.getNamespaceAndName()));
     }
 
     @Test
+    @SubjectAware(permissions = "repository:read:*")
     void shouldUnfavorizeRepositoryForUser() {
       service.unfavorizeRepository(REPOSITORY.getNamespaceAndName());
 
@@ -115,8 +104,6 @@ class FavoriteRepositoryServiceTest {
 
     @Test
     void shouldThrowAuthorizationExceptionIfNotPermittedToUnfavorize() {
-      doThrow(AuthorizationException.class).when(subject).checkPermission(anyString());
-
       assertThrows(AuthorizationException.class, () -> service.unfavorizeRepository(REPOSITORY.getNamespaceAndName()));
     }
 
@@ -125,6 +112,16 @@ class FavoriteRepositoryServiceTest {
       service.unfavorizeRepositoryForAllUsers(REPOSITORY);
 
       verify(store).removeFromAll(REPOSITORY);
+    }
+
+    @Test
+    @SubjectAware(permissions = "repository:read:*")
+    void shouldReturnFavoriteRepositories() {
+      when(repositoryManager.get(REPOSITORY.getId())).thenReturn(REPOSITORY);
+      when(store.get()).thenReturn(new FavoriteRepository(Collections.singleton(REPOSITORY.getId())));
+      final List<Repository> favoriteRepositories = service.getFavoriteRepositories();
+      assertThat(favoriteRepositories).hasSize(1);
+      assertThat(favoriteRepositories.get(0).getId()).isEqualTo(REPOSITORY.getId());
     }
   }
 
