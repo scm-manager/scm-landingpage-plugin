@@ -22,11 +22,14 @@
  * SOFTWARE.
  */
 
+import { devices } from "@scm-manager/ui-components";
 import styled from "styled-components";
 
 const ScrollContainer = styled.div`
-  overflow: visible auto;
-  max-height: 400px;
+  @media (min-width: ${devices.mobile.width}px) {
+    overflow: visible auto;
+    max-height: 400px;
+  }
 `;
 
 export default ScrollContainer;
