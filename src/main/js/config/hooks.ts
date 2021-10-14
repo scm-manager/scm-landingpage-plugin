@@ -23,28 +23,20 @@
  */
 
 import { useState } from "react";
-import { useBinder } from "@scm-manager/ui-extensions";
 
 const CONFIG_LOCAL_STORAGE_KEY = "landing-page.config";
 
 export type Config = {
-  displayedTypes: string[];
+  hiddenTypes: string[];
   collapsedTypes: string[];
 };
 
 function useLocalStorage(): [config: Config, setConfig: (value: Config) => void] {
-  const binder = useBinder();
-
   const [config, setConfig] = useState<Config>(() => {
     try {
       const item = window.localStorage.getItem(CONFIG_LOCAL_STORAGE_KEY);
       return item ? JSON.parse(item) : {
-        displayedTypes: [
-          ...binder.getExtensions("landingpage.mydata").map(extension => extension.type),
-          "favoriteRepository",
-          "myevents",
-          "mytasks"
-        ],
+        hiddenTypes: [],
         collapsedTypes: []
       };
     } catch (error) {
@@ -68,14 +60,14 @@ function useLocalStorage(): [config: Config, setConfig: (value: Config) => void]
 export function useConfig() {
   const [config, setConfig] = useLocalStorage();
 
-  const isDisplayed = (key: string) => config.displayedTypes.includes(key);
+  const isDisplayed = (key: string) => !config.hiddenTypes.includes(key);
   const isCollapsed = (key: string) => config.collapsedTypes.includes(key);
 
   const toggleDisplayed = (key: string) => {
-    if (!isDisplayed(key)) {
-      setConfig({...config, displayedTypes: [...config.displayedTypes, key]});
+    if (isDisplayed(key)) {
+      setConfig({...config, hiddenTypes: [...config.hiddenTypes, key]});
     } else {
-      setConfig({...config, displayedTypes: config.displayedTypes.filter(dt => dt !== key)});
+      setConfig({...config, hiddenTypes: config.hiddenTypes.filter(dt => dt !== key)});
     }
   };
 
