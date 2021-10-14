@@ -52,7 +52,7 @@ const RepositoryImportEvent: MyEventComponent<RepositoryImportEventType> = ({ ev
   const icon = binder.hasExtension("avatar.factory") ? (
     <StyledGravatar person={{ name: event.creatorName, mail: event.creatorMail }} />
   ) : (
-    <Icon name="exchange-alt fa-fw fa-lg mt-5" color="inherit" />
+    <Icon name="exchange-alt" className="fa-fw fa-lg" color="inherit" />
   );
 
   const content = (
@@ -73,18 +73,14 @@ const RepositoryImportEvent: MyEventComponent<RepositoryImportEventType> = ({ ev
     logLink = (
       <>
         {" ("}
-        <Link to={`/importlog/${event.logId}`}>
-          {t("scm-landingpage-plugin.myevents.repositoryImport.logLink")}
-        </Link>
-        )
+        <Link to={`/importlog/${event.logId}`}>{t("scm-landingpage-plugin.myevents.repositoryImport.logLink")}</Link>)
       </>
     );
   }
 
   const footerLeft = (
     <>
-      {t("scm-landingpage-plugin.myevents.repositoryImport.description")}{" "}
-      <span className="has-text-info">{event.creatorDisplayName}</span>
+      {t("scm-landingpage-plugin.myevents.repositoryImport.description")} {event.creatorDisplayName}
       {logLink}
     </>
   );
@@ -94,7 +90,11 @@ const RepositoryImportEvent: MyEventComponent<RepositoryImportEventType> = ({ ev
       link={link}
       avatar={icon}
       contentLeft={content}
-      contentRight={<small><DateFromNow date={event.date} /></small>}
+      contentRight={
+        <small>
+          <DateFromNow date={event.date} />
+        </small>
+      }
       footer={footerLeft}
     />
   );

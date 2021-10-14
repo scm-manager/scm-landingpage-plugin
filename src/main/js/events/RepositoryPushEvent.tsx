@@ -50,7 +50,7 @@ const RepositoryPushEvent: MyEventComponent<RepositoryPushEventType> = ({ event 
   const icon = binder.hasExtension("avatar.factory") ? (
     <StyledGravatar person={{ name: event.authorName, mail: event.authorMail }} />
   ) : (
-    <Icon name="exchange-alt fa-fw fa-lg mt-5" color="inherit" />
+    <Icon name="exchange-alt" className="fa-fw fa-lg" color="inherit" />
   );
 
   const content = (
@@ -63,8 +63,7 @@ const RepositoryPushEvent: MyEventComponent<RepositoryPushEventType> = ({ event 
   );
   const footerLeft = (
     <>
-      {t("scm-landingpage-plugin.myevents.repositoryPush.description")}{" "}
-      <span className="has-text-info">{event.authorDisplayName}</span>
+      {t("scm-landingpage-plugin.myevents.repositoryPush.description")} {event.authorDisplayName}
     </>
   );
 
@@ -73,7 +72,11 @@ const RepositoryPushEvent: MyEventComponent<RepositoryPushEventType> = ({ event 
       link={link}
       avatar={icon}
       contentLeft={content}
-      contentRight={<small><DateFromNow date={event.date} /></small>}
+      contentRight={
+        <small>
+          <DateFromNow date={event.date} />
+        </small>
+      }
       footer={footerLeft}
     />
   );

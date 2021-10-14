@@ -25,7 +25,6 @@ import React, { FC, ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 import { useIndexLinks } from "@scm-manager/ui-api";
 import { ErrorNotification, Loading, Notification } from "@scm-manager/ui-components";
-import styled from "styled-components";
 import { binder } from "@scm-manager/ui-extensions";
 import CollapsibleContainer from "../CollapsibleContainer";
 import { Link } from "@scm-manager/ui-types";
@@ -39,11 +38,6 @@ export type ExtensionProps = {
   type: string;
   emptyMessage?: string;
 };
-
-const Separator = styled.div`
-  border-bottom: 1px solid rgb(219, 219, 219, 0.5);
-  margin: 0 1rem;
-`;
 
 const MyData: FC = () => {
   const [t] = useTranslation("plugins");
@@ -67,11 +61,7 @@ const MyData: FC = () => {
           onCollapseToggle={() => toggleCollapsed(extension.type)}
         >
           {(dataForExtension?.length || 0) > 0 ? (
-            dataForExtension?.map((dataEntry, key) => (
-              <>
-                {extension.render(dataEntry, key)} {key + 1 !== dataForExtension.length ? <Separator /> : null}
-              </>
-            ))
+            dataForExtension?.map((dataEntry, key) => <>{extension.render(dataEntry, key)}</>)
           ) : (
             <Notification>{t("scm-landingpage-plugin.favoriteRepository.noData")}</Notification>
           )}

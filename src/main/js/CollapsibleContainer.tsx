@@ -33,14 +33,13 @@ type Props = {
   count?: number;
   initiallyCollapsed?: boolean;
   onCollapseToggle?: () => void;
+  contentWrapper?: React.ElementType;
 };
 
 const Container = styled.div`
   margin-bottom: 1rem;
   a:not(:last-child) div.media {
     border-bottom: solid 1px #cdcdcd;
-    padding-bottom: 1rem;
-    margin-bottom: 1rem;
   }
 `;
 
@@ -66,7 +65,8 @@ const CollapsibleContainer: FC<Props> = ({
   separatedEntries,
   emptyMessage,
   children,
-  onCollapseToggle
+  onCollapseToggle,
+  contentWrapper
 }) => {
   const [collapsed, setCollapsed] = useState(initiallyCollapsed);
 
@@ -77,9 +77,13 @@ const CollapsibleContainer: FC<Props> = ({
     if (!childArray || childArray.length === 0) {
       content = <EmptyMessage messageKey={emptyMessage} />;
     } else if (separatedEntries) {
-      content = childArray.map(child => <Content>{child}</Content>);
+      content = childArray.map(child => <Content className="p-2">{child}</Content>);
     } else {
-      content = <Content className="box">{children}</Content>;
+      if (contentWrapper) {
+        content = React.createElement(contentWrapper, null, children);
+      } else {
+        content = <Content className="box p-2">{children}</Content>;
+      }
     }
   }
 

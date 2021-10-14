@@ -44,7 +44,7 @@ const HealthCheckFailureEvent: MyEventComponent<HealthCheckFailureEventType> = (
   return (
     <CardColumnSmall
       link={link}
-      avatar={<Icon name={"exclamation-triangle"} className="fa-lg mt-5" />}
+      avatar={<Icon name="exclamation-triangle" className="fa-fw fa-lg" color="inherit" />}
       contentLeft={content}
       contentRight={""}
       footer={t("scm-landingpage-plugin.myevents.healthCheckFailure.description")}

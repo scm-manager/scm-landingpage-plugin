@@ -52,7 +52,7 @@ const RepositoryRenamedEvent: MyEventComponent<RepositoryRenamedEventType> = ({ 
   const icon = binder.hasExtension("avatar.factory") ? (
     <StyledGravatar person={{ name: event.username, mail: event.userMail }} />
   ) : (
-    <Icon name="exchange-alt fa-fw fa-lg mt-5" color="inherit" />
+    <Icon name="exchange-alt" className="fa-fw fa-lg" color="inherit" />
   );
   const content = (
     <div>
@@ -66,7 +66,16 @@ const RepositoryRenamedEvent: MyEventComponent<RepositoryRenamedEventType> = ({ 
   );
 
   return (
-    <CardColumnSmall link={link} avatar={icon} contentLeft={content} contentRight={<small><DateFromNow date={event.date} /></small>} />
+    <CardColumnSmall
+      link={link}
+      avatar={icon}
+      contentLeft={content}
+      contentRight={
+        <small>
+          <DateFromNow date={event.date} />
+        </small>
+      }
+    />
   );
 };
 

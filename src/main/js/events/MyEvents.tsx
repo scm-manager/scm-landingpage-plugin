@@ -58,12 +58,11 @@ const MyEvents: FC = () => {
       count={data?._embedded?.events?.length}
       initiallyCollapsed={isCollapsed("myevents")}
       onCollapseToggle={() => toggleCollapsed("myevents")}
+      contentWrapper={ScrollContainer}
     >
-      <ScrollContainer>
-        {data?._embedded?.events?.map((event, index) => (
-          <MyEvent key={index} event={event} />
-        ))}
-      </ScrollContainer>
+      {data?._embedded?.events?.map((event, index) => (
+        <MyEvent key={index} event={event} />
+      ))}
     </CollapsibleContainer>
   );
 };

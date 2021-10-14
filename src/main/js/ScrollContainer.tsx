@@ -25,7 +25,9 @@
 import { devices } from "@scm-manager/ui-components";
 import styled from "styled-components";
 
-const ScrollContainer = styled.div`
+const ScrollContainer = styled.div.attrs({
+  className: "box p-2"
+})`
   @media (min-width: ${devices.mobile.width}px) {
     overflow: visible auto;
     max-height: 400px;

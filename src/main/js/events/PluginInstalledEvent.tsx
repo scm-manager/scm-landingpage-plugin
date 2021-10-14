@@ -38,7 +38,7 @@ const PluginInstalledEvent: MyEventComponent<PluginEventType> = ({ event }) => {
   const [t] = useTranslation("plugins");
 
   const link = "/admin/plugins/available/";
-  const icon = <Icon name="puzzle-piece fa-fw fa-lg mt-5" color="inherit" />;
+  const icon = <Icon name="puzzle-piece" className="fa-fw fa-lg" color="inherit" />;
   const content = (
     <strong className="is-marginless">
       {event.previousPluginVersion
@@ -60,7 +60,11 @@ const PluginInstalledEvent: MyEventComponent<PluginEventType> = ({ event }) => {
       link={link}
       avatar={icon}
       contentLeft={content}
-      contentRight={<small><DateFromNow date={event.date} /></small>}
+      contentRight={
+        <small>
+          <DateFromNow date={event.date} />
+        </small>
+      }
       footer={footer}
     />
   );
