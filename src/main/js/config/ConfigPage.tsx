@@ -64,7 +64,7 @@ const ConfigPage: FC = () => {
       />
       {extensions.map(extension => (
         <DisplayOption
-          label={extension.title}
+          label={t(extension.title)}
           value={isDisplayed(extension.type)}
           toggle={() => toggleDisplayed(extension.type)}
         />
