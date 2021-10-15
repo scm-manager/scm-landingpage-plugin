@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import styled from "styled-components";
 import { Icon, Tag } from "@scm-manager/ui-components";
 import EmptyMessage from "./EmptyMessage";
@@ -68,7 +68,11 @@ const CollapsibleContainer: FC<Props> = ({
   onCollapseToggle,
   contentWrapper
 }) => {
-  const [collapsed, setCollapsed] = useState(initiallyCollapsed);
+  const [collapsed, setCollapsed] = useState<boolean>();
+
+  useEffect(() => {
+    setCollapsed(initiallyCollapsed ?? true);
+  });
 
   const icon = collapsed ? "angle-right" : "angle-down";
   let content = null;
@@ -87,7 +91,7 @@ const CollapsibleContainer: FC<Props> = ({
     }
   }
 
-  const onClick = () => {
+  const handleCollapseToggle = () => {
     const newState = !collapsed;
     setCollapsed(newState);
     onCollapseToggle && onCollapseToggle();
@@ -95,9 +99,12 @@ const CollapsibleContainer: FC<Props> = ({
 
   return (
     <Container>
-      <div className="has-cursor-pointer" onClick={onClick}>
+      <div className="has-cursor-pointer" onClick={handleCollapseToggle}>
         <Headline>
-          <Icon name={icon} color="default" /> {title} <Tag color="info">{count || 0}</Tag>
+          <Icon name={icon} color="default" /> {title}{" "}
+          <Tag color="info" className="ml-1">
+            <b className="is-size-6">{count || 0}</b>
+          </Tag>
         </Headline>
         <Separator />
       </div>

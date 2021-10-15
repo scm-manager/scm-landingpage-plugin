@@ -24,11 +24,12 @@
 
 import { useState } from "react";
 
-const CONFIG_LOCAL_STORAGE_KEY = "landing-page.config";
+const CONFIG_LOCAL_STORAGE_KEY = "scm.landing-page.config";
 
 export type Config = {
-  hiddenTypes: string[];
-  collapsedTypes: string[];
+  disabledCategories: string[];
+  collapsedCategories: string[];
+  isStored: boolean;
 };
 
 function useLocalStorage(): [config: Config, setConfig: (value: Config) => void] {
@@ -36,8 +37,9 @@ function useLocalStorage(): [config: Config, setConfig: (value: Config) => void]
     try {
       const item = window.localStorage.getItem(CONFIG_LOCAL_STORAGE_KEY);
       return item ? JSON.parse(item) : {
-        hiddenTypes: [],
-        collapsedTypes: []
+        disabledCategories: [],
+        collapsedCategories: [],
+        isStored: false
       };
     } catch (error) {
       console.error(error);
@@ -47,6 +49,7 @@ function useLocalStorage(): [config: Config, setConfig: (value: Config) => void]
 
   const updateConfig = (value: Config) => {
     try {
+      value = {...value, isStored: true};
       setConfig(value);
       window.localStorage.setItem(CONFIG_LOCAL_STORAGE_KEY, JSON.stringify(value));
     } catch (error) {
@@ -60,22 +63,22 @@ function useLocalStorage(): [config: Config, setConfig: (value: Config) => void]
 export function useConfig() {
   const [config, setConfig] = useLocalStorage();
 
-  const isDisplayed = (key: string) => !config.hiddenTypes.includes(key);
-  const isCollapsed = (key: string) => config.collapsedTypes.includes(key);
+  const isDisplayed = (key: string) => !config.disabledCategories.includes(key);
+  const isCollapsed = (key: string) => config.collapsedCategories.includes(key);
 
   const toggleDisplayed = (key: string) => {
     if (isDisplayed(key)) {
-      setConfig({...config, hiddenTypes: [...config.hiddenTypes, key]});
+      setConfig({...config, disabledCategories: [...config.disabledCategories, key]});
     } else {
-      setConfig({...config, hiddenTypes: config.hiddenTypes.filter(dt => dt !== key)});
+      setConfig({...config, disabledCategories: config.disabledCategories.filter(dt => dt !== key)});
     }
   };
 
   const toggleCollapsed = (key: string) => {
     if (!isCollapsed(key)) {
-      setConfig({...config, collapsedTypes: [...config.collapsedTypes, key]});
+      setConfig({...config, collapsedCategories: [...config.collapsedCategories, key]});
     } else {
-      setConfig({...config, collapsedTypes: config.collapsedTypes.filter(dt => dt !== key)});
+      setConfig({...config, collapsedCategories: config.collapsedCategories.filter(dt => dt !== key)});
     }
   };
 
@@ -83,6 +86,7 @@ export function useConfig() {
     isDisplayed,
     isCollapsed,
     toggleDisplayed,
-    toggleCollapsed
+    toggleCollapsed,
+    isConfigured: config.isStored
   }
 }

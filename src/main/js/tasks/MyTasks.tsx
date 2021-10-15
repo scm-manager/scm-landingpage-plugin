@@ -35,7 +35,7 @@ const MyTasks: FC = () => {
   const [t] = useTranslation("plugins");
   const links = useIndexLinks();
   const { data, error, isLoading } = useMyTasks((links?.landingpageTasks as Link)?.href);
-  const { toggleCollapsed, isCollapsed, isDisplayed } = useConfig();
+  const { toggleCollapsed, isCollapsed, isDisplayed, isConfigured } = useConfig();
 
   if (!isDisplayed("mytasks")) {
     return null;
@@ -55,7 +55,7 @@ const MyTasks: FC = () => {
       separatedEntries={false}
       emptyMessage={t("scm-landingpage-plugin.mytasks.noData")}
       count={data?._embedded?.tasks?.length}
-      initiallyCollapsed={isCollapsed("mytasks")}
+      initiallyCollapsed={isConfigured && isCollapsed("mytasks")}
       onCollapseToggle={() => toggleCollapsed("mytasks")}
     >
       {data?._embedded?.tasks.map((task, key) => (

@@ -34,6 +34,7 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class FavoriteRepositoryService {
 
@@ -71,12 +72,9 @@ public class FavoriteRepositoryService {
   List<Repository> getFavoriteRepositories() {
     Set<String> repositoryIds = store.get().get().getRepositoryIds();
 
-    List<Repository> data = new ArrayList<>();
-    for (String repoId : repositoryIds) {
-      if (RepositoryPermissions.read(repoId).isPermitted()) {
-        data.add(repositoryManager.get(repoId));
-      }
-    }
-    return data;
+    return repositoryIds.stream()
+      .filter(repoId -> RepositoryPermissions.read(repoId).isPermitted())
+      .map(repositoryManager::get)
+      .collect(Collectors.toList());
   }
 }

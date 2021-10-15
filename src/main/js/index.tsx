@@ -72,7 +72,7 @@ const Title: FC = () => {
     <>
       {t("scm-landingpage-plugin.title")}
       <Link to="/landingPageConfig">
-        <i className="fa fa-cog fa-fw is-size-6 ml-2 has-text-is-link" />
+        <i className="fa fa-cog fa-fw is-size-5 ml-2 has-text-is-link" />
       </Link>
     </>
   );

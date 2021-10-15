@@ -9,6 +9,6 @@ The administrative tasks will be shown to users which can administrate the SCM-M
 A possible tasks may be "update outdated plugins".
 
 ### Tasks from pull requests
-If a user creates a pull request the reviewers can request changes via tasks. The pull requests author will see his tasks on the personal page.
+If a user creates a pull request the reviewers can request changes via tasks. The pull requests author will see his tasks on the tasks widget.
 
 ![My tasks](assets/tasks.png)
