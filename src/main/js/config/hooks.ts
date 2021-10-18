@@ -22,68 +22,42 @@
  * SOFTWARE.
  */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const CONFIG_LOCAL_STORAGE_KEY = "scm.landing-page.config";
-
-export type Config = {
-  disabledCategories: string[];
-  collapsedState: {
-    [category: string]: boolean;
-  };
-};
-
-function useLocalStorage(): [config: Config, setConfig: (value: Config) => void] {
-  const [config, setConfig] = useState<Config>(() => {
+function useLocalStorage<T>(key: string, initialValue: T): [value: T, setValue: (value: T | ((previousConfig: T) => T)) => void] {
+  const [value, setValue] = useState<T>(() => {
     try {
-      const item = window.localStorage.getItem(CONFIG_LOCAL_STORAGE_KEY);
-      return item ? JSON.parse(item) : {
-        disabledCategories: [],
-        collapsedState: {}
-      } as Config;
+      const item = localStorage.getItem(key);
+      return item ? JSON.parse(item) : initialValue;
     } catch (error) {
       console.error(error);
-      return {};
+      return initialValue;
     }
   });
 
-  const updateConfig = (value: Config) => {
-    try {
-      setConfig(value);
-      window.localStorage.setItem(CONFIG_LOCAL_STORAGE_KEY, JSON.stringify(value));
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  useEffect(() => localStorage.setItem(key, JSON.stringify(value)), [key, value]);
 
-  return [config, updateConfig];
+  return [value, setValue];
 }
 
-export function useConfig() {
-  const [config, setConfig] = useLocalStorage();
+export function useIsCategoryDisabled(category: string) {
+  const [disabledCategories] = useLocalStorage<Array<string>>("scm.landingPagePlugin.disabledCategories", []);
+  return disabledCategories.includes(category);
+}
 
-  const isDisplayed = (key: string) => !config.disabledCategories.includes(key);
-  const getCollapsedState = (key: string): boolean | undefined => config.collapsedState[key];
-
-  const toggleDisplayed = (key: string) => {
-    if (isDisplayed(key)) {
-      setConfig({...config, disabledCategories: [...config.disabledCategories, key]});
-    } else {
-      setConfig({...config, disabledCategories: config.disabledCategories.filter(dt => dt !== key)});
-    }
-  };
-
-  const setCollapsed = (key: string, collapsed: boolean) => {
-    const newConfig = config;
-    newConfig.collapsedState[key] = collapsed;
-    setConfig(newConfig);
-  };
-
+export function useDisabledCategories() {
+  const [disabledCategories, setDisabledCategories] = useLocalStorage<Array<string>>("scm.landingPagePlugin.disabledCategories", []);
+  const isDisabled = (category: string) => !disabledCategories.includes(category);
+  const toggleDisabled = (category: string) => isDisabled(category) ?
+    setDisabledCategories([...disabledCategories, category]) :
+    setDisabledCategories(disabledCategories.filter(it => it !== category));
   return {
-    isDisplayed,
-    getCollapsedState,
-    toggleDisplayed,
-    setCollapsed,
-    disabledCategories: config.disabledCategories
+    isDisabled,
+    toggleDisabled,
+    disabledCategories
   }
+}
+
+export function useCollapsedState(category: string) {
+  return useLocalStorage<boolean | null>(`scm.landingPagePlugin.collapsedState.${category}`, null);
 }

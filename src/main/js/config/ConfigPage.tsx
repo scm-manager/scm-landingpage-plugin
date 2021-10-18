@@ -25,9 +25,9 @@
 import { Checkbox, Page } from "@scm-manager/ui-components";
 import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
-import { useConfig } from "./hooks";
 import { ExtensionProps } from "../data/MyData";
 import { useBinder } from "@scm-manager/ui-extensions";
+import { useDisabledCategories } from "./hooks";
 
 type DisplayOptionProps = {
   label: string;
@@ -41,7 +41,7 @@ const DisplayOption: FC<DisplayOptionProps> = ({ value, toggle, label }) => {
 
 const ConfigPage: FC = () => {
   const [t] = useTranslation("plugins");
-  const { isDisplayed, toggleDisplayed } = useConfig();
+  const { isDisabled, toggleDisabled } = useDisabledCategories();
   const binder = useBinder();
   const extensions: ExtensionProps[] = binder.getExtensions("landingpage.mydata");
 
@@ -49,24 +49,24 @@ const ConfigPage: FC = () => {
     <Page title={t("scm-landingpage-plugin.config.title")} subtitle={t("scm-landingpage-plugin.config.subtitle")}>
       <DisplayOption
         label={t("scm-landingpage-plugin.favoriteRepository.title")}
-        value={isDisplayed("favoriteRepository")}
-        toggle={() => toggleDisplayed("favoriteRepository")}
+        value={isDisabled("favoriteRepository")}
+        toggle={() => toggleDisabled("favoriteRepository")}
       />
       <DisplayOption
         label={t("scm-landingpage-plugin.mytasks.title")}
-        value={isDisplayed("mytasks")}
-        toggle={() => toggleDisplayed("mytasks")}
+        value={isDisabled("mytasks")}
+        toggle={() => toggleDisabled("mytasks")}
       />
       <DisplayOption
         label={t("scm-landingpage-plugin.myevents.title")}
-        value={isDisplayed("myevents")}
-        toggle={() => toggleDisplayed("myevents")}
+        value={isDisabled("myevents")}
+        toggle={() => toggleDisabled("myevents")}
       />
       {extensions.map(extension => (
         <DisplayOption
           label={t(extension.title)}
-          value={isDisplayed(extension.type)}
-          toggle={() => toggleDisplayed(extension.type)}
+          value={isDisabled(extension.type)}
+          toggle={() => toggleDisabled(extension.type)}
         />
       ))}
     </Page>

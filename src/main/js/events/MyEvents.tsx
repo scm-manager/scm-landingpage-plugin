@@ -30,15 +30,16 @@ import { Link } from "@scm-manager/ui-types";
 import { useMyEvents } from "./useMyEvents";
 import { useIndexLinks } from "@scm-manager/ui-api";
 import ScrollContainer from "../ScrollContainer";
-import { useConfig } from "../config/hooks";
+import { useCollapsedState, useIsCategoryDisabled } from "../config/hooks";
 
 const MyEvents: FC = () => {
   const [t] = useTranslation("plugins");
   const links = useIndexLinks();
   const { data, error, isLoading } = useMyEvents((links?.landingpageEvents as Link)?.href);
-  const { setCollapsed, getCollapsedState, isDisplayed } = useConfig();
+  const disabled = useIsCategoryDisabled("myevents");
+  const [collapsed, setCollapsed] = useCollapsedState("myevents");
 
-  if (!isDisplayed("myevents")) {
+  if (disabled) {
     return null;
   }
 
@@ -56,8 +57,8 @@ const MyEvents: FC = () => {
       separatedEntries={false}
       emptyMessage={t("scm-landingpage-plugin.myevents.noData")}
       count={data?._embedded?.events?.length}
-      initiallyCollapsed={getCollapsedState("myevents")}
-      onCollapseToggle={collapsed => setCollapsed("myevents", collapsed)}
+      initiallyCollapsed={collapsed}
+      onCollapseToggle={setCollapsed}
       contentWrapper={ScrollContainer}
     >
       {data?._embedded?.events?.map((event, index) => (

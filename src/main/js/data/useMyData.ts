@@ -24,12 +24,12 @@
 import { useQuery } from "react-query";
 import { apiClient } from "@scm-manager/ui-components";
 import { MyDataEntriesType } from "../types";
-import { useConfig } from "../config/hooks";
+import { useDisabledCategories } from "../config/hooks";
 
 type MyData = MyDataEntriesType;
 
 export const useMyData = (link: string) => {
-  const { disabledCategories } = useConfig();
+  const { disabledCategories } = useDisabledCategories();
   if (disabledCategories.length) {
     link += `?disabledTypes=${disabledCategories.join(",")}`;
   }

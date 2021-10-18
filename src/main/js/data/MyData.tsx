@@ -29,7 +29,8 @@ import { binder } from "@scm-manager/ui-extensions";
 import CollapsibleContainer from "../CollapsibleContainer";
 import { Link } from "@scm-manager/ui-types";
 import { useMyData } from "./useMyData";
-import { useConfig } from "../config/hooks";
+import { useCollapsedState, useIsCategoryDisabled } from "../config/hooks";
+import { MyDataType } from "../types";
 
 export type ExtensionProps = {
   title: string;
@@ -39,35 +40,45 @@ export type ExtensionProps = {
   emptyMessage?: string;
 };
 
-const MyData: FC = () => {
+type MyDataExtensionProps = {
+  extension: ExtensionProps;
+  data?: MyDataType[];
+};
+
+const MyDataExtension: FC<MyDataExtensionProps> = ({ extension, data }) => {
   const [t] = useTranslation("plugins");
+  const disabled = useIsCategoryDisabled(extension.type);
+  const [collapsed, setCollapsed] = useCollapsedState(extension.type);
+
+  if (disabled || (data?.length === 0 && !extension.emptyMessage)) {
+    return null;
+  } else {
+    return (
+      <CollapsibleContainer
+        title={t(extension.title)}
+        separatedEntries={extension.separatedEntries}
+        emptyMessage={extension.emptyMessage}
+        count={data?.length}
+        initiallyCollapsed={collapsed}
+        onCollapseToggle={setCollapsed}
+      >
+        {(data?.length || 0) > 0 ? (
+          data?.map((dataEntry, key) => <>{extension.render(dataEntry, key)}</>)
+        ) : (
+          <Notification>{t("scm-landingpage-plugin.favoriteRepository.noData")}</Notification>
+        )}
+      </CollapsibleContainer>
+    );
+  }
+};
+
+const MyData: FC = () => {
   const links = useIndexLinks();
   const { data, error, isLoading } = useMyData((links?.landingpageData as Link)?.href);
-  const { isDisplayed, setCollapsed, getCollapsedState } = useConfig();
 
   const renderExtension: (extension: ExtensionProps) => any = extension => {
     const dataForExtension = data?._embedded.data.filter(entry => entry.type === extension.type);
-
-    if (!isDisplayed(extension.type) || (dataForExtension?.length === 0 && !extension.emptyMessage)) {
-      return null;
-    } else {
-      return (
-        <CollapsibleContainer
-          title={t(extension.title)}
-          separatedEntries={extension.separatedEntries}
-          emptyMessage={extension.emptyMessage}
-          count={dataForExtension?.length}
-          initiallyCollapsed={getCollapsedState(extension.type)}
-          onCollapseToggle={collapsed => setCollapsed(extension.type, collapsed)}
-        >
-          {(dataForExtension?.length || 0) > 0 ? (
-            dataForExtension?.map((dataEntry, key) => <>{extension.render(dataEntry, key)}</>)
-          ) : (
-            <Notification>{t("scm-landingpage-plugin.favoriteRepository.noData")}</Notification>
-          )}
-        </CollapsibleContainer>
-      );
-    }
+    return <MyDataExtension extension={extension} data={dataForExtension} />;
   };
 
   const extensions: ExtensionProps[] = binder.getExtensions("landingpage.mydata");

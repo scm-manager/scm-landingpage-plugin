@@ -29,15 +29,16 @@ import MyTask from "./MyTask";
 import { Link } from "@scm-manager/ui-types";
 import { useMyTasks } from "./useMyTasks";
 import { useIndexLinks } from "@scm-manager/ui-api";
-import { useConfig } from "../config/hooks";
+import { useCollapsedState, useIsCategoryDisabled } from "../config/hooks";
 
 const MyTasks: FC = () => {
   const [t] = useTranslation("plugins");
   const links = useIndexLinks();
   const { data, error, isLoading } = useMyTasks((links?.landingpageTasks as Link)?.href);
-  const { setCollapsed, getCollapsedState, isDisplayed } = useConfig();
+  const disabled = useIsCategoryDisabled("mytasks");
+  const [collapsed, setCollapsed] = useCollapsedState("mytasks");
 
-  if (!isDisplayed("mytasks")) {
+  if (disabled) {
     return null;
   }
 
@@ -55,8 +56,8 @@ const MyTasks: FC = () => {
       separatedEntries={false}
       emptyMessage={t("scm-landingpage-plugin.mytasks.noData")}
       count={data?._embedded?.tasks?.length}
-      initiallyCollapsed={getCollapsedState("mytasks")}
-      onCollapseToggle={collapsed => setCollapsed("mytasks", collapsed)}
+      initiallyCollapsed={collapsed}
+      onCollapseToggle={setCollapsed}
     >
       {data?._embedded?.tasks.map((task, key) => (
         <MyTask key={key} task={task} />
