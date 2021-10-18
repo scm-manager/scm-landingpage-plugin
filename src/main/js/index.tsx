@@ -43,6 +43,16 @@ import { ProtectedRoute } from "@scm-manager/ui-components";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import ConfigPage from "./config/ConfigPage";
+import styled from "styled-components";
+
+const RelativeLink = styled(Link)`
+  position: relative;
+`;
+
+const AbsoluteIcon = styled.i`
+  position: absolute;
+  top: 11px;
+`;
 
 type ConfigRouteProps = {
   authenticated: boolean;
@@ -71,9 +81,9 @@ const Title: FC = () => {
   return (
     <>
       {t("scm-landingpage-plugin.title")}
-      <Link to="/landingPageConfig">
-        <i className="fa fa-cog fa-fw is-size-5 ml-2 has-text-is-link" />
-      </Link>
+      <RelativeLink to="/landingPageConfig">
+        <AbsoluteIcon className="fa fa-cog fa-fw is-size-5 ml-2 has-text-is-link" />
+      </RelativeLink>
     </>
   );
 };
