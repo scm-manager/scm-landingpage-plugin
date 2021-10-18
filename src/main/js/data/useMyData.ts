@@ -30,8 +30,11 @@ type MyData = MyDataEntriesType;
 
 export const useMyData = (link: string) => {
   const { disabledCategories } = useConfig();
+  if (disabledCategories.length) {
+    link += `?disabledTypes=${disabledCategories.join(",")}`;
+  }
   const { error, isLoading, data } = useQuery<MyData, Error>(["landingpage", "myData"], () =>
-    apiClient.get(`${link}?disabledTypes=${disabledCategories.join(",")}`).then(response => response.json())
+    apiClient.get(link).then(response => response.json())
   );
 
   return {

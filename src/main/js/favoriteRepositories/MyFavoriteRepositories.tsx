@@ -38,35 +38,31 @@ const MyFavoriteRepositories: FC = () => {
     return null;
   }
 
-  const header = (
-    <div className={classNames("is-flex", "is-align-items-center", "is-size-6", "has-text-weight-bold", "p-3")}>
-      {t("scm-landingpage-plugin.favoriteRepository.title")}
-    </div>
-  );
+  let content;
 
   if (error) {
-    return (
-      <>
-        {header}
-        <ErrorNotification error={error} />
-      </>
-    );
+    content = <ErrorNotification error={error} />;
   }
 
   if (isLoading) {
-    return (
-      <>
-        {header}
-        <Loading />
-      </>
-    );
+    content = <Loading />;
   }
 
   if (!data || !data.repositories || data.repositories.length === 0) {
+    content = <Notification type="info">{t("scm-landingpage-plugin.favoriteRepository.noData")}</Notification>;
+  }
+
+  if (content) {
+    const header = (
+      <div className={classNames("is-flex", "is-align-items-center", "is-size-6", "has-text-weight-bold", "p-3")}>
+        {t("scm-landingpage-plugin.favoriteRepository.title")}
+      </div>
+    );
+
     return (
       <>
         {header}
-        <Notification type="info">{t("scm-landingpage-plugin.favoriteRepository.noData")}</Notification>
+        {content}
       </>
     );
   }
