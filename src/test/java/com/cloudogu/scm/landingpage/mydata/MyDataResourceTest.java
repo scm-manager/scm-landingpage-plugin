@@ -41,6 +41,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Collections;
 
+import static java.util.Collections.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -63,7 +64,7 @@ class MyDataResourceTest {
 
   @Test
   void shouldReturnCollectedData() throws URISyntaxException, IOException {
-    when(collector.collect()).thenReturn(Collections.singletonList(new SampleData("awesome")));
+    when(collector.collect(emptyList())).thenReturn(singletonList(new SampleData("awesome")));
 
     MockHttpRequest request = MockHttpRequest.get("/v2/landingpage/mydata");
     MockHttpResponse response = new MockHttpResponse();

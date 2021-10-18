@@ -43,7 +43,7 @@ const MyData: FC = () => {
   const [t] = useTranslation("plugins");
   const links = useIndexLinks();
   const { data, error, isLoading } = useMyData((links?.landingpageData as Link)?.href);
-  const { isDisplayed, toggleCollapsed, isCollapsed, isConfigured } = useConfig();
+  const { isDisplayed, setCollapsed, getCollapsedState } = useConfig();
 
   const renderExtension: (extension: ExtensionProps) => any = extension => {
     const dataForExtension = data?._embedded.data.filter(entry => entry.type === extension.type);
@@ -57,8 +57,8 @@ const MyData: FC = () => {
           separatedEntries={extension.separatedEntries}
           emptyMessage={extension.emptyMessage}
           count={dataForExtension?.length}
-          initiallyCollapsed={isConfigured && isCollapsed(extension.type)}
-          onCollapseToggle={() => toggleCollapsed(extension.type)}
+          initiallyCollapsed={getCollapsedState(extension.type)}
+          onCollapseToggle={collapsed => setCollapsed(extension.type, collapsed)}
         >
           {(dataForExtension?.length || 0) > 0 ? (
             dataForExtension?.map((dataEntry, key) => <>{extension.render(dataEntry, key)}</>)

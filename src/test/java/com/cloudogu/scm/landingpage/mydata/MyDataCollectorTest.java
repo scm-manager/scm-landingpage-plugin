@@ -29,11 +29,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
+import static java.util.Collections.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,8 +51,8 @@ class MyDataCollectorTest {
     Iterable<MyData> data = ImmutableList.of(a, b);
     when(provider.getData()).thenReturn(data);
 
-    MyDataCollector collector = new MyDataCollector(Collections.singleton(provider));
-    List<MyData> collectedData = collector.collect();
+    MyDataCollector collector = new MyDataCollector(singleton(provider));
+    List<MyData> collectedData = collector.collect(emptyList());
     assertThat(collectedData).containsOnly(a, b);
   }
 
@@ -57,15 +60,52 @@ class MyDataCollectorTest {
   void shouldReturnCombinedData() {
     MyDataProvider providerOne = mock(MyDataProvider.class);
     DataOne a = new DataOne();
-    when(providerOne.getData()).thenReturn(Collections.singleton(a));
+    when(providerOne.getData()).thenReturn(singleton(a));
 
     MyDataProvider providerTwo = mock(MyDataProvider.class);
     DataTwo b = new DataTwo();
-    when(providerTwo.getData()).thenReturn(Collections.singleton(b));
+    when(providerTwo.getData()).thenReturn(singleton(b));
 
     MyDataCollector collector = new MyDataCollector(ImmutableSet.of(providerOne, providerTwo));
-    List<MyData> collectedData = collector.collect();
+    List<MyData> collectedData = collector.collect(emptyList());
     assertThat(collectedData).containsOnly(a, b);
+  }
+
+  @Test
+  void shouldFilterProvidersByType() {
+    MyDataProvider providerOne = mock(MyDataProvider.class);
+    DataOne a = new DataOne();
+    when(providerOne.getData()).thenReturn(singleton(a));
+    when(providerOne.getType()).thenReturn(Optional.of("spaceship"));
+
+    MyDataProvider providerTwo = mock(MyDataProvider.class);
+    when(providerTwo.getType()).thenReturn(Optional.of("plant"));
+
+    MyDataProvider providerThree = mock(MyDataProvider.class);
+    DataTwo c = new DataTwo();
+    when(providerThree.getData()).thenReturn(singleton(c));
+
+    MyDataCollector collector = new MyDataCollector(ImmutableSet.of(providerOne, providerTwo, providerThree));
+    List<MyData> collectedData = collector.collect(singletonList("plant"));
+    assertThat(collectedData).containsOnly(a, c);
+    verify(providerTwo, never()).getData();
+    verify(providerTwo).getType();
+  }
+
+  @Test
+  void shouldFilterDataByType() {
+    MyDataProvider providerOne = mock(MyDataProvider.class);
+    SpaceshipData a = new SpaceshipData();
+    when(providerOne.getData()).thenReturn(singleton(a));
+
+    MyDataProvider providerTwo = mock(MyDataProvider.class);
+    PlantData b = new PlantData();
+    when(providerTwo.getData()).thenReturn(singleton(b));
+
+    MyDataCollector collector = new MyDataCollector(ImmutableSet.of(providerOne, providerTwo));
+    List<MyData> collectedData = collector.collect(singletonList("plant"));
+    assertThat(collectedData).containsOnly(a);
+    verify(providerTwo).getData();
   }
 
   static class DataOne extends MyData {
@@ -77,6 +117,28 @@ class MyDataCollectorTest {
   static class DataTwo extends MyData {
     public DataTwo() {
       super(DataTwo.class.getSimpleName());
+    }
+  }
+
+  static class SpaceshipData extends MyData {
+    public SpaceshipData() {
+      super(SpaceshipData.class.getSimpleName());
+    }
+
+    @Override
+    public String getType() {
+      return "spaceship";
+    }
+  }
+
+  static class PlantData extends MyData {
+    public PlantData() {
+      super(PlantData.class.getSimpleName());
+    }
+
+    @Override
+    public String getType() {
+      return "plant";
     }
   }
 

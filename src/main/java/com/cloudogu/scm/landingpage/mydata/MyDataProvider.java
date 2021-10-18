@@ -25,8 +25,14 @@ package com.cloudogu.scm.landingpage.mydata;
 
 import sonia.scm.plugin.ExtensionPoint;
 
+import java.util.Optional;
+
 @ExtensionPoint
 public interface MyDataProvider {
 
   Iterable<MyData> getData();
+
+  default Optional<String> getType() {
+    return Optional.empty();
+  }
 }

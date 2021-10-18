@@ -23,7 +23,7 @@
  */
 import React, { FC, useEffect, useState } from "react";
 import styled from "styled-components";
-import { Icon, Tag } from "@scm-manager/ui-components";
+import { devices, Icon, Tag } from "@scm-manager/ui-components";
 import EmptyMessage from "./EmptyMessage";
 
 type Props = {
@@ -32,7 +32,7 @@ type Props = {
   emptyMessage?: string;
   count?: number;
   initiallyCollapsed?: boolean;
-  onCollapseToggle?: () => void;
+  onCollapseToggle?: (collapsed: boolean) => void;
   contentWrapper?: React.ElementType;
 };
 
@@ -70,9 +70,10 @@ const CollapsibleContainer: FC<Props> = ({
 }) => {
   const [collapsed, setCollapsed] = useState<boolean>();
 
-  useEffect(() => {
-    setCollapsed(initiallyCollapsed ?? true);
-  });
+  useEffect(
+    () => setCollapsed(initiallyCollapsed ?? window.matchMedia(`(max-width: ${devices.mobile.width}px)`).matches),
+    [initiallyCollapsed]
+  );
 
   const icon = collapsed ? "angle-right" : "angle-down";
   let content = null;
@@ -94,7 +95,7 @@ const CollapsibleContainer: FC<Props> = ({
   const handleCollapseToggle = () => {
     const newState = !collapsed;
     setCollapsed(newState);
-    onCollapseToggle && onCollapseToggle();
+    onCollapseToggle && onCollapseToggle(newState);
   };
 
   return (

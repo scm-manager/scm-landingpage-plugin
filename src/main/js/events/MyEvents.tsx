@@ -36,7 +36,7 @@ const MyEvents: FC = () => {
   const [t] = useTranslation("plugins");
   const links = useIndexLinks();
   const { data, error, isLoading } = useMyEvents((links?.landingpageEvents as Link)?.href);
-  const { toggleCollapsed, isCollapsed, isDisplayed, isConfigured } = useConfig();
+  const { setCollapsed, getCollapsedState, isDisplayed } = useConfig();
 
   if (!isDisplayed("myevents")) {
     return null;
@@ -56,8 +56,8 @@ const MyEvents: FC = () => {
       separatedEntries={false}
       emptyMessage={t("scm-landingpage-plugin.myevents.noData")}
       count={data?._embedded?.events?.length}
-      initiallyCollapsed={isConfigured && isCollapsed("myevents")}
-      onCollapseToggle={() => toggleCollapsed("myevents")}
+      initiallyCollapsed={getCollapsedState("myevents")}
+      onCollapseToggle={collapsed => setCollapsed("myevents", collapsed)}
       contentWrapper={ScrollContainer}
     >
       {data?._embedded?.events?.map((event, index) => (

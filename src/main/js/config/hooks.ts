@@ -28,8 +28,9 @@ const CONFIG_LOCAL_STORAGE_KEY = "scm.landing-page.config";
 
 export type Config = {
   disabledCategories: string[];
-  collapsedCategories: string[];
-  isStored: boolean;
+  collapsedState: {
+    [category: string]: boolean;
+  };
 };
 
 function useLocalStorage(): [config: Config, setConfig: (value: Config) => void] {
@@ -38,9 +39,8 @@ function useLocalStorage(): [config: Config, setConfig: (value: Config) => void]
       const item = window.localStorage.getItem(CONFIG_LOCAL_STORAGE_KEY);
       return item ? JSON.parse(item) : {
         disabledCategories: [],
-        collapsedCategories: [],
-        isStored: false
-      };
+        collapsedState: {}
+      } as Config;
     } catch (error) {
       console.error(error);
       return {};
@@ -49,7 +49,6 @@ function useLocalStorage(): [config: Config, setConfig: (value: Config) => void]
 
   const updateConfig = (value: Config) => {
     try {
-      value = {...value, isStored: true};
       setConfig(value);
       window.localStorage.setItem(CONFIG_LOCAL_STORAGE_KEY, JSON.stringify(value));
     } catch (error) {
@@ -64,7 +63,7 @@ export function useConfig() {
   const [config, setConfig] = useLocalStorage();
 
   const isDisplayed = (key: string) => !config.disabledCategories.includes(key);
-  const isCollapsed = (key: string) => config.collapsedCategories.includes(key);
+  const getCollapsedState = (key: string): boolean | undefined => config.collapsedState[key];
 
   const toggleDisplayed = (key: string) => {
     if (isDisplayed(key)) {
@@ -74,19 +73,17 @@ export function useConfig() {
     }
   };
 
-  const toggleCollapsed = (key: string) => {
-    if (!isCollapsed(key)) {
-      setConfig({...config, collapsedCategories: [...config.collapsedCategories, key]});
-    } else {
-      setConfig({...config, collapsedCategories: config.collapsedCategories.filter(dt => dt !== key)});
-    }
+  const setCollapsed = (key: string, collapsed: boolean) => {
+    const newConfig = config;
+    newConfig.collapsedState[key] = collapsed;
+    setConfig(newConfig);
   };
 
   return {
     isDisplayed,
-    isCollapsed,
+    getCollapsedState,
     toggleDisplayed,
-    toggleCollapsed,
-    isConfigured: config.isStored
+    setCollapsed,
+    disabledCategories: config.disabledCategories
   }
 }
