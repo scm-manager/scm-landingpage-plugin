@@ -21,34 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React, { FC } from "react";
-import { Page } from "@scm-manager/ui-components";
-import MyTasks from "./tasks/MyTasks";
-import { useTranslation } from "react-i18next";
-import MyData from "./data/MyData";
-import MyEvents from "./events/MyEvents";
-import { Links } from "@scm-manager/ui-types";
 
-type Props = {
-  links: Links;
-};
+import { devices } from "@scm-manager/ui-components";
+import styled from "styled-components";
 
-const Home: FC<Props> = props => {
-  const [t] = useTranslation("plugins");
+const ScrollContainer = styled.div.attrs({
+  className: "box p-2"
+})`
+  @media (min-width: ${devices.mobile.width}px) {
+    overflow: visible auto;
+    max-height: 400px;
+  }
+`;
 
-  return (
-    <Page title={t("scm-landingpage-plugin.home.title")} subtitle={t("scm-landingpage-plugin.home.subtitle")}>
-      <div className="columns">
-        <div className="column is-half">
-          <MyTasks links={props.links} />
-          <MyData links={props.links} />
-        </div>
-        <div className="column is-half">
-          <MyEvents links={props.links} />
-        </div>
-      </div>
-    </Page>
-  );
-};
-
-export default Home;
+export default ScrollContainer;

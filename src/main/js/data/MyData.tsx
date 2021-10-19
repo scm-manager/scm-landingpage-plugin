@@ -23,24 +23,14 @@
  */
 import React, { FC, ReactElement } from "react";
 import { useTranslation } from "react-i18next";
+import { useIndexLinks } from "@scm-manager/ui-api";
 import { ErrorNotification, Loading, Notification } from "@scm-manager/ui-components";
-import styled from "styled-components";
 import { binder } from "@scm-manager/ui-extensions";
 import CollapsibleContainer from "../CollapsibleContainer";
-import { Link, Links } from "@scm-manager/ui-types";
+import { Link } from "@scm-manager/ui-types";
 import { useMyData } from "./useMyData";
-
-const Headline = styled.h3`
-  font-size: 1.25rem;
-  margin-bottom: 1rem;
-  & small {
-    font-size: 0.875rem;
-  }
-`;
-
-type Props = {
-  links: Links;
-};
+import { useCollapsedState, useIsCategoryDisabled } from "../config/hooks";
+import { MyDataType } from "../types";
 
 export type ExtensionProps = {
   title: string;
@@ -50,48 +40,52 @@ export type ExtensionProps = {
   emptyMessage?: string;
 };
 
-const Separator = styled.div`
-  border-bottom: 1px solid rgb(219, 219, 219, 0.5);
-  margin: 0 1rem;
-`;
+type MyDataExtensionProps = {
+  extension: ExtensionProps;
+  data?: MyDataType[];
+};
 
-const Box = styled.div`
-  padding: 0.5rem;
-`;
-
-const MyData: FC<Props> = ({ links }) => {
+const MyDataExtension: FC<MyDataExtensionProps> = ({ extension, data }) => {
   const [t] = useTranslation("plugins");
+  const disabled = useIsCategoryDisabled(extension.type);
+  const [collapsed, setCollapsed] = useCollapsedState(extension.type);
+
+  if (disabled || (data?.length === 0 && !extension.emptyMessage)) {
+    return null;
+  } else {
+    return (
+      <CollapsibleContainer
+        title={t(extension.title)}
+        separatedEntries={extension.separatedEntries}
+        emptyMessage={extension.emptyMessage}
+        count={data?.length}
+        initiallyCollapsed={collapsed}
+        onCollapseToggle={setCollapsed}
+      >
+        {(data?.length || 0) > 0 ? (
+          data?.map((dataEntry, key) => <>{extension.render(dataEntry, key)}</>)
+        ) : (
+          <Notification>{t("scm-landingpage-plugin.favoriteRepository.noData")}</Notification>
+        )}
+      </CollapsibleContainer>
+    );
+  }
+};
+
+const MyData: FC = () => {
+  const links = useIndexLinks();
   const { data, error, isLoading } = useMyData((links?.landingpageData as Link)?.href);
 
   const renderExtension: (extension: ExtensionProps) => any = extension => {
     const dataForExtension = data?._embedded.data.filter(entry => entry.type === extension.type);
-
-    if (dataForExtension?.length === 0 && !extension.emptyMessage) {
-      return null;
-    } else {
-      return (
-        <CollapsibleContainer
-          title={t(extension.title)}
-          separatedEntries={extension.separatedEntries}
-          emptyMessage={extension.emptyMessage}
-        >
-          {(dataForExtension?.length || 0) > 0 ? (
-            <Box className="box">
-              {dataForExtension?.map((dataEntry, key) => (
-                <>
-                  {extension.render(dataEntry, key)} {key + 1 !== dataForExtension.length ? <Separator /> : null}
-                </>
-              ))}
-            </Box>
-          ) : (
-            <Notification>{t("scm-landingpage-plugin.favoriteRepository.noData")}</Notification>
-          )}
-        </CollapsibleContainer>
-      );
-    }
+    return <MyDataExtension extension={extension} data={dataForExtension} />;
   };
 
   const extensions: ExtensionProps[] = binder.getExtensions("landingpage.mydata");
+
+  if (!extensions.length) {
+    return null;
+  }
 
   if (error) {
     return <ErrorNotification error={error} />;
@@ -101,12 +95,7 @@ const MyData: FC<Props> = ({ links }) => {
     return <Loading />;
   }
 
-  return (
-    <>
-      <Headline>{t("scm-landingpage-plugin.mydata.title")}</Headline>
-      {extensions.map(renderExtension)}
-    </>
-  );
+  return <>{extensions.map(renderExtension)}</>;
 };
 
 export default MyData;

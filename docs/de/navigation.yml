@@ -1,6 +1,8 @@
 - section: Features
   entries:
     - /overview/
+    - /my-favorite-repositories/
     - /my-tasks/
     - /my-data/
     - /my-events/
+    - /configuration/

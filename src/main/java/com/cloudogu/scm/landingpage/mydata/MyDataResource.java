@@ -29,8 +29,10 @@ import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
+import java.util.List;
 
 @Path("v2/landingpage/mydata")
 public class MyDataResource {
@@ -47,7 +49,7 @@ public class MyDataResource {
   @GET
   @Path("")
   @Produces(MEDIATYPE)
-  public MyDataDto getData(@Context UriInfo uriInfo) {
-    return new MyDataDto(collector.collect());
+  public MyDataDto getData(@Context UriInfo uriInfo, @QueryParam("disabledTypes") List<String> disabledTypes) {
+    return new MyDataDto(collector.collect(disabledTypes));
   }
 }

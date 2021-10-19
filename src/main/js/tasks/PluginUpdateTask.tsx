@@ -25,40 +25,11 @@ import React from "react";
 import { binder } from "@scm-manager/ui-extensions";
 import { MyTaskComponent, MyTaskType } from "../types";
 import { useTranslation } from "react-i18next";
-import styled from "styled-components";
-import classNames from "classnames";
-import { Link as ReactLink } from "react-router-dom";
+import { CardColumnSmall, Icon } from "@scm-manager/ui-components";
 
 type PluginUpdateTaskType = MyTaskType & {
   outdatedPlugins: number;
 };
-
-const FlexFullHeight = styled.div`
-  flex-direction: column;
-  justify-content: space-around;
-  align-self: stretch;
-`;
-
-const ContentLeft = styled.div`
-  margin-bottom: 0 !important;
-  overflow: hidden;
-`;
-
-const CenteredItems = styled.div`
-  align-items: center;
-`;
-
-const Icon = styled.i`
-  margin-right: 0.5rem;
-  align-self: center;
-`;
-
-const StyledLink = styled(ReactLink)`
-  color: inherit;
-  :hover {
-    color: #33b2e8 !important;
-  }
-`;
 
 const PluginUpdateTask: MyTaskComponent<PluginUpdateTaskType> = ({ task }) => {
   const [t] = useTranslation("plugins");
@@ -66,19 +37,13 @@ const PluginUpdateTask: MyTaskComponent<PluginUpdateTaskType> = ({ task }) => {
   const link = "admin/plugins/installed/";
 
   return (
-    <StyledLink to={link}>
-      <div className={"media"}>
-        <Icon className="fas fa-puzzle-piece fa-2x media-left" />
-        <FlexFullHeight className={classNames("media-content", "text-box", "is-flex")}>
-          <CenteredItems className="is-flex">
-            <ContentLeft className="content">
-              <strong className="is-marginless">{t("scm-landingpage-plugin.tasks.updatePlugin.title")}</strong>
-              <p>{t("scm-landingpage-plugin.tasks.updatePlugin.description", { count: task.outdatedPlugins })}</p>
-            </ContentLeft>
-          </CenteredItems>
-        </FlexFullHeight>
-      </div>
-    </StyledLink>
+    <CardColumnSmall
+      link={link}
+      avatar={<Icon name="puzzle-piece" className="fa-lg fa-fw" color="inherit" />}
+      contentLeft={<strong className="is-marginless">{t("scm-landingpage-plugin.tasks.updatePlugin.title")}</strong>}
+      contentRight={""}
+      footer={t("scm-landingpage-plugin.tasks.updatePlugin.description", { count: task.outdatedPlugins })}
+    />
   );
 };
 

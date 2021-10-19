@@ -21,23 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import styled from "styled-components";
-import { Icon } from "@scm-manager/ui-components";
+import { devices, Icon, Tag } from "@scm-manager/ui-components";
 import EmptyMessage from "./EmptyMessage";
 
 type Props = {
   title: string;
   separatedEntries: boolean;
   emptyMessage?: string;
+  count?: number;
+  initiallyCollapsed?: boolean;
+  onCollapseToggle?: (collapsed: boolean) => void;
+  contentWrapper?: React.ElementType;
 };
 
 const Container = styled.div`
   margin-bottom: 1rem;
   a:not(:last-child) div.media {
     border-bottom: solid 1px #cdcdcd;
-    padding-bottom: 1rem;
-    margin-bottom: 1rem;
   }
 `;
 
@@ -56,8 +58,22 @@ const Separator = styled.hr`
   margin: 0.5rem 0;
 `;
 
-const CollapsibleContainer: FC<Props> = ({ title, separatedEntries, emptyMessage, children }) => {
-  const [collapsed, setCollapsed] = useState(false);
+const CollapsibleContainer: FC<Props> = ({
+  title,
+  count,
+  initiallyCollapsed,
+  separatedEntries,
+  emptyMessage,
+  children,
+  onCollapseToggle,
+  contentWrapper
+}) => {
+  const [collapsed, setCollapsed] = useState<boolean>();
+
+  useEffect(
+    () => setCollapsed(initiallyCollapsed ?? window.matchMedia(`(max-width: ${devices.mobile.width}px)`).matches),
+    [initiallyCollapsed]
+  );
 
   const icon = collapsed ? "angle-right" : "angle-down";
   let content = null;
@@ -66,17 +82,30 @@ const CollapsibleContainer: FC<Props> = ({ title, separatedEntries, emptyMessage
     if (!childArray || childArray.length === 0) {
       content = <EmptyMessage messageKey={emptyMessage} />;
     } else if (separatedEntries) {
-      content = childArray.map(child => <Content>{child}</Content>);
+      content = childArray.map(child => <Content className="p-2">{child}</Content>);
     } else {
-      content = <Content className="box">{children}</Content>;
+      if (contentWrapper) {
+        content = React.createElement(contentWrapper, null, children);
+      } else {
+        content = <Content className="box p-2">{children}</Content>;
+      }
     }
   }
 
+  const handleCollapseToggle = () => {
+    const newState = !collapsed;
+    setCollapsed(newState);
+    onCollapseToggle && onCollapseToggle(newState);
+  };
+
   return (
     <Container>
-      <div className="has-cursor-pointer" onClick={() => setCollapsed(!collapsed)}>
+      <div className="has-cursor-pointer" onClick={handleCollapseToggle}>
         <Headline>
-          <Icon name={icon} color="default" /> {title}
+          <Icon name={icon} color="default" /> {title}{" "}
+          <Tag color="info" className="ml-1">
+            <b className="is-size-6">{count || 0}</b>
+          </Tag>
         </Headline>
         <Separator />
       </div>

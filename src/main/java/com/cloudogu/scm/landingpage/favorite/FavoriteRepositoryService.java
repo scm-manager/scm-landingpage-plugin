@@ -25,21 +25,28 @@ package com.cloudogu.scm.landingpage.favorite;
 
 import sonia.scm.repository.NamespaceAndName;
 import sonia.scm.repository.Repository;
+import sonia.scm.repository.RepositoryManager;
 import sonia.scm.repository.RepositoryPermissions;
 import sonia.scm.repository.api.RepositoryService;
 import sonia.scm.repository.api.RepositoryServiceFactory;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class FavoriteRepositoryService {
 
   private final FavoriteRepositoryProvider store;
   private final RepositoryServiceFactory serviceFactory;
+  private final RepositoryManager repositoryManager;
 
   @Inject
-  public FavoriteRepositoryService(FavoriteRepositoryProvider store, RepositoryServiceFactory serviceFactory) {
+  public FavoriteRepositoryService(FavoriteRepositoryProvider store, RepositoryServiceFactory serviceFactory, RepositoryManager repositoryManager) {
     this.store = store;
     this.serviceFactory = serviceFactory;
+    this.repositoryManager = repositoryManager;
   }
 
   public void favorizeRepository(NamespaceAndName namespaceAndName) {
@@ -60,5 +67,14 @@ public class FavoriteRepositoryService {
 
   void unfavorizeRepositoryForAllUsers(Repository repository) {
     store.get().removeFromAll(repository);
+  }
+
+  List<Repository> getFavoriteRepositories() {
+    Set<String> repositoryIds = store.get().get().getRepositoryIds();
+
+    return repositoryIds.stream()
+      .filter(repoId -> RepositoryPermissions.read(repoId).isPermitted())
+      .map(repositoryManager::get)
+      .collect(Collectors.toList());
   }
 }

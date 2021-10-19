@@ -24,10 +24,15 @@
 import { useQuery } from "react-query";
 import { apiClient } from "@scm-manager/ui-components";
 import { MyDataEntriesType } from "../types";
+import { useDisabledCategories } from "../config/hooks";
 
 type MyData = MyDataEntriesType;
 
 export const useMyData = (link: string) => {
+  const { disabledCategories } = useDisabledCategories();
+  if (disabledCategories.length) {
+    link += `?disabledTypes=${disabledCategories.join(",")}`;
+  }
   const { error, isLoading, data } = useQuery<MyData, Error>(["landingpage", "myData"], () =>
     apiClient.get(link).then(response => response.json())
   );

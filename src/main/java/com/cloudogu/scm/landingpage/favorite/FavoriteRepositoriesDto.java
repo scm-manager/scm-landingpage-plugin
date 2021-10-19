@@ -21,18 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.cloudogu.scm.landingpage.mydata;
+
+package com.cloudogu.scm.landingpage.favorite;
 
 import de.otto.edison.hal.HalRepresentation;
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-@Getter
-public class FavoriteRepositoryData extends MyData {
+import java.util.List;
 
-  private HalRepresentation repository;
-
-  public FavoriteRepositoryData(HalRepresentation repository) {
-    super(FavoriteRepositoryData.class.getSimpleName());
-    this.repository = repository;
-  }
+@Data
+@AllArgsConstructor
+public class FavoriteRepositoriesDto extends HalRepresentation {
+  private List<HalRepresentation> repositories;
 }

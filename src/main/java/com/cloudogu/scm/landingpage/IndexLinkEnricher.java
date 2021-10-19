@@ -23,6 +23,7 @@
  */
 package com.cloudogu.scm.landingpage;
 
+import com.cloudogu.scm.landingpage.favorite.FavoriteRepositoryResource;
 import com.cloudogu.scm.landingpage.mydata.MyDataResource;
 import com.cloudogu.scm.landingpage.myevents.MyEventResource;
 import com.cloudogu.scm.landingpage.mytasks.MyTaskResource;
@@ -56,7 +57,17 @@ public class IndexLinkEnricher implements HalEnricher {
       appendTasksLink(appender);
       appendDataLink(appender);
       appendEventsLink(appender);
+      appendFavoritesLink(appender);
     }
+  }
+
+  private void appendFavoritesLink(HalAppender appender) {
+    String favoritesUrl = new LinkBuilder(scmPathInfoStore.get().get(), FavoriteRepositoryResource.class)
+      .method("getFavoriteRepositories")
+      .parameters()
+      .href();
+
+    appender.appendLink("favoriteRepositories", favoritesUrl);
   }
 
   private void appendDataLink(HalAppender appender) {

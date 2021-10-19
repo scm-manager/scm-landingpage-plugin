@@ -26,16 +26,21 @@ import CollapsibleContainer from "../CollapsibleContainer";
 import { useTranslation } from "react-i18next";
 import { ErrorNotification, Loading } from "@scm-manager/ui-components";
 import MyTask from "./MyTask";
-import { Link, Links } from "@scm-manager/ui-types";
+import { Link } from "@scm-manager/ui-types";
 import { useMyTasks } from "./useMyTasks";
+import { useIndexLinks } from "@scm-manager/ui-api";
+import { useCollapsedState, useIsCategoryDisabled } from "../config/hooks";
 
-type Props = {
-  links: Links;
-};
-
-const MyTasks: FC<Props> = ({ links }) => {
+const MyTasks: FC = () => {
   const [t] = useTranslation("plugins");
+  const links = useIndexLinks();
   const { data, error, isLoading } = useMyTasks((links?.landingpageTasks as Link)?.href);
+  const disabled = useIsCategoryDisabled("mytasks");
+  const [collapsed, setCollapsed] = useCollapsedState("mytasks");
+
+  if (disabled) {
+    return null;
+  }
 
   if (error) {
     return <ErrorNotification error={error} />;
@@ -50,6 +55,9 @@ const MyTasks: FC<Props> = ({ links }) => {
       title={t("scm-landingpage-plugin.mytasks.title")}
       separatedEntries={false}
       emptyMessage={t("scm-landingpage-plugin.mytasks.noData")}
+      count={data?._embedded?.tasks?.length}
+      initiallyCollapsed={collapsed}
+      onCollapseToggle={setCollapsed}
     >
       {data?._embedded?.tasks.map((task, key) => (
         <MyTask key={key} task={task} />

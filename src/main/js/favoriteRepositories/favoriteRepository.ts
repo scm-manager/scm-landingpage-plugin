@@ -24,14 +24,16 @@
 
 import { apiClient } from "@scm-manager/ui-components";
 import { Link, Repository } from "@scm-manager/ui-types";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { ApiResult, useRequiredIndexLink } from "@scm-manager/ui-api";
+import { FavoriteRepositories } from "../types";
 
 export const useFavoriteRepository = (repository: Repository) => {
   const queryClient = useQueryClient();
 
   const invalidateQueries = () => {
     return Promise.all([
-      queryClient.invalidateQueries(["landingpage", "myData"]),
+      queryClient.invalidateQueries(["landingpage", "favoriteRepositories"]),
       queryClient.invalidateQueries(["repository", repository.namespace, repository.name]),
       queryClient.invalidateQueries(["repositories"])
     ]).then(() => undefined);
@@ -47,4 +49,12 @@ export const useFavoriteRepository = (repository: Repository) => {
     isLoading,
     error
   };
+};
+
+export const useFavoriteRepositories = (): ApiResult<FavoriteRepositories> => {
+  const indexLink = useRequiredIndexLink("favoriteRepositories");
+
+  return useQuery<FavoriteRepositories, Error>(["landingpage", "favoriteRepositories"], () =>
+    apiClient.get(indexLink).then(response => response.json())
+  );
 };

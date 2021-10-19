@@ -26,16 +26,22 @@ import { useTranslation } from "react-i18next";
 import CollapsibleContainer from "../CollapsibleContainer";
 import { ErrorNotification, Loading } from "@scm-manager/ui-components";
 import MyEvent from "./MyEvent";
-import { Link, Links } from "@scm-manager/ui-types";
+import { Link } from "@scm-manager/ui-types";
 import { useMyEvents } from "./useMyEvents";
+import { useIndexLinks } from "@scm-manager/ui-api";
+import ScrollContainer from "../ScrollContainer";
+import { useCollapsedState, useIsCategoryDisabled } from "../config/hooks";
 
-type Props = {
-  links: Links;
-};
-
-const MyEvents: FC<Props> = ({ links }) => {
+const MyEvents: FC = () => {
   const [t] = useTranslation("plugins");
+  const links = useIndexLinks();
   const { data, error, isLoading } = useMyEvents((links?.landingpageEvents as Link)?.href);
+  const disabled = useIsCategoryDisabled("myevents");
+  const [collapsed, setCollapsed] = useCollapsedState("myevents");
+
+  if (disabled) {
+    return null;
+  }
 
   if (error) {
     return <ErrorNotification error={error} />;
@@ -50,6 +56,10 @@ const MyEvents: FC<Props> = ({ links }) => {
       title={t("scm-landingpage-plugin.myevents.title")}
       separatedEntries={false}
       emptyMessage={t("scm-landingpage-plugin.myevents.noData")}
+      count={data?._embedded?.events?.length}
+      initiallyCollapsed={collapsed}
+      onCollapseToggle={setCollapsed}
+      contentWrapper={ScrollContainer}
     >
       {data?._embedded?.events?.map((event, index) => (
         <MyEvent key={index} event={event} />

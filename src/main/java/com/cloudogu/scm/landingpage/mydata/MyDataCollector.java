@@ -26,6 +26,7 @@ package com.cloudogu.scm.landingpage.mydata;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class MyDataCollector {
@@ -37,11 +38,18 @@ public class MyDataCollector {
     this.providers = providers;
   }
 
-  public List<MyData> collect() {
+  public List<MyData> collect(List<String> disabledTypes) {
     List<MyData> dataList = new ArrayList<>();
     for (MyDataProvider provider : providers) {
-      Iterable<MyData> tasks = provider.getData();
-      tasks.forEach(dataList::add);
+      final Optional<String> providerType = provider.getType();
+      if (providerType.isPresent() && disabledTypes.contains(providerType.get())) {
+        continue;
+      }
+      for (MyData data : provider.getData()) {
+        if (!disabledTypes.contains(data.getType())) {
+          dataList.add(data);
+        }
+      }
     }
     return dataList;
   }

@@ -1,11 +1,10 @@
 {
   "scm-landingpage-plugin": {
-    "navigation": {
-      "home": "mySCM"
-    },
-    "home": {
-      "title": "mySCM",
-      "subtitle": "Meine Aufgaben und Repos"
+    "title": "mySCM",
+    "subtitle": "Repositories, Aufgaben und Aktivitäten",
+    "config": {
+      "title": "mySCM Konfiguration",
+      "subtitle": "Angezeigte Inhalte"
     },
     "emptyMessage": {
       "default": "Keine Daten vorhanden"
@@ -13,9 +12,6 @@
     "mytasks": {
       "title": "Meine Aufgaben",
       "noData": "Keine Aufgaben vorhanden"
-    },
-    "mydata": {
-      "title": "Meine Daten"
     },
     "favoriteRepository": {
       "title": "Favorisierte Repositories",

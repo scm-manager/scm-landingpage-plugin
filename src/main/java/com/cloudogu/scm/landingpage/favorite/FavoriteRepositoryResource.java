@@ -29,22 +29,31 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import sonia.scm.api.v2.resources.ErrorDto;
 import sonia.scm.repository.NamespaceAndName;
+import sonia.scm.repository.Repository;
 import sonia.scm.web.VndMediaType;
+import sonia.scm.web.api.RepositoryToHalMapper;
 
 import javax.inject.Inject;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Path("v2/")
 public class FavoriteRepositoryResource {
 
   private final FavoriteRepositoryService service;
+  private final RepositoryToHalMapper mapper;
 
   @Inject
-  public FavoriteRepositoryResource(FavoriteRepositoryService service) {
+  public FavoriteRepositoryResource(FavoriteRepositoryService service, RepositoryToHalMapper mapper) {
     this.service = service;
+    this.mapper = mapper;
   }
 
   @POST
@@ -99,6 +108,18 @@ public class FavoriteRepositoryResource {
                                        @PathParam("name") String name) {
     service.unfavorizeRepository(new NamespaceAndName(namespace, name));
     return Response.noContent().build();
+  }
+
+  @GET
+  @Path("favorites")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getFavoriteRepositories() {
+    final List<Repository> favoriteRepositories = service.getFavoriteRepositories();
+    return Response.ok().entity(new FavoriteRepositoriesDto(
+      favoriteRepositories.stream()
+        .map(mapper::map)
+        .collect(Collectors.toList()))
+    ).build();
   }
 
 }

@@ -23,6 +23,7 @@
  */
 package com.cloudogu.scm.landingpage.favorite;
 
+import de.otto.edison.hal.HalRepresentation;
 import org.jboss.resteasy.mock.MockHttpRequest;
 import org.jboss.resteasy.mock.MockHttpResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,11 +35,14 @@ import sonia.scm.repository.NamespaceAndName;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryTestData;
 import sonia.scm.web.RestDispatcher;
+import sonia.scm.web.api.RepositoryToHalMapper;
 
 import java.net.URISyntaxException;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class FavoriteRepositoryResourceTest {
@@ -48,11 +52,14 @@ class FavoriteRepositoryResourceTest {
   @Mock
   private FavoriteRepositoryService service;
 
+  @Mock
+  private RepositoryToHalMapper mapper;
+
   private RestDispatcher dispatcher;
 
   @BeforeEach
   void init() {
-    FavoriteRepositoryResource resource = new FavoriteRepositoryResource(service);
+    FavoriteRepositoryResource resource = new FavoriteRepositoryResource(service, mapper);
 
     dispatcher = new RestDispatcher();
     dispatcher.addSingletonResource(resource);
@@ -79,6 +86,20 @@ class FavoriteRepositoryResourceTest {
 
     verify(service).unfavorizeRepository(new NamespaceAndName(REPOSITORY.getNamespace(), REPOSITORY.getName()));
     assertThat(response.getStatus()).isEqualTo(204);
+  }
+
+  @Test
+  void shouldGetFavoriteRepositories() throws URISyntaxException {
+    when(service.getFavoriteRepositories()).thenReturn(Collections.singletonList(REPOSITORY));
+    when(mapper.map(REPOSITORY)).thenReturn(new HalRepresentation());
+
+    MockHttpRequest request = MockHttpRequest.get("/v2/favorites/");
+    MockHttpResponse response = new MockHttpResponse();
+
+    dispatcher.invoke(request, response);
+
+    verify(service).getFavoriteRepositories();
+    assertThat(response.getStatus()).isEqualTo(200);
   }
 
 }

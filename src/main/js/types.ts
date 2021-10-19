@@ -63,10 +63,6 @@ type DataProps<T = MyDataType> = {
   data: T;
 };
 
-export type RepositoryDataType = MyDataType & {
-  repository: Repository;
-};
-
 export type MyEventType = {
   type: string;
 };
@@ -85,4 +81,8 @@ type MyEventEmbedded = {
 
 export type MyEventsType = {
   _embedded: MyEventEmbedded;
+};
+
+export type FavoriteRepositories = {
+  repositories: Repository[];
 };

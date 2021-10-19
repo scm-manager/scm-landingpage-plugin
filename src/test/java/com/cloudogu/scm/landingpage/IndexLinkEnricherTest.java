@@ -82,6 +82,13 @@ class IndexLinkEnricherTest {
     }
 
     @Test
+    void shouldAppendFavoriteRepositoriesLink() {
+      enricher.enrich(context, appender);
+
+      verify(appender).appendLink("favoriteRepositories", "https://scm-manager.org/scm/api/v2/favorites");
+    }
+
+    @Test
     void shouldAppendTasksLink() {
       enricher.enrich(context, appender);
 
@@ -118,7 +125,7 @@ class IndexLinkEnricherTest {
     }
 
     @Test
-    void shouldAppendTasksLink() {
+    void shouldNotAppendLinks() {
       enricher.enrich(context, appender);
 
       verify(appender, never()).appendLink(any(), any());
@@ -141,7 +148,7 @@ class IndexLinkEnricherTest {
     }
 
     @Test
-    void shouldAppendTasksLink() {
+    void shouldNotAppendLinks() {
       enricher.enrich(context, appender);
 
       verify(appender, never()).appendLink(any(), any());

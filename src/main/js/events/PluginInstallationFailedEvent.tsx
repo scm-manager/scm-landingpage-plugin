@@ -37,7 +37,7 @@ const PluginInstallationFailedEvent: MyEventComponent<PluginEventType> = ({ even
   const [t] = useTranslation("plugins");
 
   const link = "/admin/plugins/available/";
-  const icon = <Icon name="puzzle-piece fa-fw fa-2x" color="inherit" />;
+  const icon = <Icon name="puzzle-piece" className="fa-fw fa-lg" color="inherit" />;
   const content = (
     <>
       {" "}
@@ -55,7 +55,11 @@ const PluginInstallationFailedEvent: MyEventComponent<PluginEventType> = ({ even
       link={link}
       avatar={icon}
       contentLeft={content}
-      contentRight={<DateFromNow date={event.date} />}
+      contentRight={
+        <small>
+          <DateFromNow date={event.date} />
+        </small>
+      }
       footer={footer}
     />
   );

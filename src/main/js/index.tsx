@@ -21,14 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { binder } from "@scm-manager/ui-extensions";
-import FavoriteRepositoryToggleIcon from "./FavoriteRepositoryToggleIcon";
-import Home from "./Home";
+import { binder, extensionPoints } from "@scm-manager/ui-extensions";
+import FavoriteRepositoryToggleIcon from "./favoriteRepositories/FavoriteRepositoryToggleIcon";
 import React, { FC } from "react";
-import { PrimaryNavigationLink, ProtectedRoute } from "@scm-manager/ui-components";
-import { useTranslation } from "react-i18next";
 import "./tasks/PluginUpdateTask";
-import "./data/FavoriteRepositoryCard";
 import "./events/RepositoryPushEvent";
 import "./events/RepositoryCreatedEvent";
 import "./events/PluginInstalledEvent";
@@ -38,34 +34,70 @@ import "./events/RepositoryRenamedEvent";
 import "./events/RepositoryImportEvent";
 import "./events/HealthCheckFailureEvent";
 import "./events/HealthCheckSucceededEvent";
-import "./data/MyFavoriteRepositoriesData";
-import { RepositoryDataType } from "./types";
-import { Links } from "@scm-manager/ui-types";
+import MyData from "./data/MyData";
+import MyTasks from "./tasks/MyTasks";
+import MyEvents from "./events/MyEvents";
+import MyFavoriteRepositories from "./favoriteRepositories/MyFavoriteRepositories";
+import { Links, Repository } from "@scm-manager/ui-types";
+import { ProtectedRoute } from "@scm-manager/ui-components";
+import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
+import ConfigPage from "./config/ConfigPage";
+import styled from "styled-components";
 
-type HomeRouteProps = {
+const RelativeLink = styled(Link)`
+  position: relative;
+`;
+
+const AbsoluteIcon = styled.i`
+  position: absolute;
+  top: 11px;
+`;
+
+type ConfigRouteProps = {
   authenticated: boolean;
   links: Links;
 };
 
-const HomeRoute: FC<HomeRouteProps> = props => {
+const ConfigRoute: FC<ConfigRouteProps> = props => {
   return (
-    <ProtectedRoute authenticated={props.authenticated} path={"/home"}>
-      <Home links={props.links} />
+    <ProtectedRoute authenticated={props.authenticated} path={"/landingPageConfig"}>
+      <ConfigPage />
     </ProtectedRoute>
   );
 };
 
-const HomeNavigation: FC = () => {
-  const [t] = useTranslation("plugins");
-  return <PrimaryNavigationLink label={t("scm-landingpage-plugin.navigation.home")} to={"/home"} match={"/home"} />;
-};
-
-const LargeToggleIcon: FC<RepositoryDataType> = props => (
+const LargeToggleIcon: FC<{ repository: Repository }> = props => (
   <FavoriteRepositoryToggleIcon repository={props.repository} classes="fa-2x" />
 );
 
+const Subtitle: FC = () => {
+  const [t] = useTranslation("plugins");
+  return t("scm-landingpage-plugin.subtitle");
+};
+
+const Title: FC = () => {
+  const [t] = useTranslation("plugins");
+  return (
+    <>
+      {t("scm-landingpage-plugin.title")}
+      <RelativeLink to="/landingPageConfig">
+        <AbsoluteIcon className="fa fa-cog fa-fw is-size-5 ml-2 has-text-is-link" />
+      </RelativeLink>
+    </>
+  );
+};
+
 binder.bind("repository.card.beforeTitle", FavoriteRepositoryToggleIcon);
 binder.bind("repository.afterTitle", LargeToggleIcon);
-binder.bind("main.route", HomeRoute);
-binder.bind("main.redirect", () => "/home");
-binder.bind("primary-navigation.first-menu", HomeNavigation);
+binder.bind<extensionPoints.RepositoryOverviewTopExtension>(
+  "repository.overview.top",
+  MyFavoriteRepositories,
+  ({ page, search, namespace }) => page === 1 && !search && !namespace
+);
+binder.bind<extensionPoints.RepositoryOverviewLeftExtension>("repository.overview.left", MyTasks, { priority: 1000 });
+binder.bind<extensionPoints.RepositoryOverviewLeftExtension>("repository.overview.left", MyEvents, { priority: 10 });
+binder.bind<extensionPoints.RepositoryOverviewLeftExtension>("repository.overview.left", MyData, { priority: 100 });
+binder.bind("main.route", ConfigRoute);
+binder.bind<extensionPoints.RepositoryOverviewTitleExtension>("repository.overview.title", Title);
+binder.bind<extensionPoints.RepositoryOverviewSubtitleExtension>("repository.overview.subtitle", Subtitle);
