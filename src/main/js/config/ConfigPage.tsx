@@ -62,21 +62,13 @@ const ConfigPage: FC = () => {
 
   return (
     <Page title={t("scm-landingpage-plugin.config.title")} subtitle={t("scm-landingpage-plugin.config.subtitle")}>
-      <DisplayOption
-        label={t("scm-landingpage-plugin.favoriteRepository.title")}
-        value={shouldBeEnabled("favoriteRepository")}
-        toggle={changeExtension("favoriteRepository")}
-      />
-      <DisplayOption
-        label={t("scm-landingpage-plugin.mytasks.title")}
-        value={shouldBeEnabled("mytasks")}
-        toggle={changeExtension("mytasks")}
-      />
-      <DisplayOption
-        label={t("scm-landingpage-plugin.myevents.title")}
-        value={shouldBeEnabled("myevents")}
-        toggle={changeExtension("myevents")}
-      />
+      {["favoriteRepository", "mytasks", "myevents"].map(category => (
+        <DisplayOption
+          label={t(`scm-landingpage-plugin.${category}.title`)}
+          value={shouldBeEnabled(category)}
+          toggle={changeExtension(category)}
+        />
+      ))}
       {extensions.map(extension => (
         <DisplayOption
           label={t(extension.title)}
