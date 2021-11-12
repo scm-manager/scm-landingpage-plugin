@@ -47,13 +47,22 @@ export function useIsCategoryDisabled(category: string) {
 
 export function useDisabledCategories() {
   const [disabledCategories, setDisabledCategories] = useLocalStorage<Array<string>>("scm.landingPagePlugin.disabledCategories", []);
-  const isDisabled = (category: string) => !disabledCategories.includes(category);
-  const toggleDisabled = (category: string) => isDisabled(category) ?
-    setDisabledCategories([...disabledCategories, category]) :
-    setDisabledCategories(disabledCategories.filter(it => it !== category));
+  const isDisabled = (category: string) => disabledCategories.includes(category);
+  const setCategories: (categories: { [key: string]: boolean }) => void = (categories) => {
+    let newDisabledCategories = disabledCategories;
+    Object.entries(categories).forEach(([category, enabled]) => {
+      const otherCategories = newDisabledCategories.filter(it => it !== category);
+      if (enabled) {
+        newDisabledCategories = otherCategories;
+      } else {
+        newDisabledCategories = [...otherCategories, category];
+      }
+    });
+    setDisabledCategories(newDisabledCategories);
+  };
   return {
     isDisabled,
-    toggleDisabled,
+    setCategories,
     disabledCategories
   }
 }
