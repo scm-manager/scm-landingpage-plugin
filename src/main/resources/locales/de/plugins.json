@@ -4,7 +4,8 @@
     "subtitle": "Repositories, Aufgaben und Aktivitäten",
     "config": {
       "title": "mySCM Konfiguration",
-      "subtitle": "Angezeigte Inhalte"
+      "subtitle": "Angezeigte Inhalte",
+      "submit": "Speichern"
     },
     "emptyMessage": {
       "default": "Keine Daten vorhanden"

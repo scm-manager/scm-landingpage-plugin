@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-import { Checkbox, Page } from "@scm-manager/ui-components";
-import React, { FC } from "react";
+import { Checkbox, Page, SubmitButton } from "@scm-manager/ui-components";
+import React, { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ExtensionProps } from "../data/MyData";
 import { useBinder } from "@scm-manager/ui-extensions";
@@ -32,7 +32,7 @@ import { useDisabledCategories } from "./hooks";
 type DisplayOptionProps = {
   label: string;
   value: boolean;
-  toggle: () => void;
+  toggle: (newValue: boolean) => void;
 };
 
 const DisplayOption: FC<DisplayOptionProps> = ({ value, toggle, label }) => {
@@ -41,34 +41,48 @@ const DisplayOption: FC<DisplayOptionProps> = ({ value, toggle, label }) => {
 
 const ConfigPage: FC = () => {
   const [t] = useTranslation("plugins");
-  const { isDisabled, toggleDisabled } = useDisabledCategories();
+  const { isDisabled, setCategories } = useDisabledCategories();
   const binder = useBinder();
+  const [changedCategories, setChangedCategories] = useState<{ [key: string]: boolean }>({});
   const extensions: ExtensionProps[] = binder.getExtensions("landingpage.mydata");
+
+  const changeExtension = (category: string) => (enabled: boolean) => {
+    const newValue = { ...changedCategories, [category]: enabled };
+    setChangedCategories(newValue);
+  };
+
+  const shouldBeEnabled = (category: string) => {
+    return Object.keys(changedCategories).includes(category) ? changedCategories[category] : !isDisabled(category);
+  };
+
+  const submitChanges = () => {
+    setCategories(changedCategories);
+    setChangedCategories({});
+  };
 
   return (
     <Page title={t("scm-landingpage-plugin.config.title")} subtitle={t("scm-landingpage-plugin.config.subtitle")}>
-      <DisplayOption
-        label={t("scm-landingpage-plugin.favoriteRepository.title")}
-        value={isDisabled("favoriteRepository")}
-        toggle={() => toggleDisabled("favoriteRepository")}
-      />
-      <DisplayOption
-        label={t("scm-landingpage-plugin.mytasks.title")}
-        value={isDisabled("mytasks")}
-        toggle={() => toggleDisabled("mytasks")}
-      />
-      <DisplayOption
-        label={t("scm-landingpage-plugin.myevents.title")}
-        value={isDisabled("myevents")}
-        toggle={() => toggleDisabled("myevents")}
-      />
-      {extensions.map(extension => (
+      {["favoriteRepository", "mytasks", "myevents"].map(category => (
         <DisplayOption
-          label={t(extension.title)}
-          value={isDisabled(extension.type)}
-          toggle={() => toggleDisabled(extension.type)}
+          key={category}
+          label={t(`scm-landingpage-plugin.${category}.title`)}
+          value={shouldBeEnabled(category)}
+          toggle={changeExtension(category)}
         />
       ))}
+      {extensions.map(extension => (
+        <DisplayOption
+          key={extension.type}
+          label={t(extension.title)}
+          value={shouldBeEnabled(extension.type)}
+          toggle={changeExtension(extension.type)}
+        />
+      ))}
+      <SubmitButton
+        label={t("scm-landingpage-plugin.config.submit")}
+        action={submitChanges}
+        disabled={Object.keys(changedCategories).length === 0}
+      />
     </Page>
   );
 };

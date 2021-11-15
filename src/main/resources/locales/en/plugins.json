@@ -4,7 +4,8 @@
     "subtitle": "Repositories, tasks and events",
     "config": {
       "title": "mySCM Configuration",
-      "subtitle": "Displayed Content"
+      "subtitle": "Displayed Content",
+      "submit": "Submit"
     },
     "emptyMessage": {
       "default": "No data available"
