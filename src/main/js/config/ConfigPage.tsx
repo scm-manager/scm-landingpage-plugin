@@ -64,6 +64,7 @@ const ConfigPage: FC = () => {
     <Page title={t("scm-landingpage-plugin.config.title")} subtitle={t("scm-landingpage-plugin.config.subtitle")}>
       {["favoriteRepository", "mytasks", "myevents"].map(category => (
         <DisplayOption
+          key={category}
           label={t(`scm-landingpage-plugin.${category}.title`)}
           value={shouldBeEnabled(category)}
           toggle={changeExtension(category)}
@@ -71,6 +72,7 @@ const ConfigPage: FC = () => {
       ))}
       {extensions.map(extension => (
         <DisplayOption
+          key={extension.type}
           label={t(extension.title)}
           value={shouldBeEnabled(extension.type)}
           toggle={changeExtension(extension.type)}
