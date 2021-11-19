@@ -81,7 +81,7 @@ const Title: FC = () => {
   return (
     <>
       {t("scm-landingpage-plugin.title")}
-      <RelativeLink to="/landingPageConfig">
+      <RelativeLink to="/landingPageConfig" aria-label={t("scm-landingpage-plugin.config.title")}>
         <AbsoluteIcon className="fa fa-cog fa-fw is-size-5 ml-2 has-text-is-link" />
       </RelativeLink>
     </>
