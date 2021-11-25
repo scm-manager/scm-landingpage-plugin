@@ -62,7 +62,7 @@ const ConfigPage: FC = () => {
 
   return (
     <Page title={t("scm-landingpage-plugin.config.title")} subtitle={t("scm-landingpage-plugin.config.subtitle")}>
-      {["favoriteRepository", "mytasks", "myevents"].map(category => (
+      {["favoriteRepository", "mytasks", "myevents", "mytips"].map(category => (
         <DisplayOption
           key={category}
           label={t(`scm-landingpage-plugin.${category}.title`)}
