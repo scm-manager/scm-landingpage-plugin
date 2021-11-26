@@ -54,7 +54,10 @@ const MyTips: FC = () => {
       initiallyCollapsed={collapsed}
       onCollapseToggle={setCollapsed}
     >
-      <StyledAnchor href={(loginInfo.feature._links.self as Link).href} className="p-2 media has-hover-background-blue">
+      <StyledAnchor
+        href={withSourceQueryParam((loginInfo.feature._links.self as Link).href)}
+        className="p-2 media has-hover-background-blue"
+      >
         <figure className="media-left mr-2 mt-1">
           <Icon name="lightbulb" className="fa-lg fa-fw" color="inherit" />
         </figure>
