@@ -1,14 +1,13 @@
 import React, { FC } from "react";
-import { useIndexLink } from "@scm-manager/ui-api";
-import { useQuery } from "react-query";
 import { ErrorNotification, Icon, Loading } from "@scm-manager/ui-components";
 import { useCollapsedState, useIsCategoryDisabled } from "../config/hooks";
-import { Link, LoginInfo as LoginInfoResponse } from "@scm-manager/ui-types";
+import { Link } from "@scm-manager/ui-types";
 import CollapsibleContainer from "../CollapsibleContainer";
 import { useTranslation } from "react-i18next";
 import { stringifyUrl } from "query-string";
 import classNames from "classnames";
 import styled from "styled-components";
+import { useLoginInfo } from "@scm-manager/ui-api";
 
 const withSourceQueryParam = (url: string) => stringifyUrl({ url, query: { source: "landingpage-feature-tile" } });
 
@@ -18,19 +17,11 @@ const StyledAnchor = styled.a`
 
 const MyTips: FC = () => {
   const [t] = useTranslation("plugins");
-  const loginInfoLink = useIndexLink("loginInfo");
   const disabled = useIsCategoryDisabled("mytips");
-  const { error, isLoading, data: loginInfo } = useQuery<LoginInfoResponse, Error>(
-    ["loginInfo"],
-    () => fetch(loginInfoLink!).then(response => response.json()),
-    {
-      enabled: !disabled && !!loginInfoLink,
-      refetchOnWindowFocus: false
-    }
-  );
   const [collapsed, setCollapsed] = useCollapsedState("mytips");
+  const { data: loginInfo, error, isLoading } = useLoginInfo(disabled);
 
-  if (!loginInfoLink || disabled) {
+  if (disabled) {
     return null;
   }
 
