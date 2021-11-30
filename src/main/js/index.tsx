@@ -44,6 +44,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import ConfigPage from "./config/ConfigPage";
 import styled from "styled-components";
+import MyTips from "./tips/MyTips";
 
 const RelativeLink = styled(Link)`
   position: relative;
@@ -95,9 +96,10 @@ binder.bind<extensionPoints.RepositoryOverviewTopExtension>(
   MyFavoriteRepositories,
   ({ page, search, namespace }) => page === 1 && !search && !namespace
 );
+binder.bind<extensionPoints.RepositoryOverviewLeftExtension>("repository.overview.left", MyTips, { priority: 2000 });
 binder.bind<extensionPoints.RepositoryOverviewLeftExtension>("repository.overview.left", MyTasks, { priority: 1000 });
-binder.bind<extensionPoints.RepositoryOverviewLeftExtension>("repository.overview.left", MyEvents, { priority: 10 });
 binder.bind<extensionPoints.RepositoryOverviewLeftExtension>("repository.overview.left", MyData, { priority: 100 });
+binder.bind<extensionPoints.RepositoryOverviewLeftExtension>("repository.overview.left", MyEvents, { priority: 10 });
 binder.bind("main.route", ConfigRoute);
 binder.bind<extensionPoints.RepositoryOverviewTitleExtension>("repository.overview.title", Title);
 binder.bind<extensionPoints.RepositoryOverviewSubtitleExtension>("repository.overview.subtitle", Subtitle);

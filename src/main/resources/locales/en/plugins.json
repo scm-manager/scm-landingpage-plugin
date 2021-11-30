@@ -27,6 +27,9 @@
         "description_plural": "New versions for {{count}} plugins available"
       }
     },
+    "mytips": {
+      "title": "Tips"
+    },
     "myevents": {
       "title": "Latest activities",
       "noData": "No events available",
