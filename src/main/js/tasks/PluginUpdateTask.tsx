@@ -34,7 +34,7 @@ type PluginUpdateTaskType = MyTaskType & {
 const PluginUpdateTask: MyTaskComponent<PluginUpdateTaskType> = ({ task }) => {
   const [t] = useTranslation("plugins");
 
-  const link = "admin/plugins/installed/";
+  const link = "/admin/plugins/installed/";
 
   return (
     <CardColumnSmall
