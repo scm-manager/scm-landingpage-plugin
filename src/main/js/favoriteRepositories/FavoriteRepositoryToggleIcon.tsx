@@ -63,7 +63,7 @@ const FavoriteRepositoryToggleIcon: FC<Props> = ({ repository, classes }) => {
         }
         iconStyle={unfavorize ? "fas" : "far"}
         name="star"
-        color={unfavorize ? "warning" : "dark"}
+        color={unfavorize ? "warning" : "secondary-more"}
         className={classes}
       />
     </SpanWithPointer>
