@@ -24,7 +24,7 @@
 import React, { FC, ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 import { useIndexLinks } from "@scm-manager/ui-api";
-import { ErrorNotification, Loading, Notification } from "@scm-manager/ui-components";
+import { Loading, Notification } from "@scm-manager/ui-components";
 import { binder } from "@scm-manager/ui-extensions";
 import CollapsibleContainer from "../CollapsibleContainer";
 import { Link } from "@scm-manager/ui-types";
@@ -43,9 +43,10 @@ export type ExtensionProps = {
 type MyDataExtensionProps = {
   extension: ExtensionProps;
   data?: MyDataType[];
+  error?: Error | null;
 };
 
-const MyDataExtension: FC<MyDataExtensionProps> = ({ extension, data }) => {
+const MyDataExtension: FC<MyDataExtensionProps> = ({ extension, data, error }) => {
   const [t] = useTranslation("plugins");
   const disabled = useIsCategoryDisabled(extension.type);
   const [collapsed, setCollapsed] = useCollapsedState(extension.type);
@@ -61,6 +62,7 @@ const MyDataExtension: FC<MyDataExtensionProps> = ({ extension, data }) => {
         count={data?.length}
         initiallyCollapsed={collapsed}
         onCollapseToggle={setCollapsed}
+        error={error}
       >
         {(data?.length || 0) > 0 ? (
           data?.map((dataEntry, key) => <>{extension.render(dataEntry, key)}</>)
@@ -78,17 +80,13 @@ const MyData: FC = () => {
 
   const renderExtension: (extension: ExtensionProps) => any = extension => {
     const dataForExtension = data?._embedded.data.filter(entry => entry.type === extension.type);
-    return <MyDataExtension extension={extension} data={dataForExtension} />;
+    return <MyDataExtension extension={extension} data={dataForExtension} error={error} />;
   };
 
   const extensions: ExtensionProps[] = binder.getExtensions("landingpage.mydata");
 
   if (!extensions.length) {
     return null;
-  }
-
-  if (error) {
-    return <ErrorNotification error={error} />;
   }
 
   if (isLoading) {

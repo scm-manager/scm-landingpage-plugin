@@ -24,7 +24,7 @@
 import React, { FC } from "react";
 import CollapsibleContainer from "../CollapsibleContainer";
 import { useTranslation } from "react-i18next";
-import { ErrorNotification, Loading } from "@scm-manager/ui-components";
+import { Loading } from "@scm-manager/ui-components";
 import MyTask from "./MyTask";
 import { Link } from "@scm-manager/ui-types";
 import { useMyTasks } from "./useMyTasks";
@@ -42,10 +42,6 @@ const MyTasks: FC = () => {
     return null;
   }
 
-  if (error) {
-    return <ErrorNotification error={error} />;
-  }
-
   if (isLoading) {
     return <Loading />;
   }
@@ -58,6 +54,7 @@ const MyTasks: FC = () => {
       count={data?._embedded?.tasks?.length}
       initiallyCollapsed={collapsed}
       onCollapseToggle={setCollapsed}
+      error={error}
     >
       {data?._embedded?.tasks.map((task, key) => (
         <MyTask key={key} task={task} />

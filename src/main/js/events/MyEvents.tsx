@@ -24,7 +24,7 @@
 import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
 import CollapsibleContainer from "../CollapsibleContainer";
-import { ErrorNotification, Loading } from "@scm-manager/ui-components";
+import { Loading } from "@scm-manager/ui-components";
 import MyEvent from "./MyEvent";
 import { Link } from "@scm-manager/ui-types";
 import { useMyEvents } from "./useMyEvents";
@@ -43,10 +43,6 @@ const MyEvents: FC = () => {
     return null;
   }
 
-  if (error) {
-    return <ErrorNotification error={error} />;
-  }
-
   if (isLoading) {
     return <Loading />;
   }
@@ -60,6 +56,7 @@ const MyEvents: FC = () => {
       initiallyCollapsed={collapsed}
       onCollapseToggle={setCollapsed}
       contentWrapper={ScrollContainer}
+      error={error}
     >
       {data?._embedded?.events?.map((event, index) => (
         <MyEvent key={index} event={event} />
