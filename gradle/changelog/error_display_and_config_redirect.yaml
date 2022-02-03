@@ -1,0 +1,4 @@
+- type: fixed
+  description: Improve data fetching error display ([#58](https://github.com/scm-manager/scm-landingpage-plugin/pull/58))
+- type: fixed
+  description: Redirect to landing page after changing the display settings ([#58](https://github.com/scm-manager/scm-landingpage-plugin/pull/58))
