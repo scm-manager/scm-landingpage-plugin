@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 import React, { FC } from "react";
-import { ErrorNotification, Icon, Loading } from "@scm-manager/ui-components";
+import { Icon, Loading } from "@scm-manager/ui-components";
 import { useCollapsedState, useIsCategoryDisabled } from "../config/hooks";
 import { Link } from "@scm-manager/ui-types";
 import CollapsibleContainer from "../CollapsibleContainer";
@@ -32,7 +32,8 @@ import classNames from "classnames";
 import styled from "styled-components";
 import { useLoginInfo } from "@scm-manager/ui-api";
 
-const withSourceQueryParam = (url: string) => stringifyUrl({ url, query: { source: "landingpage-feature-tile" } });
+const withSourceQueryParam = (url?: string) =>
+  url && stringifyUrl({ url, query: { source: "landingpage-feature-tile" } });
 
 const StyledAnchor = styled.a`
   color: inherit;
@@ -48,15 +49,11 @@ const MyTips: FC = () => {
     return null;
   }
 
-  if (error) {
-    return <ErrorNotification error={error} />;
-  }
-
   if (isLoading) {
     return <Loading />;
   }
 
-  if (!loginInfo?.feature) {
+  if (!loginInfo?.feature && !error) {
     return null;
   }
 
@@ -67,9 +64,10 @@ const MyTips: FC = () => {
       count={1}
       initiallyCollapsed={collapsed}
       onCollapseToggle={setCollapsed}
+      error={error}
     >
       <StyledAnchor
-        href={withSourceQueryParam((loginInfo.feature._links.self as Link).href)}
+        href={withSourceQueryParam((loginInfo?.feature?._links.self as Link | undefined)?.href)}
         className="p-2 media has-hover-background-blue"
       >
         <figure className="media-left mr-2 mt-1">
@@ -85,8 +83,8 @@ const MyTips: FC = () => {
             "is-align-self-stretch"
           )}
         >
-          <strong className="is-marginless">{loginInfo.feature.title}</strong>
-          <small>{loginInfo.feature.summary}</small>
+          <strong className="is-marginless">{loginInfo?.feature?.title}</strong>
+          <small>{loginInfo?.feature?.summary}</small>
         </div>
       </StyledAnchor>
     </CollapsibleContainer>

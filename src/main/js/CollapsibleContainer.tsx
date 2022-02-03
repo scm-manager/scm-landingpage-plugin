@@ -23,7 +23,7 @@
  */
 import React, { FC, useEffect, useState } from "react";
 import styled from "styled-components";
-import { devices, Icon, Tag } from "@scm-manager/ui-components";
+import { devices, ErrorNotification, Icon, Tag } from "@scm-manager/ui-components";
 import EmptyMessage from "./EmptyMessage";
 
 type Props = {
@@ -31,9 +31,10 @@ type Props = {
   separatedEntries: boolean;
   emptyMessage?: string;
   count?: number;
-  initiallyCollapsed?: boolean;
+  initiallyCollapsed?: boolean | null;
   onCollapseToggle?: (collapsed: boolean) => void;
   contentWrapper?: React.ElementType;
+  error?: Error | null;
 };
 
 const Container = styled.div`
@@ -66,7 +67,8 @@ const CollapsibleContainer: FC<Props> = ({
   emptyMessage,
   children,
   onCollapseToggle,
-  contentWrapper
+  contentWrapper,
+  error
 }) => {
   const [collapsed, setCollapsed] = useState<boolean>();
 
@@ -77,7 +79,9 @@ const CollapsibleContainer: FC<Props> = ({
 
   const icon = collapsed ? "angle-right" : "angle-down";
   let content = null;
-  if (!collapsed) {
+  if (error) {
+    content = <ErrorNotification error={error} />;
+  } else if (!collapsed) {
     const childArray = React.Children.toArray(children);
     if (!childArray || childArray.length === 0) {
       content = <EmptyMessage messageKey={emptyMessage} />;
@@ -92,6 +96,16 @@ const CollapsibleContainer: FC<Props> = ({
     }
   }
 
+  let headerSuffix;
+
+  if (!error) {
+    headerSuffix = (
+      <Tag color="info" className="ml-1">
+        <b className="is-size-6">{count || 0}</b>
+      </Tag>
+    );
+  }
+
   const handleCollapseToggle = () => {
     const newState = !collapsed;
     setCollapsed(newState);
@@ -102,10 +116,7 @@ const CollapsibleContainer: FC<Props> = ({
     <Container>
       <div className="has-cursor-pointer" onClick={handleCollapseToggle}>
         <Headline>
-          <Icon name={icon} color="default" /> {title}{" "}
-          <Tag color="info" className="ml-1">
-            <b className="is-size-6">{count || 0}</b>
-          </Tag>
+          <Icon name={icon} color="default" /> {title} {headerSuffix}
         </Headline>
         <Separator />
       </div>

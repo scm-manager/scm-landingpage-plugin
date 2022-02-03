@@ -28,6 +28,7 @@ import { useTranslation } from "react-i18next";
 import { ExtensionProps } from "../data/MyData";
 import { useBinder } from "@scm-manager/ui-extensions";
 import { useDisabledCategories } from "./hooks";
+import { useHistory } from "react-router-dom";
 
 type DisplayOptionProps = {
   label: string;
@@ -45,6 +46,7 @@ const ConfigPage: FC = () => {
   const binder = useBinder();
   const [changedCategories, setChangedCategories] = useState<{ [key: string]: boolean }>({});
   const extensions: ExtensionProps[] = binder.getExtensions("landingpage.mydata");
+  const history = useHistory();
 
   const changeExtension = (category: string) => (enabled: boolean) => {
     const newValue = { ...changedCategories, [category]: enabled };
@@ -58,6 +60,7 @@ const ConfigPage: FC = () => {
   const submitChanges = () => {
     setCategories(changedCategories);
     setChangedCategories({});
+    setTimeout(() => history.push("/repos/"));
   };
 
   return (
