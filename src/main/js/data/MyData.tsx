@@ -21,13 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React, { FC, ReactElement } from "react";
+import React, { FC, ReactElement, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { useIndexLinks } from "@scm-manager/ui-api";
 import { Loading, Notification } from "@scm-manager/ui-components";
 import { binder } from "@scm-manager/ui-extensions";
 import CollapsibleContainer from "../CollapsibleContainer";
 import { Link } from "@scm-manager/ui-types";
+import ScrollContainer from "../ScrollContainer";
 import { useMyData } from "./useMyData";
 import { useCollapsedState, useIsCategoryDisabled } from "../config/hooks";
 import { MyDataType } from "../types";
@@ -35,6 +36,7 @@ import { MyDataType } from "../types";
 export type ExtensionProps = {
   title: string;
   render: (data: any, key: any) => ReactElement;
+  beforeData?: ReactNode;
   separatedEntries: boolean;
   type: string;
   emptyMessage?: string;
@@ -62,8 +64,10 @@ const MyDataExtension: FC<MyDataExtensionProps> = ({ extension, data, error }) =
         count={data?.length}
         initiallyCollapsed={collapsed}
         onCollapseToggle={setCollapsed}
+        contentWrapper={ScrollContainer}
         error={error}
       >
+        {extension.beforeData}
         {(data?.length || 0) > 0 ? (
           data?.map((dataEntry, key) => <>{extension.render(dataEntry, key)}</>)
         ) : (
