@@ -28,6 +28,7 @@ import { Loading, Notification } from "@scm-manager/ui-components";
 import { binder } from "@scm-manager/ui-extensions";
 import CollapsibleContainer from "../CollapsibleContainer";
 import { Link } from "@scm-manager/ui-types";
+import ScrollContainer from "../ScrollContainer";
 import { useMyData } from "./useMyData";
 import { useCollapsedState, useIsCategoryDisabled } from "../config/hooks";
 import { MyDataType } from "../types";
@@ -63,6 +64,7 @@ const MyDataExtension: FC<MyDataExtensionProps> = ({ extension, data, error }) =
         count={data?.length}
         initiallyCollapsed={collapsed}
         onCollapseToggle={setCollapsed}
+        contentWrapper={ScrollContainer}
         error={error}
       >
         {extension.beforeData}
