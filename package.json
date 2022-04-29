@@ -1,7 +1,7 @@
 {
     "name": "@scm-manager/scm-landingpage-plugin",
     "private": true,
-    "version": "1.9.4-SNAPSHOT",
+    "version": "1.10.0",
     "license": "MIT",
     "main": "./src/main/js/index.tsx",
     "scripts": {
