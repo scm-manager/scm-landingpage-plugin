@@ -220,10 +220,12 @@ class MyEventStoreTest {
     store.markRepositoryEventsAsDeleted("myOtherRepo");
 
     List<MyEvent> events = store.getEvents();
-    assertThat(events).contains(new MyRepositoryEvent(MyEvent.class.getSimpleName(), "allowed", "myOtherRepo", true));
-    assertThat(events).contains(new RepositoryRenamedEventSubscriber.RepositoryRenamedEvent("allowed", "myRepo", "myOtherRepo", "admin", "admin@scm-manager.org", true));
-    assertThat(events).contains(event);
-    assertThat(events).contains(myOtherRenamedEvent);
+    assertThat(events).contains(
+      new MyRepositoryEvent(MyEvent.class.getSimpleName(), "allowed", "myOtherRepo", true),
+      new RepositoryRenamedEventSubscriber.RepositoryRenamedEvent("allowed", "myRepo", "myOtherRepo", "admin", "admin@scm-manager.org", true),
+      event,
+      myOtherRenamedEvent
+    );
   }
 
   private RepositoryPushEventSubscriber.PushEvent createPushEvent(String permission, String repository, User user, int changesets) {
