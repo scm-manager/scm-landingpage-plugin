@@ -24,6 +24,7 @@
 
 package com.cloudogu.scm.landingpage.myevents;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import sonia.scm.event.Event;
@@ -37,6 +38,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 @Event
 @NoArgsConstructor
+@EqualsAndHashCode
 public class MyRepositoryEvent extends MyEvent {
   private String repository;
   private boolean deleted;

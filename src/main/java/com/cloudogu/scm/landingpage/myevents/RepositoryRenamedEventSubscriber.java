@@ -25,6 +25,7 @@
 package com.cloudogu.scm.landingpage.myevents;
 
 import com.github.legman.Subscribe;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.shiro.SecurityUtils;
@@ -73,6 +74,7 @@ public class RepositoryRenamedEventSubscriber {
   @XmlAccessorType(XmlAccessType.FIELD)
   @Getter
   @NoArgsConstructor
+  @EqualsAndHashCode
   static class RepositoryRenamedEvent extends MyEvent {
 
     private String oldRepository;
@@ -82,12 +84,17 @@ public class RepositoryRenamedEventSubscriber {
 
     private boolean deleted;
 
-    RepositoryRenamedEvent(String permission, String oldRepository, String newRepository, String username, String userMail) {
+    RepositoryRenamedEvent(String permission, String oldRepository, String newRepository, String username, String userMail, boolean deleted) {
       super(RepositoryRenamedEvent.class.getSimpleName(), permission);
       this.oldRepository = oldRepository;
       this.newRepository = newRepository;
       this.username = username;
       this.userMail = userMail;
+      this.deleted = deleted;
+    }
+
+    RepositoryRenamedEvent(String permission, String oldRepository, String newRepository, String username, String userMail) {
+      this(permission, oldRepository, newRepository, username, userMail, false);
     }
 
     public void setDeleted(boolean deleted) {

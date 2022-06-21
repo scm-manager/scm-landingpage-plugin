@@ -203,6 +203,29 @@ class MyEventStoreTest {
     assertThat(latestEvent.getPermission()).isEqualTo("repository:read:EIRu8Tnsn2");
   }
 
+  @Test
+  void shouldMarkRepositoryEventsAsDeleted() {
+    MyEvent event = new MyRepositoryEvent(MyRepositoryEvent.class.getSimpleName(), "allowed", "myRepo");
+    MyEvent otherEvent = new MyRepositoryEvent(MyRepositoryEvent.class.getSimpleName(), "allowed", "myOtherRepo");
+    MyEvent myRenamedEvent = new RepositoryRenamedEventSubscriber.RepositoryRenamedEvent("allowed", "myRepo", "myOtherRepo", "admin", "admin@scm-manager.org");
+    MyEvent myOtherRenamedEvent = new RepositoryRenamedEventSubscriber.RepositoryRenamedEvent("allowed", "myRepoOther", "myRepo", "admin", "admin@scm-manager.org");
+
+    when(subject.isPermitted("allowed")).thenReturn(true);
+
+    store.add(event);
+    store.add(otherEvent);
+    store.add(myRenamedEvent);
+    store.add(myOtherRenamedEvent);
+
+    store.markRepositoryEventsAsDeleted("myOtherRepo");
+
+    List<MyEvent> events = store.getEvents();
+    assertThat(events).contains(new MyRepositoryEvent(MyEvent.class.getSimpleName(), "allowed", "myOtherRepo", true));
+    assertThat(events).contains(new RepositoryRenamedEventSubscriber.RepositoryRenamedEvent("allowed", "myRepo", "myOtherRepo", "admin", "admin@scm-manager.org", true));
+    assertThat(events).contains(event);
+    assertThat(events).contains(myOtherRenamedEvent);
+  }
+
   private RepositoryPushEventSubscriber.PushEvent createPushEvent(String permission, String repository, User user, int changesets) {
     return new RepositoryPushEventSubscriber.PushEvent(permission, repository , user.getName(), user.getDisplayName(), user.getMail(), changesets);
   }

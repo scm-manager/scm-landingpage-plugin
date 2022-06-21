@@ -84,12 +84,10 @@ public class MyEventStore {
           ((MyRepositoryEvent) it).setDeleted(true);
         }
         if (
-          (it instanceof RepositoryRenamedEventSubscriber.RepositoryRenamedEvent)
-
+          (it instanceof RepositoryRenamedEventSubscriber.RepositoryRenamedEvent) &&
+            ((RepositoryRenamedEventSubscriber.RepositoryRenamedEvent) it).getNewRepository().equals(repository)
         ) {
-          if (((RepositoryRenamedEventSubscriber.RepositoryRenamedEvent) it).getNewRepository().equals(repository)) {
-            ((RepositoryRenamedEventSubscriber.RepositoryRenamedEvent) it).setDeleted(true);
-          }
+          ((RepositoryRenamedEventSubscriber.RepositoryRenamedEvent) it).setDeleted(true);
         }
       });
       store.set(storeEntry);
