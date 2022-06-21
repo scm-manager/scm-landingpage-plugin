@@ -76,9 +76,8 @@ public class RepositoryPushEventSubscriber {
   @XmlAccessorType(XmlAccessType.FIELD)
   @Getter
   @NoArgsConstructor
-  public static class PushEvent extends MyEvent {
+  public static class PushEvent extends MyRepositoryEvent {
 
-    private String repository;
     private String authorName;
     private String authorDisplayName;
     private String authorMail;
@@ -86,8 +85,7 @@ public class RepositoryPushEventSubscriber {
 
 
     public PushEvent(String permission, String repository, String authorName, String authorDisplayName, String authorMail, int changesets) {
-      super(PushEvent.class.getSimpleName(), permission);
-      this.repository = repository;
+      super(PushEvent.class.getSimpleName(), permission, repository);
       this.authorName = authorName;
       this.authorDisplayName = authorDisplayName;
       this.authorMail = authorMail;

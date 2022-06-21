@@ -26,14 +26,13 @@ import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { AvatarImage, CardColumnSmall, DateFromNow, Icon } from "@scm-manager/ui-components";
 import { binder } from "@scm-manager/ui-extensions";
-import { MyEventComponent, MyRepositoryEventType } from "../types";
-import DeletableTitle from "./DeletableTitle";
+import { MyEventComponent, MyEventType } from "../types";
 
-type RepositoryPushEventType = MyRepositoryEventType & {
-  authorName: string;
-  authorDisplayName: string;
-  authorMail: string;
-  changesets: number;
+type RepositoryDeletedEventType = MyEventType & {
+  repository: string;
+  deleterName: string;
+  deleterDisplayName: string;
+  deleterMail: string;
   date: Date;
 };
 
@@ -42,28 +41,27 @@ const StyledGravatar = styled(AvatarImage)`
   align-self: center;
 `;
 
-const RepositoryPushEvent: MyEventComponent<RepositoryPushEventType> = ({ event }) => {
+const RepositoryDeletedEvent: MyEventComponent<RepositoryDeletedEventType> = ({ event }) => {
   const [t] = useTranslation("plugins");
 
-  const link = event.deleted ? "" : "/repo/" + event.repository + "/code/changesets/";
+  const link = "";
 
   const icon = binder.hasExtension("avatar.factory") ? (
-    <StyledGravatar person={{ name: event.authorName, mail: event.authorMail }} />
+    <StyledGravatar person={{ name: event.deleterName, mail: event.deleterMail }} />
   ) : (
     <Icon name="exchange-alt" className="fa-fw fa-lg" color="inherit" />
   );
 
   const content = (
-    <DeletableTitle deleted={event.deleted} className="is-marginless">
-      {t("scm-landingpage-plugin.myevents.repositoryPush.title", {
-        count: event.changesets,
+    <strong className="is-marginless">
+      {t("scm-landingpage-plugin.myevents.repositoryDeleted.title", {
         repository: event.repository
       })}
-    </DeletableTitle>
+    </strong>
   );
   const footerLeft = (
     <>
-      {t("scm-landingpage-plugin.myevents.repositoryPush.description")} {event.authorDisplayName}
+      {t("scm-landingpage-plugin.myevents.repositoryDeleted.description")} {event.deleterDisplayName}
     </>
   );
 
@@ -82,6 +80,6 @@ const RepositoryPushEvent: MyEventComponent<RepositoryPushEventType> = ({ event 
   );
 };
 
-RepositoryPushEvent.type = "PushEvent";
+RepositoryDeletedEvent.type = "RepositoryDeletedEvent";
 
-binder.bind("landingpage.myevents", RepositoryPushEvent);
+binder.bind("landingpage.myevents", RepositoryDeletedEvent);

@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 import { Repository } from "@scm-manager/ui-types";
+import React, { FC } from "react";
 
 export type MyTaskType = {
   type: string;
@@ -67,7 +68,12 @@ export type MyEventType = {
   type: string;
 };
 
-export type MyEventComponent<T = MyEventType> = React.FC<EventProps<T>> & {
+export type MyRepositoryEventType = MyEventType & {
+  repository: string;
+  deleted: boolean;
+}
+
+export type MyEventComponent<T = MyEventType> = FC<EventProps<T>> & {
   type: string;
 };
 

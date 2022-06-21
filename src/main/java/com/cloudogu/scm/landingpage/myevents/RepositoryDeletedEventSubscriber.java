@@ -31,7 +31,8 @@ import org.apache.shiro.SecurityUtils;
 import sonia.scm.EagerSingleton;
 import sonia.scm.HandlerEventType;
 import sonia.scm.plugin.Extension;
-import sonia.scm.repository.RepositoryModificationEvent;
+import sonia.scm.repository.Repository;
+import sonia.scm.repository.RepositoryEvent;
 import sonia.scm.repository.RepositoryPermissions;
 import sonia.scm.user.User;
 
@@ -42,57 +43,44 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @Extension
 @EagerSingleton
-public class RepositoryRenamedEventSubscriber {
+public class RepositoryDeletedEventSubscriber {
 
   private final MyEventStore store;
 
   @Inject
-  public RepositoryRenamedEventSubscriber(MyEventStore store) {
+  public RepositoryDeletedEventSubscriber(MyEventStore store) {
     this.store = store;
   }
 
   @Subscribe
-  public void handleEvent(RepositoryModificationEvent event) {
-    if (isRepositoryRenamedEvent(event)) {
-      String oldRepository = event.getOldItem().getNamespace() + "/" + event.getOldItem().getName();
-      String newRepository = event.getItem().getNamespace() + "/" + event.getItem().getName();
-      User user = SecurityUtils.getSubject().getPrincipals().oneByType(User.class);
+  public void handleEvent(RepositoryEvent event) {
+    if (event.getEventType() == HandlerEventType.DELETE) {
+      Repository eventRepo = event.getItem();
+      String permission = RepositoryPermissions.read(event.getItem()).asShiroString();
+      String repository = eventRepo.getNamespace() + "/" + eventRepo.getName();
+      User deleter = SecurityUtils.getSubject().getPrincipals().oneByType(User.class);
 
-      store.add(new RepositoryRenamedEvent(RepositoryPermissions.read(event.getItem()).asShiroString(), oldRepository, newRepository, user.getName(), user.getMail()));
-      store.markRepositoryEventsAsDeleted(oldRepository);
+      store.add(new RepositoryDeletedEvent(permission, repository, deleter.getName(), deleter.getDisplayName(), deleter.getMail()));
+      store.markRepositoryEventsAsDeleted(repository);
     }
-  }
-
-  private boolean isRepositoryRenamedEvent(RepositoryModificationEvent event) {
-    return event.getEventType() == HandlerEventType.MODIFY
-      && (!event.getItem().getNamespace().equals(event.getOldItem().getNamespace())
-      || !event.getItem().getName().equals(event.getOldItem().getName()));
   }
 
   @XmlRootElement
   @XmlAccessorType(XmlAccessType.FIELD)
   @Getter
   @NoArgsConstructor
-  static class RepositoryRenamedEvent extends MyEvent {
+  static class RepositoryDeletedEvent extends MyEvent {
+    private String repository;
+    private String deleterName;
+    private String deleterDisplayName;
+    private String deleterMail;
 
-    private String oldRepository;
-    private String newRepository;
-    private String username;
-    private String userMail;
-
-    private boolean deleted;
-
-    RepositoryRenamedEvent(String permission, String oldRepository, String newRepository, String username, String userMail) {
-      super(RepositoryRenamedEvent.class.getSimpleName(), permission);
-      this.oldRepository = oldRepository;
-      this.newRepository = newRepository;
-      this.username = username;
-      this.userMail = userMail;
-    }
-
-    public void setDeleted(boolean deleted) {
-      this.deleted = deleted;
+    RepositoryDeletedEvent(String permission, String repository, String deleterName, String deleterDisplayName, String deleterMail) {
+      super(RepositoryDeletedEvent.class.getSimpleName(), permission);
+      this.repository = repository;
+      this.deleterName = deleterName;
+      this.deleterDisplayName = deleterDisplayName;
+      this.deleterMail = deleterMail;
     }
   }
-
 }

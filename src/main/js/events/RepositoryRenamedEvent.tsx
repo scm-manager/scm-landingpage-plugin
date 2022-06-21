@@ -23,7 +23,7 @@
  */
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { CardColumnSmall, Icon, DateFromNow, AvatarImage } from "@scm-manager/ui-components";
+import { AvatarImage, CardColumnSmall, DateFromNow, Icon } from "@scm-manager/ui-components";
 import { binder } from "@scm-manager/ui-extensions";
 import { MyEventComponent, MyEventType } from "../types";
 import styled from "styled-components";
@@ -34,6 +34,7 @@ type RepositoryRenamedEventType = MyEventType & {
   username: string;
   userMail: string;
   date: Date;
+  deleted: boolean;
 };
 
 const RightArrowPadding = styled(Icon)`
@@ -46,21 +47,30 @@ const StyledGravatar = styled(AvatarImage)`
   align-self: center;
 `;
 
+const StrikeThroughSpan = styled.span`
+  text-decoration: line-through;
+`;
+
 const RepositoryRenamedEvent: MyEventComponent<RepositoryRenamedEventType> = ({ event }) => {
   const [t] = useTranslation("plugins");
-  const link = "/repo/" + event.newRepository;
+  const link = event.deleted ? "" : "/repo/" + event.newRepository;
   const icon = binder.hasExtension("avatar.factory") ? (
     <StyledGravatar person={{ name: event.username, mail: event.userMail }} />
   ) : (
     <Icon name="exchange-alt" className="fa-fw fa-lg" color="inherit" />
   );
+  const newRepository = event.deleted ? (
+    <StrikeThroughSpan>{event.newRepository}</StrikeThroughSpan>
+  ) : (
+    event.newRepository
+  );
   const content = (
     <div>
       <strong className="is-marginless">{t("scm-landingpage-plugin.myevents.repositoryRenamed.title")}</strong>
       <p>
-        {event.oldRepository}
+        <StrikeThroughSpan>{event.oldRepository}</StrikeThroughSpan>
         <RightArrowPadding name="arrow-right" />
-        {event.newRepository}
+        {newRepository}
       </p>
     </div>
   );

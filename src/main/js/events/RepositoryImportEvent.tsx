@@ -24,13 +24,13 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { CardColumnSmall, Icon, DateFromNow, AvatarImage } from "@scm-manager/ui-components";
+import { AvatarImage, CardColumnSmall, DateFromNow, Icon } from "@scm-manager/ui-components";
 import { binder } from "@scm-manager/ui-extensions";
-import { MyEventComponent, MyEventType } from "../types";
+import { MyEventComponent, MyRepositoryEventType } from "../types";
 import { Link } from "react-router-dom";
+import DeletableTitle from "./DeletableTitle";
 
-type RepositoryImportEventType = MyEventType & {
-  repository: string;
+type RepositoryImportEventType = MyRepositoryEventType & {
   creatorName: string;
   creatorDisplayName: string;
   creatorMail: string;
@@ -47,7 +47,7 @@ const StyledGravatar = styled(AvatarImage)`
 const RepositoryImportEvent: MyEventComponent<RepositoryImportEventType> = ({ event }) => {
   const [t] = useTranslation("plugins");
 
-  const link = "/repo/" + event.repository;
+  const link = event.deleted ? "" : "/repo/" + event.repository;
 
   const icon = binder.hasExtension("avatar.factory") ? (
     <StyledGravatar person={{ name: event.creatorName, mail: event.creatorMail }} />
@@ -56,7 +56,7 @@ const RepositoryImportEvent: MyEventComponent<RepositoryImportEventType> = ({ ev
   );
 
   const content = (
-    <strong className="is-marginless">
+    <DeletableTitle deleted={event.deleted} className="is-marginless">
       {t(
         event.failed
           ? "scm-landingpage-plugin.myevents.repositoryImport.titleFailed"
@@ -65,7 +65,7 @@ const RepositoryImportEvent: MyEventComponent<RepositoryImportEventType> = ({ ev
           repository: event.repository
         }
       )}
-    </strong>
+    </DeletableTitle>
   );
 
   let logLink;
