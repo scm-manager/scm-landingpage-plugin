@@ -26,7 +26,7 @@ import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { AvatarImage, CardColumnSmall, DateFromNow, Icon } from "@scm-manager/ui-components";
 import { binder } from "@scm-manager/ui-extensions";
-import { MyEventComponent, MyRepositoryEventType } from "../types";
+import { MyEventComponent, MyEventExtension, MyRepositoryEventType } from "../types";
 import DeletableTitle from "./DeletableTitle";
 
 type RepositoryPushEventType = MyRepositoryEventType & {
@@ -45,7 +45,7 @@ const StyledGravatar = styled(AvatarImage)`
 const RepositoryPushEvent: MyEventComponent<RepositoryPushEventType> = ({ event }) => {
   const [t] = useTranslation("plugins");
 
-  const link = event.deleted ? "" : "/repo/" + event.repository + "/code/changesets/";
+  const link = event.deleted ? undefined : "/repo/" + event.repository + "/code/changesets/";
 
   const icon = binder.hasExtension("avatar.factory") ? (
     <StyledGravatar person={{ name: event.authorName, mail: event.authorMail }} />
@@ -67,7 +67,7 @@ const RepositoryPushEvent: MyEventComponent<RepositoryPushEventType> = ({ event 
     </>
   );
 
-  return (
+  const card = (
     <CardColumnSmall
       link={link}
       avatar={icon}
@@ -80,8 +80,14 @@ const RepositoryPushEvent: MyEventComponent<RepositoryPushEventType> = ({ event 
       footer={footerLeft}
     />
   );
+
+  if (link) {
+    return card;
+  }
+
+  return <div>{card}</div>;
 };
 
 RepositoryPushEvent.type = "PushEvent";
 
-binder.bind("landingpage.myevents", RepositoryPushEvent);
+binder.bind<MyEventExtension<RepositoryPushEventType>>("landingpage.myevents", RepositoryPushEvent);

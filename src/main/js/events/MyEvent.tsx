@@ -23,17 +23,17 @@
  */
 import React, { FC } from "react";
 import { binder } from "@scm-manager/ui-extensions";
-import { MyEventComponent, MyEventType } from "../types";
+import { MyEventExtension, MyEventType } from "../types";
 
 type Props = {
   event: MyEventType;
 };
 
 const MyEvent: FC<Props> = ({ event }) => {
-  const extensions: MyEventComponent[] = binder.getExtensions("landingpage.myevents");
+  const extensions = binder.getExtensions<MyEventExtension>("landingpage.myevents", { event });
 
   let Component = null;
-  for (let extension of extensions) {
+  for (const extension of extensions) {
     if (extension.type === event.type) {
       Component = extension;
       break;

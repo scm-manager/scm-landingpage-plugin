@@ -25,7 +25,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { AvatarImage, CardColumnSmall, DateFromNow, Icon } from "@scm-manager/ui-components";
 import { binder } from "@scm-manager/ui-extensions";
-import { MyEventComponent, MyEventType } from "../types";
+import { MyEventComponent, MyEventExtension, MyEventType } from "../types";
 import styled from "styled-components";
 
 type RepositoryRenamedEventType = MyEventType & {
@@ -53,7 +53,7 @@ const StrikeThroughSpan = styled.span`
 
 const RepositoryRenamedEvent: MyEventComponent<RepositoryRenamedEventType> = ({ event }) => {
   const [t] = useTranslation("plugins");
-  const link = event.deleted ? "" : "/repo/" + event.newRepository;
+  const link = event.deleted ? undefined : "/repo/" + event.newRepository;
   const icon = binder.hasExtension("avatar.factory") ? (
     <StyledGravatar person={{ name: event.username, mail: event.userMail }} />
   ) : (
@@ -75,7 +75,7 @@ const RepositoryRenamedEvent: MyEventComponent<RepositoryRenamedEventType> = ({ 
     </div>
   );
 
-  return (
+  const card = (
     <CardColumnSmall
       link={link}
       avatar={icon}
@@ -87,8 +87,14 @@ const RepositoryRenamedEvent: MyEventComponent<RepositoryRenamedEventType> = ({ 
       }
     />
   );
+
+  if (link) {
+    return card;
+  }
+
+  return <div>{card}</div>;
 };
 
 RepositoryRenamedEvent.type = "RepositoryRenamedEvent";
 
-binder.bind("landingpage.myevents", RepositoryRenamedEvent);
+binder.bind<MyEventExtension<RepositoryRenamedEventType>>("landingpage.myevents", RepositoryRenamedEvent);

@@ -39,8 +39,10 @@ type Props = {
 
 const Container = styled.div`
   margin-bottom: 1rem;
-  a:not(:last-child) div.media {
-    border-bottom: solid 1px #cdcdcd;
+
+  a:not(:last-child) div.media,
+  div:not(:last-child) div.media {
+    border-bottom: solid 1px rgba(219, 219, 219, 0.5);
   }
 `;
 

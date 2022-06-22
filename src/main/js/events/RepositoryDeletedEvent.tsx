@@ -26,7 +26,7 @@ import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { AvatarImage, CardColumnSmall, DateFromNow, Icon } from "@scm-manager/ui-components";
 import { binder } from "@scm-manager/ui-extensions";
-import { MyEventComponent, MyEventType } from "../types";
+import { MyEventComponent, MyEventExtension, MyEventType } from "../types";
 
 type RepositoryDeletedEventType = MyEventType & {
   repository: string;
@@ -43,8 +43,6 @@ const StyledGravatar = styled(AvatarImage)`
 
 const RepositoryDeletedEvent: MyEventComponent<RepositoryDeletedEventType> = ({ event }) => {
   const [t] = useTranslation("plugins");
-
-  const link = "";
 
   const icon = binder.hasExtension("avatar.factory") ? (
     <StyledGravatar person={{ name: event.deleterName, mail: event.deleterMail }} />
@@ -66,20 +64,21 @@ const RepositoryDeletedEvent: MyEventComponent<RepositoryDeletedEventType> = ({ 
   );
 
   return (
-    <CardColumnSmall
-      link={link}
-      avatar={icon}
-      contentLeft={content}
-      contentRight={
-        <small>
-          <DateFromNow date={event.date} />
-        </small>
-      }
-      footer={footerLeft}
-    />
+    <div>
+      <CardColumnSmall
+        avatar={icon}
+        contentLeft={content}
+        contentRight={
+          <small>
+            <DateFromNow date={event.date} />
+          </small>
+        }
+        footer={footerLeft}
+      />
+    </div>
   );
 };
 
 RepositoryDeletedEvent.type = "RepositoryDeletedEvent";
 
-binder.bind("landingpage.myevents", RepositoryDeletedEvent);
+binder.bind<MyEventExtension<RepositoryDeletedEventType>>("landingpage.myevents", RepositoryDeletedEvent);
