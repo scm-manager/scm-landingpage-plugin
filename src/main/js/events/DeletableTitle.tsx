@@ -22,17 +22,18 @@
  * SOFTWARE.
  */
 
-plugins {
-  id 'org.scm-manager.smp' version '0.11.1'
-}
+import styled from "styled-components";
+import React, { FC } from "react";
 
-dependencies {
-}
+const StrikeThroughStrong = styled.strong`
+  text-decoration: line-through;
+`;
 
-scmPlugin {
-  scmVersion = "2.36.2-SNAPSHOT"
-  displayName = "Landingpage"
-  description = "Creates a personal landingpage for each user"
-  author = "Cloudogu GmbH"
-  category = "Information"
-}
+const DeletableTitle: FC<{ deleted: boolean; className: string }> = ({ deleted, children, className }) =>
+  deleted ? (
+    <StrikeThroughStrong className={className}>{children}</StrikeThroughStrong>
+  ) : (
+    <strong className={className}>{children}</strong>
+  );
+
+export default DeletableTitle;

@@ -68,15 +68,14 @@ public class RepositoryCreatedEventSubscriber {
   @XmlAccessorType(XmlAccessType.FIELD)
   @Getter
   @NoArgsConstructor
-  static class RepositoryCreatedEvent extends MyEvent {
-    private String repository;
+  static class RepositoryCreatedEvent extends MyRepositoryEvent {
+
     private String creatorName;
     private String creatorDisplayName;
     private String creatorMail;
 
     RepositoryCreatedEvent(String permission, String repository, String creatorName, String creatorDisplayName, String creatorMail) {
-      super(RepositoryCreatedEvent.class.getSimpleName(), permission);
-      this.repository = repository;
+      super(RepositoryCreatedEvent.class.getSimpleName(), permission, repository);
       this.creatorName = creatorName;
       this.creatorDisplayName = creatorDisplayName;
       this.creatorMail = creatorMail;

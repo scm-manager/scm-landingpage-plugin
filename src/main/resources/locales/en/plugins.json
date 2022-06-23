@@ -42,6 +42,10 @@
         "title": "New repository: {{repository}}",
         "description": "Created by"
       },
+      "repositoryDeleted": {
+        "title": "Repository deleted: {{repository}}",
+        "description": "Deleted by"
+      },
       "repositoryImport": {
         "titleFailed": "Import failed: {{repository}}",
         "titleSuccess": "Import finished: {{repository}}",

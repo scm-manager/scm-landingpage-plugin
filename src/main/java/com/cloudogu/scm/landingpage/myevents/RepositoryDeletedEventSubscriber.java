@@ -21,18 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.cloudogu.scm.landingpage.myevents;
 
 import com.github.legman.Subscribe;
-import com.google.common.collect.Iterables;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.shiro.SecurityUtils;
 import sonia.scm.EagerSingleton;
+import sonia.scm.HandlerEventType;
 import sonia.scm.plugin.Extension;
-import sonia.scm.repository.Changeset;
-import sonia.scm.repository.PostReceiveRepositoryHookEvent;
 import sonia.scm.repository.Repository;
+import sonia.scm.repository.RepositoryEvent;
 import sonia.scm.repository.RepositoryPermissions;
 import sonia.scm.user.User;
 
@@ -43,53 +43,44 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @Extension
 @EagerSingleton
-public class RepositoryPushEventSubscriber {
+public class RepositoryDeletedEventSubscriber {
 
   private final MyEventStore store;
 
   @Inject
-  public RepositoryPushEventSubscriber(MyEventStore store) {
+  public RepositoryDeletedEventSubscriber(MyEventStore store) {
     this.store = store;
   }
 
   @Subscribe
-  public void handleEvents(PostReceiveRepositoryHookEvent event) {
-    Repository repository = event.getRepository();
-    Iterable<Changeset> changesets = event.getContext().getChangesetProvider().getChangesets();
-    int changesetCount = Iterables.size(changesets);
-    if (changesetCount == 0) {
-      return;
+  public void handleEvent(RepositoryEvent event) {
+    if (event.getEventType() == HandlerEventType.DELETE) {
+      Repository eventRepo = event.getItem();
+      String permission = RepositoryPermissions.read(event.getItem()).asShiroString();
+      String repository = eventRepo.getNamespace() + "/" + eventRepo.getName();
+      User deleter = SecurityUtils.getSubject().getPrincipals().oneByType(User.class);
+
+      store.add(new RepositoryDeletedEvent(permission, repository, deleter.getName(), deleter.getDisplayName(), deleter.getMail()));
+      store.markRepositoryEventsAsDeleted(repository);
     }
-    User author = SecurityUtils.getSubject().getPrincipals().oneByType(User.class);
-
-
-    store.add(new PushEvent(
-      RepositoryPermissions.read(repository).asShiroString(),
-      repository.getNamespace() + "/" + repository.getName(),
-      author.getName(),
-      author.getDisplayName(),
-      author.getMail(),
-      changesetCount));
   }
 
   @XmlRootElement
   @XmlAccessorType(XmlAccessType.FIELD)
   @Getter
   @NoArgsConstructor
-  public static class PushEvent extends MyRepositoryEvent {
+  static class RepositoryDeletedEvent extends MyEvent {
+    private String repository;
+    private String deleterName;
+    private String deleterDisplayName;
+    private String deleterMail;
 
-    private String authorName;
-    private String authorDisplayName;
-    private String authorMail;
-    private int changesets;
-
-
-    public PushEvent(String permission, String repository, String authorName, String authorDisplayName, String authorMail, int changesets) {
-      super(PushEvent.class.getSimpleName(), permission, repository);
-      this.authorName = authorName;
-      this.authorDisplayName = authorDisplayName;
-      this.authorMail = authorMail;
-      this.changesets = changesets;
+    RepositoryDeletedEvent(String permission, String repository, String deleterName, String deleterDisplayName, String deleterMail) {
+      super(RepositoryDeletedEvent.class.getSimpleName(), permission);
+      this.repository = repository;
+      this.deleterName = deleterName;
+      this.deleterDisplayName = deleterDisplayName;
+      this.deleterMail = deleterMail;
     }
   }
 }

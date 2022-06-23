@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 import { Repository } from "@scm-manager/ui-types";
+import React, { FC } from "react";
+import { ExtensionPointDefinition } from "@scm-manager/ui-extensions";
 
 export type MyTaskType = {
   type: string;
@@ -63,13 +65,24 @@ type DataProps<T = MyDataType> = {
   data: T;
 };
 
-export type MyEventType = {
+export type MyEventType<T extends string = string> = {
+  type: T;
+};
+
+export type MyRepositoryEventType<T extends string = string> = MyEventType<T> & {
+  repository: string;
+  deleted: boolean;
+};
+
+export type MyEventComponent<T extends MyEventType = MyEventType> = FC<EventProps<T>> & {
   type: string;
 };
 
-export type MyEventComponent<T = MyEventType> = React.FC<EventProps<T>> & {
-  type: string;
-};
+export type MyEventExtension<T extends MyEventType = MyEventType> = ExtensionPointDefinition<
+  "landingpage.myevents",
+  MyEventComponent<T>,
+  EventProps<T>
+>;
 
 type EventProps<T = MyEventType> = {
   event: T;

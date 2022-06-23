@@ -24,15 +24,15 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { CardColumnSmall, Icon, DateFromNow, AvatarImage } from "@scm-manager/ui-components";
+import { AvatarImage, CardColumnSmall, DateFromNow, Icon } from "@scm-manager/ui-components";
 import { binder } from "@scm-manager/ui-extensions";
-import { MyEventComponent, MyEventType } from "../types";
+import { MyEventComponent, MyEventExtension, MyRepositoryEventType } from "../types";
+import DeletableTitle from "./DeletableTitle";
 
-type RepositoryPushEventType = MyEventType & {
+type RepositoryPushEventType = MyRepositoryEventType & {
   authorName: string;
   authorDisplayName: string;
   authorMail: string;
-  repository: string;
   changesets: number;
   date: Date;
 };
@@ -45,7 +45,7 @@ const StyledGravatar = styled(AvatarImage)`
 const RepositoryPushEvent: MyEventComponent<RepositoryPushEventType> = ({ event }) => {
   const [t] = useTranslation("plugins");
 
-  const link = "/repo/" + event.repository + "/code/changesets/";
+  const link = event.deleted ? undefined : "/repo/" + event.repository + "/code/changesets/";
 
   const icon = binder.hasExtension("avatar.factory") ? (
     <StyledGravatar person={{ name: event.authorName, mail: event.authorMail }} />
@@ -54,12 +54,12 @@ const RepositoryPushEvent: MyEventComponent<RepositoryPushEventType> = ({ event 
   );
 
   const content = (
-    <strong className="is-marginless">
+    <DeletableTitle deleted={event.deleted} className="is-marginless">
       {t("scm-landingpage-plugin.myevents.repositoryPush.title", {
         count: event.changesets,
         repository: event.repository
       })}
-    </strong>
+    </DeletableTitle>
   );
   const footerLeft = (
     <>
@@ -67,7 +67,7 @@ const RepositoryPushEvent: MyEventComponent<RepositoryPushEventType> = ({ event 
     </>
   );
 
-  return (
+  const card = (
     <CardColumnSmall
       link={link}
       avatar={icon}
@@ -80,8 +80,14 @@ const RepositoryPushEvent: MyEventComponent<RepositoryPushEventType> = ({ event 
       footer={footerLeft}
     />
   );
+
+  if (link) {
+    return card;
+  }
+
+  return <div>{card}</div>;
 };
 
 RepositoryPushEvent.type = "PushEvent";
 
-binder.bind("landingpage.myevents", RepositoryPushEvent);
+binder.bind<MyEventExtension<RepositoryPushEventType>>("landingpage.myevents", RepositoryPushEvent);

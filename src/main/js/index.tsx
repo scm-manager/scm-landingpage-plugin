@@ -27,6 +27,7 @@ import React, { FC } from "react";
 import "./tasks/PluginUpdateTask";
 import "./events/RepositoryPushEvent";
 import "./events/RepositoryCreatedEvent";
+import "./events/RepositoryDeletedEvent";
 import "./events/PluginInstalledEvent";
 import "./events/PluginInstallationFailedEvent";
 import "./events/PluginCenterNotAvailableEvent";

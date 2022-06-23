@@ -73,6 +73,27 @@ public class MyEventStore {
     });
   }
 
+  public synchronized void markRepositoryEventsAsDeleted(String repository) {
+    withUberClassLoader(() -> {
+      StoreEntry storeEntry = getStoreEntry();
+      storeEntry.events.forEach(it -> {
+        if (
+          (it instanceof MyRepositoryEvent) &&
+            ((MyRepositoryEvent) it).getRepository().equals(repository)
+        ) {
+          ((MyRepositoryEvent) it).setDeleted(true);
+        }
+        if (
+          (it instanceof RepositoryRenamedEventSubscriber.RepositoryRenamedEvent) &&
+            ((RepositoryRenamedEventSubscriber.RepositoryRenamedEvent) it).getNewRepository().equals(repository)
+        ) {
+          ((RepositoryRenamedEventSubscriber.RepositoryRenamedEvent) it).setDeleted(true);
+        }
+      });
+      store.set(storeEntry);
+    });
+  }
+
   public List<MyEvent> getEvents() {
     Subject subject = SecurityUtils.getSubject();
 

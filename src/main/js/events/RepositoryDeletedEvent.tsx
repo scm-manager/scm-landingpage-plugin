@@ -26,17 +26,14 @@ import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { AvatarImage, CardColumnSmall, DateFromNow, Icon } from "@scm-manager/ui-components";
 import { binder } from "@scm-manager/ui-extensions";
-import { MyEventComponent, MyEventExtension, MyRepositoryEventType } from "../types";
-import { Link } from "react-router-dom";
-import DeletableTitle from "./DeletableTitle";
+import { MyEventComponent, MyEventExtension, MyEventType } from "../types";
 
-type RepositoryImportEventType = MyRepositoryEventType & {
-  creatorName: string;
-  creatorDisplayName: string;
-  creatorMail: string;
+type RepositoryDeletedEventType = MyEventType & {
+  repository: string;
+  deleterName: string;
+  deleterDisplayName: string;
+  deleterMail: string;
   date: Date;
-  failed: boolean;
-  logId?: string;
 };
 
 const StyledGravatar = styled(AvatarImage)`
@@ -44,68 +41,44 @@ const StyledGravatar = styled(AvatarImage)`
   align-self: center;
 `;
 
-const RepositoryImportEvent: MyEventComponent<RepositoryImportEventType> = ({ event }) => {
+const RepositoryDeletedEvent: MyEventComponent<RepositoryDeletedEventType> = ({ event }) => {
   const [t] = useTranslation("plugins");
 
-  const link = event.deleted ? undefined : "/repo/" + event.repository;
-
   const icon = binder.hasExtension("avatar.factory") ? (
-    <StyledGravatar person={{ name: event.creatorName, mail: event.creatorMail }} />
+    <StyledGravatar person={{ name: event.deleterName, mail: event.deleterMail }} />
   ) : (
     <Icon name="exchange-alt" className="fa-fw fa-lg" color="inherit" />
   );
 
   const content = (
-    <DeletableTitle deleted={event.deleted} className="is-marginless">
-      {t(
-        event.failed
-          ? "scm-landingpage-plugin.myevents.repositoryImport.titleFailed"
-          : "scm-landingpage-plugin.myevents.repositoryImport.titleSuccess",
-        {
-          repository: event.repository
-        }
-      )}
-    </DeletableTitle>
+    <strong className="is-marginless">
+      {t("scm-landingpage-plugin.myevents.repositoryDeleted.title", {
+        repository: event.repository
+      })}
+    </strong>
   );
-
-  let logLink;
-  if (event.logId) {
-    logLink = (
-      <>
-        {" ("}
-        <Link to={`/importlog/${event.logId}`}>{t("scm-landingpage-plugin.myevents.repositoryImport.logLink")}</Link>)
-      </>
-    );
-  }
-
   const footerLeft = (
     <>
-      {t("scm-landingpage-plugin.myevents.repositoryImport.description")} {event.creatorDisplayName}
-      {logLink}
+      {t("scm-landingpage-plugin.myevents.repositoryDeleted.description")} {event.deleterDisplayName}
     </>
   );
 
-  const card = (
-    <CardColumnSmall
-      link={link}
-      avatar={icon}
-      contentLeft={content}
-      contentRight={
-        <small>
-          <DateFromNow date={event.date} />
-        </small>
-      }
-      footer={footerLeft}
-    />
+  return (
+    <div>
+      <CardColumnSmall
+        avatar={icon}
+        contentLeft={content}
+        contentRight={
+          <small>
+            <DateFromNow date={event.date} />
+          </small>
+        }
+        footer={footerLeft}
+      />
+    </div>
   );
-
-  if (link) {
-    return card;
-  }
-
-  return <div>{card}</div>;
 };
 
-RepositoryImportEvent.type = "RepositoryImportEvent";
+RepositoryDeletedEvent.type = "RepositoryDeletedEvent";
 
-binder.bind<MyEventExtension<RepositoryImportEventType>>("landingpage.myevents", RepositoryImportEvent);
+binder.bind<MyEventExtension<RepositoryDeletedEventType>>("landingpage.myevents", RepositoryDeletedEvent);

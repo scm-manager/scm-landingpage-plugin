@@ -22,17 +22,39 @@
  * SOFTWARE.
  */
 
-plugins {
-  id 'org.scm-manager.smp' version '0.11.1'
-}
+package com.cloudogu.scm.landingpage.myevents;
 
-dependencies {
-}
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import sonia.scm.event.Event;
 
-scmPlugin {
-  scmVersion = "2.36.2-SNAPSHOT"
-  displayName = "Landingpage"
-  description = "Creates a personal landingpage for each user"
-  author = "Cloudogu GmbH"
-  category = "Information"
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
+@Getter
+@XmlAccessorType(XmlAccessType.FIELD)
+@Event
+@NoArgsConstructor
+@EqualsAndHashCode
+public class MyRepositoryEvent extends MyEvent {
+  private String repository;
+  private boolean deleted;
+
+  public MyRepositoryEvent(String type, String permission, String repository) {
+    super(type, permission);
+    this.repository = repository;
+  }
+
+  public MyRepositoryEvent(String type, String permission, String repository, boolean deleted) {
+    super(type, permission);
+    this.repository = repository;
+    this.deleted = deleted;
+  }
+
+  public void setDeleted(boolean deleted) {
+    this.deleted = deleted;
+  }
 }
