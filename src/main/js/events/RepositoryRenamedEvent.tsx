@@ -27,6 +27,7 @@ import { AvatarImage, CardColumnSmall, DateFromNow, Icon } from "@scm-manager/ui
 import { binder } from "@scm-manager/ui-extensions";
 import { MyEventComponent, MyEventExtension, MyEventType } from "../types";
 import styled from "styled-components";
+import DeletableTitle from "./DeletableTitle";
 
 type RepositoryRenamedEventType = MyEventType & {
   oldRepository: string;
@@ -66,7 +67,7 @@ const RepositoryRenamedEvent: MyEventComponent<RepositoryRenamedEventType> = ({ 
   );
   const content = (
     <div>
-      <strong className="is-marginless">{t("scm-landingpage-plugin.myevents.repositoryRenamed.title")}</strong>
+      <DeletableTitle deleted={event.deleted} className="is-marginless">{t("scm-landingpage-plugin.myevents.repositoryRenamed.title")}</DeletableTitle>
       <p>
         <StrikeThroughSpan>{event.oldRepository}</StrikeThroughSpan>
         <RightArrowPadding name="arrow-right" />
