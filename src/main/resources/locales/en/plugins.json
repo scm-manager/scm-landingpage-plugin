@@ -5,6 +5,9 @@
     "config": {
       "title": "mySCM Configuration",
       "subtitle": "Displayed Content",
+      "pageSize": "Repository Page Size",
+      "pageSizeError": "Page size has to be a number between {{min}} and {{max}}",
+      "showArchived": "Show archived repositories ",
       "submit": "Submit"
     },
     "emptyMessage": {

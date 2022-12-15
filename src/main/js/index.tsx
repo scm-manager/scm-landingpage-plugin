@@ -46,6 +46,7 @@ import { Link } from "react-router-dom";
 import ConfigPage from "./config/ConfigPage";
 import styled from "styled-components";
 import MyTips from "./tips/MyTips";
+import { useListOptions } from "./config/hooks";
 
 const RelativeLink = styled(Link)`
   position: relative;
@@ -104,3 +105,6 @@ binder.bind<extensionPoints.RepositoryOverviewLeftExtension>("repository.overvie
 binder.bind("main.route", ConfigRoute);
 binder.bind<extensionPoints.RepositoryOverviewTitleExtension>("repository.overview.title", Title);
 binder.bind<extensionPoints.RepositoryOverviewSubtitleExtension>("repository.overview.subtitle", Subtitle);
+binder.bind<extensionPoints.RepositoryPageSizeExtensionPoint>("repository.overview.listOptions", () =>
+  useListOptions()
+);

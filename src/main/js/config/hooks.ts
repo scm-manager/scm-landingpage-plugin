@@ -45,6 +45,15 @@ export function useIsCategoryDisabled(category: string) {
   return disabledCategories.includes(category);
 }
 
+export function useListOptions() {
+  const [{pageSize, showArchived}, setListOptions] = useLocalStorage<{ pageSize: number, showArchived: boolean }>("scm.landingPagePlugin.listOptions", { pageSize: 10, showArchived: true });
+  return {
+    pageSize,
+    showArchived,
+    setListOptions
+  };
+}
+
 export function useDisabledCategories() {
   const [disabledCategories, setDisabledCategories] = useLocalStorage<Array<string>>("scm.landingPagePlugin.disabledCategories", []);
   const isDisabled = (category: string) => disabledCategories.includes(category);
@@ -64,7 +73,7 @@ export function useDisabledCategories() {
     isDisabled,
     setCategories,
     disabledCategories
-  }
+  };
 }
 
 export function useCollapsedState(category: string) {

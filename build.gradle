@@ -23,14 +23,14 @@
  */
 
 plugins {
-  id 'org.scm-manager.smp' version '0.11.1'
+  id 'org.scm-manager.smp' version '0.13.0'
 }
 
 dependencies {
 }
 
 scmPlugin {
-  scmVersion = "2.37.0"
+  scmVersion = "2.40.2-SNAPSHOT"
   displayName = "Landingpage"
   description = "Creates a personal landingpage for each user"
   author = "Cloudogu GmbH"

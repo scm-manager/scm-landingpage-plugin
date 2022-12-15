@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 
-import { Checkbox, Page, SubmitButton } from "@scm-manager/ui-components";
+import { Checkbox, InputField, Page, SubmitButton } from "@scm-manager/ui-components";
 import React, { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ExtensionProps } from "../data/MyData";
 import { useBinder } from "@scm-manager/ui-extensions";
-import { useDisabledCategories } from "./hooks";
+import { useDisabledCategories, useListOptions } from "./hooks";
 import { useHistory } from "react-router-dom";
 
 type DisplayOptionProps = {
@@ -40,11 +40,19 @@ const DisplayOption: FC<DisplayOptionProps> = ({ value, toggle, label }) => {
   return <Checkbox checked={value} label={label} onChange={toggle} />;
 };
 
+const pageSizeMin = 5;
+const pageSizeMax = 100;
+
 const ConfigPage: FC = () => {
   const [t] = useTranslation("plugins");
   const { isDisabled, setCategories } = useDisabledCategories();
   const binder = useBinder();
   const [changedCategories, setChangedCategories] = useState<{ [key: string]: boolean }>({});
+  const { pageSize, showArchived, setListOptions } = useListOptions();
+  const [pageSizeInput, setPageSizeInput] = useState(pageSize);
+  const [pageSizeError, setPageSizeError] = useState(false);
+  const [optionsChanged, setOptionsChanged] = useState(false);
+  const [showArchivedInput, setShowArchivedInput] = useState(showArchived);
   const extensions: ExtensionProps[] = binder.getExtensions("landingpage.mydata");
   const history = useHistory();
 
@@ -57,35 +65,67 @@ const ConfigPage: FC = () => {
     return Object.keys(changedCategories).includes(category) ? changedCategories[category] : !isDisabled(category);
   };
 
+  const changePageSize = (newPageSize: number) => {
+    setPageSizeInput(newPageSize);
+    setPageSizeError(newPageSize < pageSizeMin || newPageSize > pageSizeMax);
+    setOptionsChanged(true);
+  };
+
+  const changeShowArchived = (newValue: boolean) => {
+    setShowArchivedInput(newValue);
+    setOptionsChanged(true);
+  };
+
   const submitChanges = () => {
     setCategories(changedCategories);
+    setListOptions({ pageSize: Number(pageSizeInput), showArchived: showArchivedInput });
     setChangedCategories({});
+    setOptionsChanged(false);
     setTimeout(() => history.push("/repos/"));
   };
 
   return (
     <Page title={t("scm-landingpage-plugin.config.title")} subtitle={t("scm-landingpage-plugin.config.subtitle")}>
-      {["favoriteRepository", "mytasks", "myevents", "mytips"].map(category => (
+      <div className={"mb-4"}>
+        {["favoriteRepository", "mytasks", "myevents", "mytips"].map(category => (
+          <DisplayOption
+            key={category}
+            label={t(`scm-landingpage-plugin.${category}.title`)}
+            value={shouldBeEnabled(category)}
+            toggle={changeExtension(category)}
+          />
+        ))}
+        {extensions.map(extension => (
+          <DisplayOption
+            key={extension.type}
+            label={t(extension.title)}
+            value={shouldBeEnabled(extension.type)}
+            toggle={changeExtension(extension.type)}
+          />
+        ))}
         <DisplayOption
-          key={category}
-          label={t(`scm-landingpage-plugin.${category}.title`)}
-          value={shouldBeEnabled(category)}
-          toggle={changeExtension(category)}
+          label={t("scm-landingpage-plugin.config.showArchived")}
+          value={showArchivedInput}
+          toggle={changeShowArchived}
         />
-      ))}
-      {extensions.map(extension => (
-        <DisplayOption
-          key={extension.type}
-          label={t(extension.title)}
-          value={shouldBeEnabled(extension.type)}
-          toggle={changeExtension(extension.type)}
+        <InputField
+          label={t("scm-landingpage-plugin.config.pageSize")}
+          type={"number"}
+          value={pageSizeInput}
+          onChange={changePageSize}
+          errorMessage={t("scm-landingpage-plugin.config.pageSizeError", { min: pageSizeMin, max: pageSizeMax })}
+          validationError={pageSizeError}
         />
-      ))}
-      <SubmitButton
-        label={t("scm-landingpage-plugin.config.submit")}
-        action={submitChanges}
-        disabled={Object.keys(changedCategories).length === 0}
-      />
+      </div>
+      <div className={"level"}>
+        <div className={"level-left"} />
+        <SubmitButton
+          className={"level-right"}
+          label={t("scm-landingpage-plugin.config.submit")}
+          action={submitChanges}
+          disabled={(Object.keys(changedCategories).length === 0 && !optionsChanged) || pageSizeError}
+        />
+      </div>
     </Page>
   );
 };
