@@ -71,7 +71,9 @@ const MyDataExtension: FC<MyDataExtensionProps> = ({ extension, data, error }) =
         {(data?.length || 0) > 0 ? (
           data?.map((dataEntry, key) => <>{extension.render(dataEntry, key)}</>)
         ) : (
-          <Notification>{t("scm-landingpage-plugin.favoriteRepository.noData")}</Notification>
+          <Notification type="info">
+            {t(extension.emptyMessage || "scm-landingpage-plugin.favoriteRepository.noData")}
+          </Notification>
         )}
       </CollapsibleContainer>
     );
