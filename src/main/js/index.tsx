@@ -105,6 +105,6 @@ binder.bind<extensionPoints.RepositoryOverviewLeftExtension>("repository.overvie
 binder.bind("main.route", ConfigRoute);
 binder.bind<extensionPoints.RepositoryOverviewTitleExtension>("repository.overview.title", Title);
 binder.bind<extensionPoints.RepositoryOverviewSubtitleExtension>("repository.overview.subtitle", Subtitle);
-binder.bind<extensionPoints.RepositoryPageSizeExtensionPoint>("repository.overview.listOptions", () =>
+binder.bind<extensionPoints.RepositoryOverviewListOptionsExtensionPoint>("repository.overview.listOptions", () =>
   useListOptions()
 );

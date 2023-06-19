@@ -42,13 +42,9 @@ const MyFavoriteRepositories: FC = () => {
 
   if (error) {
     content = <ErrorNotification error={error} />;
-  }
-
-  if (isLoading) {
+  } else if (isLoading) {
     content = <Loading />;
-  }
-
-  if (!data || !data.repositories || data.repositories.length === 0) {
+  } else if (!data || !data.repositories || data.repositories.length === 0) {
     content = <Notification type="info">{t("scm-landingpage-plugin.favoriteRepository.noData")}</Notification>;
   }
 
