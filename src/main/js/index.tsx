@@ -47,6 +47,7 @@ import ConfigPage from "./config/ConfigPage";
 import styled from "styled-components";
 import MyTips from "./tips/MyTips";
 import { useIsCategoryDisabled, useListOptions } from "./config/hooks";
+import { MyDataExtension } from "./types";
 
 const RelativeLink = styled(Link)`
   position: relative;
@@ -116,7 +117,7 @@ binder.bind<extensionPoints.RepositoryOverviewLeftExtension>(
 );
 binder.bind<extensionPoints.RepositoryOverviewLeftExtension>("repository.overview.left", MyData, {
   priority: 100,
-  predicate: () => binder.hasExtension("landingpage.mydata")
+  predicate: () => binder.hasExtension<MyDataExtension>("landingpage.mydata")
 });
 binder.bind<extensionPoints.RepositoryOverviewLeftExtension>(
   "repository.overview.left",
