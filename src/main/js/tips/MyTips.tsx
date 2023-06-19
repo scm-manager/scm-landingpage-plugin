@@ -23,7 +23,7 @@
  */
 import React, { FC } from "react";
 import { Icon, Loading } from "@scm-manager/ui-components";
-import { useCollapsedState, useIsCategoryDisabled } from "../config/hooks";
+import { useCollapsedState } from "../config/hooks";
 import { Link } from "@scm-manager/ui-types";
 import CollapsibleContainer from "../CollapsibleContainer";
 import { useTranslation } from "react-i18next";
@@ -41,13 +41,8 @@ const StyledAnchor = styled.a`
 
 const MyTips: FC = () => {
   const [t] = useTranslation("plugins");
-  const disabled = useIsCategoryDisabled("mytips");
   const [collapsed, setCollapsed] = useCollapsedState("mytips");
-  const { data: loginInfo, error, isLoading } = useLoginInfo(disabled);
-
-  if (disabled) {
-    return null;
-  }
+  const { data: loginInfo, error, isLoading } = useLoginInfo();
 
   if (isLoading) {
     return <Loading />;

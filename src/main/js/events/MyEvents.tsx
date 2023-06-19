@@ -30,18 +30,13 @@ import { Link } from "@scm-manager/ui-types";
 import { useMyEvents } from "./useMyEvents";
 import { useIndexLinks } from "@scm-manager/ui-api";
 import ScrollContainer from "../ScrollContainer";
-import { useCollapsedState, useIsCategoryDisabled } from "../config/hooks";
+import { useCollapsedState } from "../config/hooks";
 
 const MyEvents: FC = () => {
   const [t] = useTranslation("plugins");
   const links = useIndexLinks();
   const { data, error, isLoading } = useMyEvents((links?.landingpageEvents as Link)?.href);
-  const disabled = useIsCategoryDisabled("myevents");
   const [collapsed, setCollapsed] = useCollapsedState("myevents");
-
-  if (disabled) {
-    return null;
-  }
 
   if (isLoading) {
     return <Loading />;

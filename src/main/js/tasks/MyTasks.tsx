@@ -29,18 +29,13 @@ import MyTask from "./MyTask";
 import { Link } from "@scm-manager/ui-types";
 import { useMyTasks } from "./useMyTasks";
 import { useIndexLinks } from "@scm-manager/ui-api";
-import { useCollapsedState, useIsCategoryDisabled } from "../config/hooks";
+import { useCollapsedState } from "../config/hooks";
 
 const MyTasks: FC = () => {
   const [t] = useTranslation("plugins");
   const links = useIndexLinks();
   const { data, error, isLoading } = useMyTasks((links?.landingpageTasks as Link)?.href);
-  const disabled = useIsCategoryDisabled("mytasks");
   const [collapsed, setCollapsed] = useCollapsedState("mytasks");
-
-  if (disabled) {
-    return null;
-  }
 
   if (isLoading) {
     return <Loading />;

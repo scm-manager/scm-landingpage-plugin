@@ -30,7 +30,7 @@ dependencies {
 }
 
 scmPlugin {
-  scmVersion = "2.41.0"
+  scmVersion = "2.44.2-SNAPSHOT"
   displayName = "Landingpage"
   description = "Creates a personal landingpage for each user"
   author = "Cloudogu GmbH"

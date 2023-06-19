@@ -27,16 +27,10 @@ import { useFavoriteRepositories } from "./favoriteRepository";
 import { ErrorNotification, GroupEntries, Loading, Notification, RepositoryEntry } from "@scm-manager/ui-components";
 import { useTranslation } from "react-i18next";
 import classNames from "classnames";
-import { useIsCategoryDisabled } from "../config/hooks";
 
 const MyFavoriteRepositories: FC = () => {
   const { data, error, isLoading } = useFavoriteRepositories();
   const [t] = useTranslation("plugins");
-  const disabled = useIsCategoryDisabled("favoriteRepository");
-
-  if (disabled) {
-    return null;
-  }
 
   let content;
 
