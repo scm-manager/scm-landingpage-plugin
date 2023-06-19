@@ -21,24 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React, { FC } from "react";
-import { binder } from "@scm-manager/ui-extensions";
-import { MyTaskComponent, MyTaskType } from "../types";
+import React, { FC, useMemo } from "react";
+import { useBinder } from "@scm-manager/ui-extensions";
+import { MyTaskExtension, MyTaskType } from "../types";
 
 type Props = {
   task: MyTaskType;
 };
 
 const MyTask: FC<Props> = ({ task }) => {
-  const extensions: MyTaskComponent[] = binder.getExtensions("landingpage.mytask");
-
-  let Component = null;
-  for (let extension of extensions) {
-    if (extension.type === task.type) {
-      Component = extension;
-      break;
-    }
-  }
+  const binder = useBinder();
+  const extensions = useMemo(() => binder.getExtensions<MyTaskExtension>("landingpage.mytask"), [binder]);
+  const Component = useMemo(() => extensions.find(extension => extension.type === task.type), [extensions, task.type]);
 
   if (!Component) {
     return null;

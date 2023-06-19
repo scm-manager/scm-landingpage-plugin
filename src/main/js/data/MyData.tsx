@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React, { FC, ReactElement, ReactNode } from "react";
+import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
 import { useIndexLinks } from "@scm-manager/ui-api";
 import { Loading, Notification } from "@scm-manager/ui-components";
@@ -31,24 +31,15 @@ import { Link } from "@scm-manager/ui-types";
 import ScrollContainer from "../ScrollContainer";
 import { useMyData } from "./useMyData";
 import { useCollapsedState, useIsCategoryDisabled } from "../config/hooks";
-import { MyDataType } from "../types";
-
-export type ExtensionProps = {
-  title: string;
-  render: (data: any, key: any) => ReactElement;
-  beforeData?: ReactNode;
-  separatedEntries: boolean;
-  type: string;
-  emptyMessage?: string;
-};
+import { MyDataExtension, MyDataType } from "../types";
 
 type MyDataExtensionProps = {
-  extension: ExtensionProps;
+  extension: MyDataExtension["type"];
   data?: MyDataType[];
   error?: Error | null;
 };
 
-const MyDataExtension: FC<MyDataExtensionProps> = ({ extension, data, error }) => {
+const MyDataExtensionContainer: FC<MyDataExtensionProps> = ({ extension, data, error }) => {
   const [t] = useTranslation("plugins");
   const disabled = useIsCategoryDisabled(extension.type);
   const [collapsed, setCollapsed] = useCollapsedState(extension.type);
@@ -68,8 +59,8 @@ const MyDataExtension: FC<MyDataExtensionProps> = ({ extension, data, error }) =
         error={error}
       >
         {extension.beforeData}
-        {(data?.length || 0) > 0 ? (
-          data?.map((dataEntry, key) => <>{extension.render(dataEntry, key)}</>)
+        {data?.length ? (
+          data?.map(extension.render)
         ) : (
           <Notification type="info">
             {t(extension.emptyMessage || "scm-landingpage-plugin.favoriteRepository.noData")}
@@ -84,22 +75,22 @@ const MyData: FC = () => {
   const links = useIndexLinks();
   const { data, error, isLoading } = useMyData((links?.landingpageData as Link)?.href);
 
-  const renderExtension: (extension: ExtensionProps) => any = extension => {
-    const dataForExtension = data?._embedded.data.filter(entry => entry.type === extension.type);
-    return <MyDataExtension extension={extension} data={dataForExtension} error={error} />;
-  };
-
-  const extensions: ExtensionProps[] = binder.getExtensions("landingpage.mydata");
-
-  if (!extensions.length) {
-    return null;
-  }
-
   if (isLoading) {
     return <Loading />;
   }
 
-  return <>{extensions.map(renderExtension)}</>;
+  return (
+    <>
+      {binder.getExtensions<MyDataExtension>("landingpage.mydata").map(extension => (
+        <MyDataExtensionContainer
+          key={extension.type}
+          extension={extension}
+          data={data?._embedded.data.filter(entry => entry.type === extension.type)}
+          error={error}
+        />
+      ))}
+    </>
+  );
 };
 
 export default MyData;

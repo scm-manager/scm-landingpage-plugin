@@ -51,8 +51,8 @@ const MyTasks: FC = () => {
       onCollapseToggle={setCollapsed}
       error={error}
     >
-      {data?._embedded?.tasks.map((task, key) => (
-        <MyTask key={key} task={task} />
+      {data?._embedded?.tasks.map(task => (
+        <MyTask key={task.type} task={task} />
       ))}
     </CollapsibleContainer>
   );

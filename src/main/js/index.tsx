@@ -132,3 +132,5 @@ binder.bind<extensionPoints.RepositoryOverviewSubtitleExtension>("repository.ove
 binder.bind<extensionPoints.RepositoryOverviewListOptionsExtensionPoint>("repository.overview.listOptions", () =>
   useListOptions()
 );
+
+export { MyDataExtension, MyEventExtension, MyTaskExtension } from "./types";
