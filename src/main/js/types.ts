@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 import { Repository } from "@scm-manager/ui-types";
-import React, { FC } from "react";
+import React, { FC, ReactNode } from "react";
 import { ExtensionPointDefinition } from "@scm-manager/ui-extensions";
 
 export type MyTaskType = {
@@ -57,14 +57,6 @@ export type MyDataType = {
   type: string;
 };
 
-export type MyDataComponent<T = MyDataType> = React.FC<DataProps<T>> & {
-  type: string;
-};
-
-type DataProps<T = MyDataType> = {
-  data: T;
-};
-
 export type MyEventType<T extends string = string> = {
   type: T;
 };
@@ -77,12 +69,6 @@ export type MyRepositoryEventType<T extends string = string> = MyEventType<T> & 
 export type MyEventComponent<T extends MyEventType = MyEventType> = FC<EventProps<T>> & {
   type: string;
 };
-
-export type MyEventExtension<T extends MyEventType = MyEventType> = ExtensionPointDefinition<
-  "landingpage.myevents",
-  MyEventComponent<T>,
-  EventProps<T>
->;
 
 type EventProps<T = MyEventType> = {
   event: T;
@@ -99,3 +85,26 @@ export type MyEventsType = {
 export type FavoriteRepositories = {
   repositories: Repository[];
 };
+
+export type MyEventExtension<T extends MyEventType = MyEventType> = ExtensionPointDefinition<
+  "landingpage.myevents",
+  MyEventComponent<T>,
+  EventProps<T>
+>;
+
+export type MyDataExtension<T extends MyDataType = MyDataType> = ExtensionPointDefinition<
+  "landingpage.mydata",
+  {
+    title: string;
+    render: (data: T) => React.ReactElement;
+    beforeData?: ReactNode;
+    separatedEntries: boolean;
+    type: string;
+    emptyMessage?: string;
+  }
+>;
+
+export type MyTaskExtension<T extends MyTaskType = MyTaskType> = ExtensionPointDefinition<
+  "landingpage.mytask",
+  MyTaskComponent<T>
+>;

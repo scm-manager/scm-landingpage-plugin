@@ -46,7 +46,8 @@ import { Link } from "react-router-dom";
 import ConfigPage from "./config/ConfigPage";
 import styled from "styled-components";
 import MyTips from "./tips/MyTips";
-import { useListOptions } from "./config/hooks";
+import { useIsCategoryDisabled, useListOptions } from "./config/hooks";
+import { MyDataExtension } from "./types";
 
 const RelativeLink = styled(Link)`
   position: relative;
@@ -96,15 +97,41 @@ binder.bind("repository.afterTitle", LargeToggleIcon);
 binder.bind<extensionPoints.RepositoryOverviewTopExtension>(
   "repository.overview.top",
   MyFavoriteRepositories,
-  ({ page, search, namespace }) => page === 1 && !search && !namespace
+  ({ page, search, namespace }) => page === 1 && !search && !namespace && !useIsCategoryDisabled("favoriteRepository")
 );
-binder.bind<extensionPoints.RepositoryOverviewLeftExtension>("repository.overview.left", MyTips, { priority: 2000 });
-binder.bind<extensionPoints.RepositoryOverviewLeftExtension>("repository.overview.left", MyTasks, { priority: 1000 });
-binder.bind<extensionPoints.RepositoryOverviewLeftExtension>("repository.overview.left", MyData, { priority: 100 });
-binder.bind<extensionPoints.RepositoryOverviewLeftExtension>("repository.overview.left", MyEvents, { priority: 10 });
+binder.bind<extensionPoints.RepositoryOverviewLeftExtension>(
+  "repository.overview.left",
+  MyTips,
+  () => !useIsCategoryDisabled("mytips"),
+  {
+    priority: 2000
+  }
+);
+binder.bind<extensionPoints.RepositoryOverviewLeftExtension>(
+  "repository.overview.left",
+  MyTasks,
+  () => !useIsCategoryDisabled("mytasks"),
+  {
+    priority: 1000
+  }
+);
+binder.bind<extensionPoints.RepositoryOverviewLeftExtension>("repository.overview.left", MyData, {
+  priority: 100,
+  predicate: () => binder.hasExtension<MyDataExtension>("landingpage.mydata")
+});
+binder.bind<extensionPoints.RepositoryOverviewLeftExtension>(
+  "repository.overview.left",
+  MyEvents,
+  () => !useIsCategoryDisabled("myevents"),
+  {
+    priority: 10
+  }
+);
 binder.bind("main.route", ConfigRoute);
 binder.bind<extensionPoints.RepositoryOverviewTitleExtension>("repository.overview.title", Title);
 binder.bind<extensionPoints.RepositoryOverviewSubtitleExtension>("repository.overview.subtitle", Subtitle);
-binder.bind<extensionPoints.RepositoryPageSizeExtensionPoint>("repository.overview.listOptions", () =>
+binder.bind<extensionPoints.RepositoryOverviewListOptionsExtensionPoint>("repository.overview.listOptions", () =>
   useListOptions()
 );
+
+export { MyDataExtension, MyEventExtension, MyTaskExtension } from "./types";
