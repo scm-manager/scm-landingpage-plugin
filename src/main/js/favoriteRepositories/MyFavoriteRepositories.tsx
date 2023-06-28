@@ -27,10 +27,19 @@ import { useFavoriteRepositories } from "./favoriteRepository";
 import { ErrorNotification, GroupEntries, Loading, Notification, RepositoryEntry } from "@scm-manager/ui-components";
 import { useTranslation } from "react-i18next";
 import classNames from "classnames";
+import { extensionPoints } from "@scm-manager/ui-extensions";
 
-const MyFavoriteRepositories: FC = () => {
+const MyFavoriteRepositories: FC<extensionPoints.RepositoryOverviewTopExtension["props"]> = ({
+  page,
+  namespace,
+  search
+}) => {
   const { data, error, isLoading } = useFavoriteRepositories();
   const [t] = useTranslation("plugins");
+
+  if (page !== 1 || search || namespace) {
+    return null;
+  }
 
   let content;
 

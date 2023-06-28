@@ -97,7 +97,7 @@ binder.bind("repository.afterTitle", LargeToggleIcon);
 binder.bind<extensionPoints.RepositoryOverviewTopExtension>(
   "repository.overview.top",
   MyFavoriteRepositories,
-  ({ page, search, namespace }) => page === 1 && !search && !namespace && !useIsCategoryDisabled("favoriteRepository")
+  () => !useIsCategoryDisabled("favoriteRepository")
 );
 binder.bind<extensionPoints.RepositoryOverviewLeftExtension>(
   "repository.overview.left",
