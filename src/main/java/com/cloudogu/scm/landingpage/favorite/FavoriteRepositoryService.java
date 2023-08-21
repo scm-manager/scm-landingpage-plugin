@@ -31,7 +31,7 @@ import sonia.scm.repository.api.RepositoryService;
 import sonia.scm.repository.api.RepositoryServiceFactory;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -75,6 +75,7 @@ public class FavoriteRepositoryService {
     return repositoryIds.stream()
       .filter(repoId -> RepositoryPermissions.read(repoId).isPermitted())
       .map(repositoryManager::get)
+      .sorted(Comparator.comparing(r -> r.getName().toLowerCase()))
       .collect(Collectors.toList());
   }
 }

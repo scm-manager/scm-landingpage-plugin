@@ -41,6 +41,7 @@ import sonia.scm.repository.api.RepositoryServiceFactory;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -52,7 +53,9 @@ import static org.mockito.Mockito.when;
 @ExtendWith({MockitoExtension.class, ShiroExtension.class})
 class FavoriteRepositoryServiceTest {
 
-  private final Repository REPOSITORY = RepositoryTestData.createHeartOfGold();
+  private final Repository REPOSITORY = RepositoryTestData.createHappyVerticalPeopleTransporter();
+  private final Repository REPOSITORY_2 = RepositoryTestData.createHeartOfGold();
+  private final Repository REPOSITORY_3 = RepositoryTestData.create42Puzzle();
 
   @Mock
   private FavoriteRepositoryProvider storeProvider;
@@ -122,6 +125,20 @@ class FavoriteRepositoryServiceTest {
       final List<Repository> favoriteRepositories = service.getFavoriteRepositories();
       assertThat(favoriteRepositories).hasSize(1);
       assertThat(favoriteRepositories.get(0).getId()).isEqualTo(REPOSITORY.getId());
+    }
+
+    @Test
+    @SubjectAware(permissions = "repository:read:*")
+    void shouldReturnFavoriteRepositoriesAlphabetically() {
+      when(repositoryManager.get(REPOSITORY.getId())).thenReturn(REPOSITORY);
+      when(repositoryManager.get(REPOSITORY_2.getId())).thenReturn(REPOSITORY_2);
+      when(repositoryManager.get(REPOSITORY_3.getId())).thenReturn(REPOSITORY_3);
+      when(store.get()).thenReturn(new FavoriteRepository(Set.of(REPOSITORY.getId(), REPOSITORY_2.getId(), REPOSITORY_3.getId())));
+      final List<Repository> favoriteRepositories = service.getFavoriteRepositories();
+      assertThat(favoriteRepositories).hasSize(3);
+      assertThat(favoriteRepositories.get(0).getName()).isEqualTo(REPOSITORY_3.getName());
+      assertThat(favoriteRepositories.get(1).getName()).isEqualTo(REPOSITORY.getName());
+      assertThat(favoriteRepositories.get(2).getName()).isEqualTo(REPOSITORY_2.getName());
     }
   }
 
