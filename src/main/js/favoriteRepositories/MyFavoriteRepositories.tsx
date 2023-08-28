@@ -28,6 +28,7 @@ import { ErrorNotification, GroupEntries, Loading, Notification, RepositoryEntry
 import { useTranslation } from "react-i18next";
 import classNames from "classnames";
 import { extensionPoints } from "@scm-manager/ui-extensions";
+import { useLocalStorage } from "@scm-manager/ui-api";
 
 const MyFavoriteRepositories: FC<extensionPoints.RepositoryOverviewTopExtension["props"]> = ({
   page,
@@ -36,6 +37,7 @@ const MyFavoriteRepositories: FC<extensionPoints.RepositoryOverviewTopExtension[
 }) => {
   const { data, error, isLoading } = useFavoriteRepositories();
   const [t] = useTranslation("plugins");
+  const [collapsed, setCollapsed] = useLocalStorage<boolean | null>(`favoriteRepositories.collapsed`, null);
 
   if (page !== 1 || search || namespace) {
     return null;
@@ -47,7 +49,7 @@ const MyFavoriteRepositories: FC<extensionPoints.RepositoryOverviewTopExtension[
     content = <ErrorNotification error={error} />;
   } else if (isLoading) {
     content = <Loading />;
-  } else if (!data || !data.repositories || data.repositories.length === 0) {
+  } else if (data?.repositories?.length === 0) {
     content = <Notification type="info">{t("scm-landingpage-plugin.favoriteRepository.noData")}</Notification>;
   }
 
@@ -66,8 +68,17 @@ const MyFavoriteRepositories: FC<extensionPoints.RepositoryOverviewTopExtension[
     );
   }
 
-  const entries = data.repositories.map((repository, index) => <RepositoryEntry repository={repository} key={index} />);
-  return <GroupEntries namespaceHeader={t("scm-landingpage-plugin.favoriteRepository.title")} elements={entries} />;
+  const entries = data!.repositories.map((repository) => (
+    <RepositoryEntry repository={repository} key={repository.name} />
+  ));
+  return (
+    <GroupEntries
+      namespaceHeader={t("scm-landingpage-plugin.favoriteRepository.title")}
+      elements={entries}
+      collapsed={collapsed}
+      onCollapsedChange={setCollapsed}
+    />
+  );
 };
 
 export default MyFavoriteRepositories;

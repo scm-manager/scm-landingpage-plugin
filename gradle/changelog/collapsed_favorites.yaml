@@ -1,0 +1,2 @@
+- type: added
+  description: Persist collapsed state for favorite repositories in local storage
