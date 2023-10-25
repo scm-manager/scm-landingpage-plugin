@@ -52,6 +52,7 @@ const MyEvents: FC = () => {
       onCollapseToggle={setCollapsed}
       contentWrapper={ScrollContainer}
       error={error}
+      category="myevents"
     >
       {data?._embedded?.events?.map((event, index) => (
         <MyEvent key={index} event={event} />

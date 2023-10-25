@@ -50,6 +50,7 @@ const MyTasks: FC = () => {
       initiallyCollapsed={collapsed}
       onCollapseToggle={setCollapsed}
       error={error}
+      category="mytasks"
     >
       {data?._embedded?.tasks.map(task => (
         <MyTask key={task.type} task={task} />

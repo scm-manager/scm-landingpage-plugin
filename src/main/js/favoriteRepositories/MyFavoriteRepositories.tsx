@@ -37,7 +37,7 @@ const MyFavoriteRepositories: FC<extensionPoints.RepositoryOverviewTopExtension[
 }) => {
   const { data, error, isLoading } = useFavoriteRepositories();
   const [t] = useTranslation("plugins");
-  const [collapsed, setCollapsed] = useLocalStorage<boolean | null>(`favoriteRepositories.collapsed`, null);
+  const [collapsed, setCollapsed] = useLocalStorage<boolean | null>("favoriteRepositories.collapsed", null);
 
   if (page !== 1 || search || namespace) {
     return null;

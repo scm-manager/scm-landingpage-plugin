@@ -22,31 +22,19 @@
  * SOFTWARE.
  */
 
-import { useEffect, useState } from "react";
-
-function useLocalStorage<T>(key: string, initialValue: T): [value: T, setValue: (value: T | ((previousConfig: T) => T)) => void] {
-  const [value, setValue] = useState<T>(() => {
-    try {
-      const item = localStorage.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
-    } catch (error) {
-      console.error(error);
-      return initialValue;
-    }
-  });
-
-  useEffect(() => localStorage.setItem(key, JSON.stringify(value)), [key, value]);
-
-  return [value, setValue];
-}
+import { useLocalStorage } from "@scm-manager/ui-api";
+import { useMemo } from "react";
 
 export function useIsCategoryDisabled(category: string) {
   const [disabledCategories] = useLocalStorage<Array<string>>("scm.landingPagePlugin.disabledCategories", []);
-  return disabledCategories.includes(category);
+  return useMemo(() => disabledCategories.includes(category), [category, disabledCategories]);
 }
 
 export function useListOptions() {
-  const [{pageSize, showArchived}, setListOptions] = useLocalStorage<{ pageSize: number, showArchived: boolean }>("scm.landingPagePlugin.listOptions", { pageSize: 10, showArchived: true });
+  const [{ pageSize, showArchived }, setListOptions] = useLocalStorage<{ pageSize: number; showArchived: boolean }>(
+    "scm.landingPagePlugin.listOptions",
+    { pageSize: 10, showArchived: true }
+  );
   return {
     pageSize,
     showArchived,
@@ -55,9 +43,12 @@ export function useListOptions() {
 }
 
 export function useDisabledCategories() {
-  const [disabledCategories, setDisabledCategories] = useLocalStorage<Array<string>>("scm.landingPagePlugin.disabledCategories", []);
+  const [disabledCategories, setDisabledCategories] = useLocalStorage<Array<string>>(
+    "scm.landingPagePlugin.disabledCategories",
+    []
+  );
   const isDisabled = (category: string) => disabledCategories.includes(category);
-  const setCategories: (categories: { [key: string]: boolean }) => void = (categories) => {
+  const setCategories: (categories: { [key: string]: boolean }) => void = categories => {
     let newDisabledCategories = disabledCategories;
     Object.entries(categories).forEach(([category, enabled]) => {
       const otherCategories = newDisabledCategories.filter(it => it !== category);

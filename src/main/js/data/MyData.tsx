@@ -57,6 +57,7 @@ const MyDataExtensionContainer: FC<MyDataExtensionProps> = ({ extension, data, e
         onCollapseToggle={setCollapsed}
         contentWrapper={ScrollContainer}
         error={error}
+        category={extension.type}
       >
         {extension.beforeData}
         {data?.length ? (

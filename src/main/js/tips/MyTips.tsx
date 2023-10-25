@@ -60,6 +60,7 @@ const MyTips: FC = () => {
       initiallyCollapsed={collapsed}
       onCollapseToggle={setCollapsed}
       error={error}
+      category="mytips"
     >
       <StyledAnchor
         href={withSourceQueryParam((loginInfo?.feature?._links.self as Link | undefined)?.href)}

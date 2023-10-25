@@ -10,6 +10,11 @@
       "showArchived": "Archivierte Repositories anzeigen",
       "submit": "Speichern"
     },
+    "tiles": {
+      "hideButton": {
+        "label": "Ausblenden"
+      }
+    },
     "emptyMessage": {
       "default": "Keine Daten vorhanden"
     },

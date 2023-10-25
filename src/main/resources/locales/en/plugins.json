@@ -10,6 +10,11 @@
       "showArchived": "Show archived repositories ",
       "submit": "Submit"
     },
+    "tiles": {
+      "hideButton": {
+        "label": "Hide"
+      }
+    },
     "emptyMessage": {
       "default": "No data available"
     },

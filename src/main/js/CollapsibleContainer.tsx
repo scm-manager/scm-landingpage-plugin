@@ -25,6 +25,8 @@ import React, { FC, useEffect, useState } from "react";
 import styled from "styled-components";
 import { devices, ErrorNotification, Icon, Tag } from "@scm-manager/ui-components";
 import EmptyMessage from "./EmptyMessage";
+import { useDisabledCategories } from "./config/hooks";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   title: string;
@@ -35,6 +37,7 @@ type Props = {
   onCollapseToggle?: (collapsed: boolean) => void;
   contentWrapper?: React.ElementType;
   error?: Error | null;
+  category?: string;
 };
 
 const Container = styled.div`
@@ -48,6 +51,7 @@ const Container = styled.div`
 
 const Headline = styled.h3`
   font-size: 1.25rem;
+
   & small {
     font-size: 0.875rem;
   }
@@ -63,16 +67,19 @@ const Separator = styled.hr`
 
 const CollapsibleContainer: FC<Props> = ({
   title,
-  count,
+  count = 0,
   initiallyCollapsed,
   separatedEntries,
   emptyMessage,
   children,
   onCollapseToggle,
   contentWrapper,
-  error
+  error,
+  category
 }) => {
+  const [t] = useTranslation("plugins");
   const [collapsed, setCollapsed] = useState<boolean>();
+  const { setCategories } = useDisabledCategories();
 
   useEffect(
     () => setCollapsed(initiallyCollapsed ?? window.matchMedia(`(max-width: ${devices.mobile.width}px)`).matches),
@@ -89,12 +96,10 @@ const CollapsibleContainer: FC<Props> = ({
       content = <EmptyMessage messageKey={emptyMessage} />;
     } else if (separatedEntries) {
       content = childArray.map(child => <Content className="p-2">{child}</Content>);
+    } else if (contentWrapper) {
+      content = React.createElement(contentWrapper, null, children);
     } else {
-      if (contentWrapper) {
-        content = React.createElement(contentWrapper, null, children);
-      } else {
-        content = <Content className="box p-2">{children}</Content>;
-      }
+      content = <Content className="box p-2">{children}</Content>;
     }
   }
 
@@ -103,7 +108,7 @@ const CollapsibleContainer: FC<Props> = ({
   if (!error) {
     headerSuffix = (
       <Tag color="info" className="ml-1">
-        <b className="is-size-6">{count || 0}</b>
+        <b className="is-size-6">{count}</b>
       </Tag>
     );
   }
@@ -111,15 +116,24 @@ const CollapsibleContainer: FC<Props> = ({
   const handleCollapseToggle = () => {
     const newState = !collapsed;
     setCollapsed(newState);
-    onCollapseToggle && onCollapseToggle(newState);
+    onCollapseToggle?.(newState);
   };
 
   return (
     <Container>
-      <div className="has-cursor-pointer" onClick={handleCollapseToggle}>
-        <Headline>
-          <Icon name={icon} color="default" /> {title} {headerSuffix}
-        </Headline>
+      <div>
+        <div className="is-flex is-align-items-center is-justify-content-space-between">
+          <Headline className="has-cursor-pointer is-flex-grow-1" onClick={handleCollapseToggle}>
+            <Icon name={icon} color="default" /> {title} {headerSuffix}
+          </Headline>
+          {category ? (
+            <button
+              className="tag is-delete is-flex-shrink-0 is-clickable"
+              onClick={() => setCategories({ [category]: false })}
+              aria-label={t("scm-landingpage-plugin.tiles.hideButton.label")}
+            />
+          ) : null}
+        </div>
         <Separator />
       </div>
       {content}
