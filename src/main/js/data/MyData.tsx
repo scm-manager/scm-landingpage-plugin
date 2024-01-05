@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React, { FC } from "react";
+import React, { FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useIndexLinks } from "@scm-manager/ui-api";
 import { Loading, Notification } from "@scm-manager/ui-components";
@@ -30,7 +30,7 @@ import CollapsibleContainer from "../CollapsibleContainer";
 import { Link } from "@scm-manager/ui-types";
 import ScrollContainer from "../ScrollContainer";
 import { useMyData } from "./useMyData";
-import { useCollapsedState, useIsCategoryDisabled } from "../config/hooks";
+import { useCollapsedState, useDisabledCategories, useIsCategoryDisabled } from "../config/hooks";
 import { MyDataExtension, MyDataType } from "../types";
 
 type MyDataExtensionProps = {
@@ -72,7 +72,7 @@ const MyDataExtensionContainer: FC<MyDataExtensionProps> = ({ extension, data, e
   }
 };
 
-const MyData: FC = () => {
+const MyData: FC<{ extensions: Array<MyDataExtension["type"]> }> = ({ extensions }) => {
   const links = useIndexLinks();
   const { data, error, isLoading } = useMyData((links?.landingpageData as Link)?.href);
 
@@ -82,7 +82,7 @@ const MyData: FC = () => {
 
   return (
     <>
-      {binder.getExtensions<MyDataExtension>("landingpage.mydata").map(extension => (
+      {extensions.map(extension => (
         <MyDataExtensionContainer
           key={extension.type}
           extension={extension}
@@ -94,4 +94,14 @@ const MyData: FC = () => {
   );
 };
 
-export default MyData;
+const MyDataWrapper: FC = () => {
+  const extensions = binder.getExtensions<MyDataExtension>("landingpage.mydata");
+  const { isDisabled } = useDisabledCategories();
+  const allDisabled = useMemo(() => extensions.some(extension => isDisabled(extension.type)), [extensions, isDisabled]);
+  if (allDisabled) {
+    return null;
+  }
+  return <MyData extensions={extensions} />;
+};
+
+export default MyDataWrapper;
