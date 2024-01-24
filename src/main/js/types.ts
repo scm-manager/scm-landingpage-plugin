@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { Repository } from "@scm-manager/ui-types";
+import { Repository, HalRepresentation } from "@scm-manager/ui-types";
 import React, { FC, ReactNode } from "react";
 import { ExtensionPointDefinition } from "@scm-manager/ui-extensions";
 
@@ -84,6 +84,10 @@ export type MyEventsType = {
 
 export type FavoriteRepositories = {
   repositories: Repository[];
+};
+
+export type LandingpageConfiguration = HalRepresentation & {
+  instanceName: string;
 };
 
 export type MyEventExtension<T extends MyEventType = MyEventType> = ExtensionPointDefinition<

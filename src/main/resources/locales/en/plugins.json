@@ -2,6 +2,18 @@
   "scm-landingpage-plugin": {
     "title": "mySCM",
     "subtitle": "Repositories, tasks and events",
+    "globalConfig": {
+      "title": "Landingpage Configuration",
+      "link": "Landingpage",
+      "form": {
+        "instanceName": {
+          "label": "Instance Name",
+          "helpText": "The name of the instance is displayed as the title in the repository overview."
+        },
+        "submit": "Submit"
+      },
+      "reloadHint": "(You may have to reload the repository page once after a change to see the new name.)"
+    },
     "config": {
       "title": "mySCM Configuration",
       "subtitle": "Displayed Content",

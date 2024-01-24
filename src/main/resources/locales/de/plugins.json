@@ -2,6 +2,18 @@
   "scm-landingpage-plugin": {
     "title": "mySCM",
     "subtitle": "Repositories, Aufgaben und Aktivitäten",
+    "globalConfig": {
+      "title": "Landingpage Konfiguration",
+      "link": "Landingpage",
+      "form": {
+        "instanceName": {
+          "label": "Name der Instanz",
+          "helpText": "Der Name der Instanz wird als Titel in der Repository-Übersicht angezeigt."
+        },
+        "submit": "Speichern"
+      },
+      "reloadHint": "(Die Startseite muss nach der Änderung ggf. einmalig neu geladen werden, damit die Änderungen angezeigt werden.)"
+    },
     "config": {
       "title": "mySCM Konfiguration",
       "subtitle": "Angezeigte Inhalte",

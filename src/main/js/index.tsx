@@ -40,14 +40,16 @@ import MyTasks from "./tasks/MyTasks";
 import MyEvents from "./events/MyEvents";
 import MyFavoriteRepositories from "./favoriteRepositories/MyFavoriteRepositories";
 import { Links, Repository } from "@scm-manager/ui-types";
-import { ProtectedRoute } from "@scm-manager/ui-components";
+import { ProtectedRoute, ConfigurationBinder } from "@scm-manager/ui-components";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import ConfigPage from "./config/ConfigPage";
 import styled from "styled-components";
 import MyTips from "./tips/MyTips";
 import { useIsCategoryDisabled, useListOptions } from "./config/hooks";
-import { MyDataExtension } from "./types";
+import { LandingpageConfiguration, MyDataExtension } from "./types";
+import { useIndex } from "@scm-manager/ui-api";
+import GlobalConfigPage from "./config/GlobalConfigPage";
 
 const RelativeLink = styled(Link)`
   position: relative;
@@ -82,9 +84,12 @@ const Subtitle: FC = () => {
 
 const Title: FC = () => {
   const [t] = useTranslation("plugins");
+  const index = useIndex();
   return (
     <>
-      {t("scm-landingpage-plugin.title")}
+      {index.isLoading || index.error
+        ? t("scm-landingpage-plugin.title")
+        : (index?.data?._embedded?.landingpageConfiguration as LandingpageConfiguration)?.instanceName}
       <RelativeLink to="/landingPageConfig" aria-label={t("scm-landingpage-plugin.config.title")}>
         <AbsoluteIcon className="fa fa-cog fa-fw is-size-5 ml-2 has-text-is-link" />
       </RelativeLink>
@@ -132,6 +137,13 @@ binder.bind<extensionPoints.RepositoryOverviewTitleExtension>("repository.overvi
 binder.bind<extensionPoints.RepositoryOverviewSubtitleExtension>("repository.overview.subtitle", Subtitle);
 binder.bind<extensionPoints.RepositoryOverviewListOptionsExtensionPoint>("repository.overview.listOptions", () =>
   useListOptions()
+);
+
+ConfigurationBinder.bindGlobal(
+  "/landingpageConfig",
+  "scm-landingpage-plugin.globalConfig.link",
+  "landingpageConfig",
+  GlobalConfigPage
 );
 
 export { MyDataExtension, MyEventExtension, MyTaskExtension } from "./types";
