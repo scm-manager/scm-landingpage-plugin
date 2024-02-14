@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryTestData;
 
-import javax.xml.bind.JAXB;
+import jakarta.xml.bind.JAXB;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 

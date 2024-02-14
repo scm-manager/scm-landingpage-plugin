@@ -34,10 +34,10 @@ import sonia.scm.repository.HealthCheckEvent;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryPermissions;
 
-import javax.inject.Inject;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.inject.Inject;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @Extension
 @EagerSingleton

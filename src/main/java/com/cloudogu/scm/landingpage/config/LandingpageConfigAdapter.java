@@ -31,9 +31,9 @@ import sonia.scm.api.v2.resources.ScmPathInfoStore;
 import sonia.scm.plugin.Extension;
 import sonia.scm.store.ConfigurationStoreFactory;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.ws.rs.Path;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
+import jakarta.ws.rs.Path;
 
 @Extension
 @Enrich(Index.class)

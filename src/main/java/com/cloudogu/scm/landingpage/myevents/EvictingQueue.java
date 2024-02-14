@@ -28,8 +28,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ForwardingQueue;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.Iterator;

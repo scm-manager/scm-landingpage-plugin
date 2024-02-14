@@ -28,7 +28,7 @@ import sonia.scm.plugin.InstalledPlugin;
 import sonia.scm.plugin.PluginManager;
 import sonia.scm.plugin.PluginPermissions;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

@@ -28,7 +28,7 @@ import com.github.legman.Subscribe;
 import sonia.scm.EagerSingleton;
 import sonia.scm.plugin.Extension;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 @Extension
 @EagerSingleton

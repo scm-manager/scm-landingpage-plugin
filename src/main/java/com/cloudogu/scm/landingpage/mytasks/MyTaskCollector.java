@@ -23,7 +23,7 @@
  */
 package com.cloudogu.scm.landingpage.mytasks;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;

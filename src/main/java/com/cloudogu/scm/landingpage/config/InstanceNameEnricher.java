@@ -31,7 +31,7 @@ import sonia.scm.api.v2.resources.HalEnricherContext;
 import sonia.scm.api.v2.resources.Index;
 import sonia.scm.plugin.Extension;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 @Extension
 @Enrich(Index.class)
