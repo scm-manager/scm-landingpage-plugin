@@ -50,6 +50,7 @@ import { useIsCategoryDisabled, useListOptions } from "./config/hooks";
 import { LandingpageConfiguration, MyDataExtension } from "./types";
 import { useIndex } from "@scm-manager/ui-api";
 import GlobalConfigPage from "./config/GlobalConfigPage";
+import BeforeTitle from "./favoriteRepositories/BeforeTitle";
 
 const RelativeLink = styled(Link)`
   position: relative;
@@ -97,7 +98,7 @@ const Title: FC = () => {
   );
 };
 
-binder.bind("repository.card.beforeTitle", FavoriteRepositoryToggleIcon);
+binder.bind("repository.card.beforeTitle", BeforeTitle);
 binder.bind("repository.afterTitle", LargeToggleIcon);
 binder.bind<extensionPoints.RepositoryOverviewTopExtension>(
   "repository.overview.top",

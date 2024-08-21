@@ -25,10 +25,16 @@
 import { Checkbox, InputField, Page, SubmitButton } from "@scm-manager/ui-components";
 import React, { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ExtensionProps } from "../data/MyData";
+import { MyDataExtension } from "../types";
 import { useBinder } from "@scm-manager/ui-extensions";
-import { useDisabledCategories, useListOptions } from "./hooks";
+import {
+  isShowNamespaceInFavoriteOption,
+  showNamespaceInFavoriteOptions,
+  useDisabledCategories,
+  useListOptions
+} from "./hooks";
 import { useHistory } from "react-router-dom";
+import { Select } from "@scm-manager/ui-components";
 
 type DisplayOptionProps = {
   label: string;
@@ -48,12 +54,13 @@ const ConfigPage: FC = () => {
   const { isDisabled, setCategories } = useDisabledCategories();
   const binder = useBinder();
   const [changedCategories, setChangedCategories] = useState<{ [key: string]: boolean }>({});
-  const { pageSize, showArchived, setListOptions } = useListOptions();
+  const { showNamespace, pageSize, showArchived, setListOptions } = useListOptions();
   const [pageSizeInput, setPageSizeInput] = useState(pageSize);
   const [pageSizeError, setPageSizeError] = useState(false);
   const [optionsChanged, setOptionsChanged] = useState(false);
   const [showArchivedInput, setShowArchivedInput] = useState(showArchived);
-  const extensions: ExtensionProps[] = binder.getExtensions("landingpage.mydata");
+  const [namespaceOption, setNamespaceOption] = useState(showNamespace);
+  const extensions = binder.getExtensions<MyDataExtension>("landingpage.mydata");
   const history = useHistory();
 
   const changeExtension = (category: string) => (enabled: boolean) => {
@@ -65,10 +72,13 @@ const ConfigPage: FC = () => {
     return Object.keys(changedCategories).includes(category) ? changedCategories[category] : !isDisabled(category);
   };
 
-  const changePageSize = (newPageSize: number) => {
-    setPageSizeInput(newPageSize);
-    setPageSizeError(newPageSize < pageSizeMin || newPageSize > pageSizeMax);
-    setOptionsChanged(true);
+  const changePageSize = (newPageSizeString: string) => {
+    const newPageSize = Number(newPageSizeString);
+    if (!isNaN(newPageSize)) {
+      setPageSizeInput(newPageSize);
+      setPageSizeError(newPageSize < pageSizeMin || newPageSize > pageSizeMax);
+      setOptionsChanged(true);
+    }
   };
 
   const changeShowArchived = (newValue: boolean) => {
@@ -78,10 +88,21 @@ const ConfigPage: FC = () => {
 
   const submitChanges = () => {
     setCategories(changedCategories);
-    setListOptions({ pageSize: Number(pageSizeInput), showArchived: showArchivedInput });
+    setListOptions({
+      pageSize: Number(pageSizeInput),
+      showArchived: showArchivedInput,
+      showNamespace: namespaceOption
+    });
     setChangedCategories({});
     setOptionsChanged(false);
     setTimeout(() => history.push("/repos/"));
+  };
+
+  const changeNamespaceOption = (value: string) => {
+    if (isShowNamespaceInFavoriteOption(value) && value !== namespaceOption) {
+      setNamespaceOption(value);
+      setOptionsChanged(true);
+    }
   };
 
   return (
@@ -107,6 +128,15 @@ const ConfigPage: FC = () => {
           label={t("scm-landingpage-plugin.config.showArchived")}
           value={showArchivedInput}
           toggle={changeShowArchived}
+        />
+        <Select
+          defaultValue={namespaceOption}
+          options={showNamespaceInFavoriteOptions.map(option => ({
+            label: t(`scm-landingpage-plugin.config.select.option.${option}`),
+            value: option
+          }))}
+          label={t("scm-landingpage-plugin.config.select.label")}
+          onChange={changeNamespaceOption}
         />
         <InputField
           label={t("scm-landingpage-plugin.config.pageSize")}

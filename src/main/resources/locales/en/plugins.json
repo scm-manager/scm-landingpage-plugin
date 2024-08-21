@@ -20,7 +20,15 @@
       "pageSize": "Repository Page Size",
       "pageSizeError": "Page size has to be a number between {{min}} and {{max}}",
       "showArchived": "Show archived repositories ",
-      "submit": "Submit"
+      "submit": "Submit",
+      "select": {
+        "label": "Show namespace in favorites",
+        "option": {
+          "NEVER": "Never",
+          "DUPLICATES_ONLY": "Only for duplicates",
+          "ALWAYS": "Always"
+        }
+      }
     },
     "tiles": {
       "hideButton": {

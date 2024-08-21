@@ -23,12 +23,14 @@
  */
 
 import React, { FC } from "react";
-import { useFavoriteRepositories } from "./favoriteRepository";
+import { FavoriteRepository, useFavoriteRepositories } from "./favoriteRepository";
 import { ErrorNotification, GroupEntries, Loading, Notification, RepositoryEntry } from "@scm-manager/ui-components";
 import { useTranslation } from "react-i18next";
 import classNames from "classnames";
 import { extensionPoints } from "@scm-manager/ui-extensions";
 import { useLocalStorage } from "@scm-manager/ui-api";
+import { ShowNamespaceInFavoriteOption, useListOptions } from "../config/hooks";
+import { Repository } from "@scm-manager/ui-types";
 
 const MyFavoriteRepositories: FC<extensionPoints.RepositoryOverviewTopExtension["props"]> = ({
   page,
@@ -38,6 +40,7 @@ const MyFavoriteRepositories: FC<extensionPoints.RepositoryOverviewTopExtension[
   const { data, error, isLoading } = useFavoriteRepositories();
   const [t] = useTranslation("plugins");
   const [collapsed, setCollapsed] = useLocalStorage<boolean | null>("favoriteRepositories.collapsed", null);
+  const { showNamespace } = useListOptions();
 
   if (page !== 1 || search || namespace) {
     return null;
@@ -68,8 +71,25 @@ const MyFavoriteRepositories: FC<extensionPoints.RepositoryOverviewTopExtension[
     );
   }
 
-  const entries = data!.repositories.map((repository) => (
-    <RepositoryEntry repository={repository} key={repository.name} />
+  const alwaysShowNamespaces = showNamespace === "ALWAYS";
+  const showNamespacesForDuplicates = showNamespace === "DUPLICATES_ONLY";
+
+  const allRepositoryNames = data!.repositories.map(repo => repo.name);
+  const duplicateRepositoryNames = allRepositoryNames.filter(
+    (item, index) => allRepositoryNames.indexOf(item) !== index
+  );
+
+  const showNamespaceForRepository = (repository: Repository) => {
+    return (
+      alwaysShowNamespaces || (showNamespacesForDuplicates && duplicateRepositoryNames.indexOf(repository.name) >= 0)
+    );
+  };
+
+  const entries = data!.repositories.map(repository => (
+    <RepositoryEntry
+      repository={{ ...repository, showNamespace: showNamespaceForRepository(repository) } as FavoriteRepository}
+      key={`${repository.namespace}/${repository.name}`}
+    />
   ));
   return (
     <GroupEntries

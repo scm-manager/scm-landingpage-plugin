@@ -22,17 +22,36 @@
  * SOFTWARE.
  */
 
-plugins {
-  id 'org.scm-manager.smp' version '0.16.4'
-}
+import React, { FC } from "react";
+import { FavoriteRepository } from "./favoriteRepository";
+import { Repository } from "@scm-manager/ui-types";
+import styled from "styled-components";
+import FavoriteRepositoryToggleIcon from "./FavoriteRepositoryToggleIcon";
 
-dependencies {
-}
+type Props = {
+  repository: Repository;
+};
 
-scmPlugin {
-  scmVersion = "3.0.0"
-  displayName = "Landingpage"
-  description = "Creates a personal landingpage for each user"
-  author = "Cloudogu GmbH"
-  category = "Information"
-}
+const NamespaceAddition = styled.span`
+  color: var(--scm-secondary-color);
+`;
+
+const isFavoriteRepository = (repository: Repository): repository is FavoriteRepository => {
+  return "showNamespace" in repository;
+};
+
+const BeforeTitle: FC<Props> = ({ repository }) => {
+  const namespace =
+    isFavoriteRepository(repository) && repository.showNamespace ? (
+      <NamespaceAddition>{repository.namespace}/</NamespaceAddition>
+    ) : null;
+
+  return (
+    <>
+      <FavoriteRepositoryToggleIcon repository={repository} />
+      {namespace}
+    </>
+  );
+};
+
+export default BeforeTitle;

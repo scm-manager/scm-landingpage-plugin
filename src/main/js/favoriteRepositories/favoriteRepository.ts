@@ -58,3 +58,7 @@ export const useFavoriteRepositories = (): ApiResult<FavoriteRepositories> => {
     apiClient.get(indexLink).then(response => response.json())
   );
 };
+
+export type FavoriteRepository = Repository & {
+  showNamespace: boolean;
+};

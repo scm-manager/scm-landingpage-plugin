@@ -30,12 +30,26 @@ export function useIsCategoryDisabled(category: string) {
   return useMemo(() => disabledCategories.includes(category), [category, disabledCategories]);
 }
 
+export const showNamespaceInFavoriteOptions = ["NEVER", "DUPLICATES_ONLY", "ALWAYS"] as const;
+
+export type ShowNamespaceInFavoriteOption = typeof showNamespaceInFavoriteOptions[number];
+
+export const isShowNamespaceInFavoriteOption = (option: string): option is ShowNamespaceInFavoriteOption => {
+  return showNamespaceInFavoriteOptions.includes(option as ShowNamespaceInFavoriteOption);
+};
+
 export function useListOptions() {
-  const [{ pageSize, showArchived }, setListOptions] = useLocalStorage<{ pageSize: number; showArchived: boolean }>(
-    "scm.landingPagePlugin.listOptions",
-    { pageSize: 10, showArchived: true }
-  );
+  const [{ pageSize, showArchived, showNamespace }, setListOptions] = useLocalStorage<{
+    pageSize: number;
+    showArchived: boolean;
+    showNamespace: ShowNamespaceInFavoriteOption;
+  }>("scm.landingPagePlugin.listOptions", {
+    pageSize: 10,
+    showArchived: true,
+    showNamespace: "DUPLICATES_ONLY"
+  });
   return {
+    showNamespace,
     pageSize,
     showArchived,
     setListOptions
