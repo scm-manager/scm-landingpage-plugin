@@ -14,29 +14,32 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { Repository } from "@scm-manager/ui-types";
-import { Icon } from "@scm-manager/ui-components";
 import { useFavoriteRepository } from "./favoriteRepository";
+import { Icon } from "@scm-manager/ui-core";
 
 type Props = {
   repository: Repository;
   classes?: string;
 };
 
-const SpanWithPointer = styled.span`
+const ToggleButton = styled.button`
   pointer-events: all;
   cursor: pointer;
-  margin-right: 0.25rem;
   z-index: 1;
+  background: none;
+  border: none;
+  padding: 0;
 `;
 
 const FavoriteRepositoryToggleIcon: FC<Props> = ({ repository, classes }) => {
   const [t] = useTranslation("plugins");
   const { favorize, unfavorize } = useFavoriteRepository(repository);
-
+  const [hovered, setHovered] = useState(false);
+  const toggleHover = () => setHovered(!hovered);
   const toggleFavoriteStatus = () => {
     if (favorize) {
       favorize();
@@ -47,20 +50,21 @@ const FavoriteRepositoryToggleIcon: FC<Props> = ({ repository, classes }) => {
   };
 
   return (
-    <SpanWithPointer onClick={() => toggleFavoriteStatus()}>
-      <Icon
-        title={
-          unfavorize
+    <ToggleButton onMouseEnter={toggleHover} onMouseLeave={toggleHover} onClick={() => toggleFavoriteStatus()}>
+      <>
+        <span className="sr-only">
+          {unfavorize
             ? t("scm-landingpage-plugin.favoriteRepository.unstar")
-            : t("scm-landingpage-plugin.favoriteRepository.star")
-        }
-        iconStyle={unfavorize ? "fas" : "far"}
-        name="star"
-        color={unfavorize ? "warning" : "secondary-more"}
-        className={classes}
-      />
-    </SpanWithPointer>
+            : t("scm-landingpage-plugin.favoriteRepository.star")}
+        </span>
+        <Icon
+          type={hovered ? "fas" : unfavorize ? "fas" : "far"}
+          className={(unfavorize ? "has-text-warning " : "has-text-secondary-more ") + classes}
+        >
+          {hovered ? "star-half-alt" : "star"}
+        </Icon>
+      </>
+    </ToggleButton>
   );
 };
-
 export default FavoriteRepositoryToggleIcon;
