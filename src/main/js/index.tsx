@@ -16,7 +16,7 @@
 
 import { binder, extensionPoints } from "@scm-manager/ui-extensions";
 import FavoriteRepositoryToggleIcon from "./favoriteRepositories/FavoriteRepositoryToggleIcon";
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import "./tasks/PluginUpdateTask";
 import "./events/RepositoryPushEvent";
 import "./events/RepositoryCreatedEvent";
@@ -33,7 +33,7 @@ import MyTasks from "./tasks/MyTasks";
 import MyEvents from "./events/MyEvents";
 import MyFavoriteRepositories from "./favoriteRepositories/MyFavoriteRepositories";
 import { Links, Repository } from "@scm-manager/ui-types";
-import { ProtectedRoute, ConfigurationBinder } from "@scm-manager/ui-components";
+import { ConfigurationBinder, ProtectedRoute } from "@scm-manager/ui-components";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import ConfigPage from "./config/ConfigPage";
@@ -79,6 +79,7 @@ const Subtitle: FC = () => {
 const Title: FC = () => {
   const [t] = useTranslation("plugins");
   const index = useIndex();
+
   return (
     <>
       {index.isLoading || index.error
@@ -90,6 +91,20 @@ const Title: FC = () => {
     </>
   );
 };
+
+const DocumentTitle: FC = () => {
+  const index = useIndex();
+
+  useEffect(() => {
+    const instanceName = (index?.data?._embedded?.landingpageConfiguration as LandingpageConfiguration)?.instanceName;
+    binder.bind<extensionPoints.DocumentTitleExtensionPoint>("document.title", { documentTitle: instanceName });
+  }, [index]);
+
+  return null;
+};
+
+// We have to use this in order to render our component on every page
+binder.bind("footer.information", DocumentTitle);
 
 binder.bind("repository.card.beforeTitle", BeforeTitle);
 binder.bind("repository.afterTitle", LargeToggleIcon);
