@@ -52,7 +52,7 @@
       "updatePlugin": {
         "title": "Update plugins",
         "description": "New version for {{count}} plugin available",
-        "description_plural": "New versions for {{count}} plugins available"
+        "description_other": "New versions for {{count}} plugins available"
       }
     },
     "mytips": {
@@ -63,7 +63,7 @@
       "noData": "No events available",
       "repositoryPush": {
         "title": "{{count}} change committed: {{repository}}",
-        "title_plural": "{{count}} changes committed: {{repository}}",
+        "title_other": "{{count}} changes committed: {{repository}}",
         "description": "Created by"
       },
       "repositoryCreated": {
