@@ -3,7 +3,7 @@
     "title": "mySCM",
     "subtitle": "Repositories, Aufgaben und Aktivitäten",
     "globalConfig": {
-      "title": "Landingpage Konfiguration",
+      "title": "Landingpage-Konfiguration",
       "link": "Landingpage",
       "form": {
         "instanceName": {
@@ -15,7 +15,7 @@
       "reloadHint": "(Die Startseite muss nach der Änderung ggf. einmalig neu geladen werden, damit die Änderungen angezeigt werden.)"
     },
     "config": {
-      "title": "mySCM Konfiguration",
+      "title": "mySCM-Konfiguration",
       "subtitle": "Angezeigte Inhalte",
       "pageSize": "Seitengröße für Repositories",
       "pageSizeError": "Die Seitengröße muss eine Zahl zwischen {{min}} und {{max}} sein",

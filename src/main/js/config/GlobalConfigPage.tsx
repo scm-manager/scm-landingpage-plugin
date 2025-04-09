@@ -17,15 +17,15 @@
 import React, { FC } from "react";
 import { LandingpageConfiguration } from "../types";
 import { ConfigurationForm, Form } from "@scm-manager/ui-forms";
-import { Title } from "@scm-manager/ui-components";
 import { useTranslation } from "react-i18next";
+import { useDocumentTitle } from "@scm-manager/ui-core";
 
 const GlobalConfigPage: FC<{ link: string }> = ({ link }) => {
   const [t] = useTranslation("plugins");
+  useDocumentTitle(t("scm-landingpage-plugin.globalConfig.title"));
 
   return (
     <>
-      <Title title={t("scm-landingpage-plugin.globalConfig.title")} />
       <ConfigurationForm<LandingpageConfiguration>
         link={link}
         translationPath={["plugins", "scm-landingpage-plugin.globalConfig.form"]}

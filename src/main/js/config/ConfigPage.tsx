@@ -15,6 +15,7 @@
  */
 
 import { Checkbox, InputField, Page, SubmitButton } from "@scm-manager/ui-components";
+import { useDocumentTitle } from "@scm-manager/ui-core";
 import React, { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { MyDataExtension } from "../types";
@@ -43,6 +44,7 @@ const pageSizeMax = 100;
 
 const ConfigPage: FC = () => {
   const [t] = useTranslation("plugins");
+  useDocumentTitle(t("scm-landingpage-plugin.config.title"));
   const { isDisabled, setCategories } = useDisabledCategories();
   const binder = useBinder();
   const [changedCategories, setChangedCategories] = useState<{ [key: string]: boolean }>({});
