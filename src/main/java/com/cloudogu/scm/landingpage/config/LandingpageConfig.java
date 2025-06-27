@@ -18,6 +18,7 @@ package com.cloudogu.scm.landingpage.config;
 
 import com.cloudogu.conveyor.GenerateDto;
 import com.cloudogu.conveyor.Include;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -36,4 +37,13 @@ public class LandingpageConfig {
   @NotNull
   @NotEmpty
   private String instanceName = "mySCM";
+
+  @Include
+  @NotNull
+  @NotEmpty
+  private String myEventsCleanupExpression = "0 0 2 * * ?"; // Every day at 2:00 AM
+
+  @Include
+  @Min(1)
+  private int myEventsStoreSize = 1000;
 }

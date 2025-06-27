@@ -16,6 +16,7 @@
 
 package com.cloudogu.scm.landingpage.config;
 
+import com.cloudogu.scm.landingpage.myevents.Cleanup;
 import sonia.scm.api.v2.resources.ConfigurationAdapterBase;
 import sonia.scm.api.v2.resources.Enrich;
 import sonia.scm.api.v2.resources.Index;
@@ -31,13 +32,22 @@ import jakarta.ws.rs.Path;
 @Enrich(Index.class)
 @Path("v2/landingpageConfig")
 class LandingpageConfigAdapter extends ConfigurationAdapterBase<LandingpageConfig, LandingpageConfigDto> {
+
+  private final Cleanup cleanup;
+
   @Inject
-  LandingpageConfigAdapter(ConfigurationStoreFactory configurationStoreFactory, Provider<ScmPathInfoStore> scmPathInfoStoreProvider) {
+  LandingpageConfigAdapter(ConfigurationStoreFactory configurationStoreFactory, Provider<ScmPathInfoStore> scmPathInfoStoreProvider, Cleanup cleanup) {
     super(configurationStoreFactory, scmPathInfoStoreProvider, LandingpageConfig.class, LandingpageConfigDto.class);
+    this.cleanup = cleanup;
   }
 
   @Override
   protected String getName() {
     return "landingpageConfig";
+  }
+
+  @Override
+  protected void postUpdateHook() {
+    this.cleanup.reSchedule();
   }
 }

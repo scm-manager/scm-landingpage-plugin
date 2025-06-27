@@ -21,6 +21,17 @@ import { useTranslation } from "react-i18next";
 
 const GlobalConfigPage: FC<{ link: string }> = ({ link }) => {
   const [t] = useTranslation("plugins");
+  const validateMyEventsStoreSize = (value: string) => {
+    const storeSize = Number(value);
+
+    if (!Number.isInteger(storeSize)) {
+      return t("scm-landingpage-plugin.globalConfig.form.myEventsStoreSize.notInteger");
+    }
+
+    if (storeSize < 1) {
+      return t("scm-landingpage-plugin.globalConfig.form.myEventsStoreSize.notPositive");
+    }
+  };
 
   return (
     <>
@@ -28,10 +39,20 @@ const GlobalConfigPage: FC<{ link: string }> = ({ link }) => {
         link={link}
         translationPath={["plugins", "scm-landingpage-plugin.globalConfig.form"]}
       >
-        <Form.Row>
-          <Form.Input name="instanceName" />
+        <Form.Row className="mb-2">
+          <Form.Input name="instanceName" className="pb-0" rules={{ required: true }} />
         </Form.Row>
-        <p>{t("scm-landingpage-plugin.globalConfig.reloadHint")}</p>
+        <p className="mb-4">{t("scm-landingpage-plugin.globalConfig.reloadHint")}</p>
+        <Form.Row>
+          <Form.Input
+            name="myEventsStoreSize"
+            type="number"
+            rules={{ required: true, validate: validateMyEventsStoreSize }}
+          />
+        </Form.Row>
+        <Form.Row>
+          <Form.Input name="myEventsCleanupExpression" rules={{ required: true }} />
+        </Form.Row>
       </ConfigurationForm>
     </>
   );
