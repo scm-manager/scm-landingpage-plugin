@@ -16,8 +16,12 @@
 
 package com.cloudogu.scm.landingpage.myevents;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import sonia.scm.event.Event;
+import sonia.scm.store.IdGenerator;
+import sonia.scm.store.QueryableType;
 import sonia.scm.xml.XmlInstantAdapter;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
@@ -42,6 +46,9 @@ import java.time.Instant;
 @Getter
 @XmlAccessorType(XmlAccessType.FIELD)
 @Event
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "@class")
+@QueryableType(idGenerator = IdGenerator.AUTO_INCREMENT)
+@EqualsAndHashCode
 public class MyEvent {
   private String type;
   private String permission;

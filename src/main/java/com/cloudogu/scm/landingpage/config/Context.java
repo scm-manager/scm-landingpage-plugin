@@ -14,17 +14,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-plugins {
-  id 'org.scm-manager.smp' version '0.19.0'
-}
+package com.cloudogu.scm.landingpage.config;
 
-dependencies {
-}
-
-scmPlugin {
-  scmVersion = "3.9.0"
-  displayName = "Landingpage"
-  description = "Creates a personal landingpage for each user"
-  author = "Cloudogu GmbH"
-  category = "Workflow"
+public class Context {
+  public static final String STORE_NAME = "landingpage-config";
 }
