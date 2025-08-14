@@ -10,6 +10,16 @@
           "label": "Name der Instanz",
           "helpText": "Der Name der Instanz wird als Titel in der Repository-Übersicht angezeigt."
         },
+        "myEventsStoreSize": {
+          "label": "Anzahl gespeicherten Aktivitäten",
+          "helpText": "Die maximale Anzahl an Events die gespeichert werden, für die letzten Aktivitäten. Ältere Events werden entfernt, sobald diese Anzahl überschritten wird.",
+          "notInteger": "Die Anzahl muss als ganze Zahl definiert werden",
+          "notPositive": "Die Anzahl muss als positive Zahl definiert werden"
+        },
+        "myEventsCleanupExpression": {
+          "label": "Cron-Ausdruck zum Aufräumen der letzten Aktivitäten",
+          "helpText": "Dieser Cron-Ausdruck definiert die Momente, an denen die überflüssigen Events aufgeräumt werden."
+        },
         "submit": "Speichern"
       },
       "reloadHint": "(Die Startseite muss nach der Änderung ggf. einmalig neu geladen werden, damit die Änderungen angezeigt werden.)"

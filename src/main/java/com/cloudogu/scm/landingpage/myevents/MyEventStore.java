@@ -16,74 +16,71 @@
 
 package com.cloudogu.scm.landingpage.myevents;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
+import com.cloudogu.scm.landingpage.config.Context;
+import com.cloudogu.scm.landingpage.config.LandingpageConfig;
 import com.google.common.collect.ImmutableList;
-import lombok.Getter;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import sonia.scm.plugin.PluginLoader;
 import sonia.scm.store.ConfigurationStore;
 import sonia.scm.store.ConfigurationStoreFactory;
+import sonia.scm.store.QueryableMutableStore;
+import sonia.scm.store.QueryableStore;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
-import javax.xml.XMLConstants;
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlAnyElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.adapters.XmlAdapter;
-import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.util.Iterator;
 import java.util.List;
 
+@Slf4j
 @Singleton
 public class MyEventStore {
 
-  private static final String STORE_NAME = "myevents";
-
-  private final ConfigurationStore<StoreEntry> store;
+  private final MyEventStoreFactory storeFactory;
   private final ClassLoader uberClassLoader;
+  private final ConfigurationStore<LandingpageConfig> globalConfigStore;
 
   @Inject
-  public MyEventStore(ConfigurationStoreFactory storeFactory, PluginLoader pluginLoader) {
-    this.store = storeFactory.withType(StoreEntry.class).withName(STORE_NAME).build();
+  public MyEventStore(MyEventStoreFactory storeFactory, PluginLoader pluginLoader, ConfigurationStoreFactory configurationStoreFactory) {
+    this.storeFactory = storeFactory;
     this.uberClassLoader = pluginLoader.getUberClassLoader();
+    this.globalConfigStore = configurationStoreFactory
+      .withType(LandingpageConfig.class)
+      .withName(Context.STORE_NAME)
+      .build();
   }
 
-  public synchronized void add(MyEvent event) {
+  public void add(MyEvent event) {
     withUberClassLoader(() -> {
-      StoreEntry storeEntry = getStoreEntry();
-      storeEntry.events.add(event);
-      store.set(storeEntry);
+      try (QueryableMutableStore<MyEvent> store = storeFactory.getMutable()) {
+        log.debug("Adding event of type {}", event.getType());
+        store.put(event);
+      }
     });
   }
 
-  public synchronized void markRepositoryEventsAsDeleted(String repository) {
+  public void markRepositoryEventsAsDeleted(String repository) {
+    log.debug("Setting deleted for events of repository {}", repository);
     withUberClassLoader(() -> {
-      StoreEntry storeEntry = getStoreEntry();
-      storeEntry.events.forEach(it -> {
-        if (
-          (it instanceof MyRepositoryEvent) &&
-            ((MyRepositoryEvent) it).getRepository().equals(repository)
-        ) {
-          ((MyRepositoryEvent) it).setDeleted(true);
-        }
-        if (
-          (it instanceof RepositoryRenamedEventSubscriber.RepositoryRenamedEvent) &&
-            ((RepositoryRenamedEventSubscriber.RepositoryRenamedEvent) it).getNewRepository().equals(repository)
-        ) {
-          ((RepositoryRenamedEventSubscriber.RepositoryRenamedEvent) it).setDeleted(true);
-        }
-      });
-      store.set(storeEntry);
+      try (QueryableMutableStore<MyEvent> store = storeFactory.getMutable()) {
+        store.getAll().forEach((id, event) -> {
+          if (
+            (event instanceof MyRepositoryEvent) &&
+              ((MyRepositoryEvent) event).getRepository().equals(repository)
+          ) {
+            ((MyRepositoryEvent) event).setDeleted(true);
+            store.put(id, event);
+          }
+          if (
+            (event instanceof RepositoryRenamedEventSubscriber.RepositoryRenamedEvent) &&
+              ((RepositoryRenamedEventSubscriber.RepositoryRenamedEvent) event).getNewRepository().equals(repository)
+          ) {
+            ((RepositoryRenamedEventSubscriber.RepositoryRenamedEvent) event).setDeleted(true);
+            store.put(id, event);
+          }
+        });
+      }
     });
   }
 
@@ -92,20 +89,34 @@ public class MyEventStore {
 
     ImmutableList.Builder<MyEvent> builder = ImmutableList.builder();
     withUberClassLoader(() -> {
-      StoreEntry storeEntry = getStoreEntry();
-      int i = 0;
+      try (QueryableStore<MyEvent> store = storeFactory.get()) {
+        List<MyEvent> events = store
+          .query()
+          .orderBy(MyEventQueryFields.INTERNAL_ID, QueryableStore.Order.DESC)
+          .findAll();
 
-      Iterator<MyEvent> myEventIterator = storeEntry.events.descendingIterator();
-
-      while (i < 20 && myEventIterator.hasNext()) {
-        MyEvent next = myEventIterator.next();
-        if (subject.isPermitted(next.getPermission())) {
-          builder.add(next);
-          i++;
+        Iterator<MyEvent> iterator = events.iterator();
+        int i = 0;
+        while (i < 20 && iterator.hasNext()) {
+          MyEvent next = iterator.next();
+          if (subject.isPermitted(next.getPermission())) {
+            builder.add(next);
+            ++i;
+          }
         }
       }
     });
+
     return builder.build();
+  }
+
+  public void cleanup() {
+    log.debug("Cleanup of myevents triggered");
+    try (QueryableMutableStore<MyEvent> store = storeFactory.getMutable()) {
+      store.query()
+        .orderBy(MyEventQueryFields.INTERNAL_ID, QueryableStore.Order.DESC)
+        .retain(globalConfigStore.getOptional().orElseGet(LandingpageConfig::new).getMyEventsStoreSize());
+    }
   }
 
   private void withUberClassLoader(Runnable runnable) {
@@ -115,70 +126,6 @@ public class MyEventStore {
       runnable.run();
     } finally {
       Thread.currentThread().setContextClassLoader(contextClassLoader);
-    }
-  }
-
-  private StoreEntry getStoreEntry() {
-    StoreEntry storeEntry = store.get();
-    if (storeEntry == null) {
-      storeEntry = new StoreEntry();
-    }
-    return storeEntry;
-  }
-
-  @XmlRootElement
-  @XmlAccessorType(XmlAccessType.FIELD)
-  @Getter
-  static class StoreEntry {
-    @XmlJavaTypeAdapter(MyEventXmlAdapter.class)
-    private EvictingQueue<MyEvent> events = EvictingQueue.create(1000);
-  }
-
-  @XmlAccessorType(XmlAccessType.FIELD)
-  public static class MyEventStoreEntry {
-
-    private Class type;
-
-    @XmlAnyElement
-    private Element payload;
-  }
-
-  public static class MyEventXmlAdapter extends XmlAdapter<MyEventStoreEntry, MyEvent> {
-
-    private static final LoadingCache<Class, JAXBContext> cache = CacheBuilder.newBuilder()
-      .maximumSize(1000)
-      .build(
-        new CacheLoader<Class, JAXBContext>() {
-          @Override
-          public JAXBContext load(Class c) throws JAXBException {
-            return JAXBContext.newInstance(c);
-          }
-        });
-
-    @Override
-    public MyEvent unmarshal(MyEventStoreEntry myEventStoreEntry) throws Exception {
-      JAXBContext jaxbContext = cache.get(myEventStoreEntry.type);
-      return (MyEvent) jaxbContext.createUnmarshaller().unmarshal(myEventStoreEntry.payload);
-    }
-
-    @Override
-    public MyEventStoreEntry marshal(MyEvent event) throws Exception {
-      MyEventStoreEntry entry = new MyEventStoreEntry();
-      entry.type = event.getClass();
-
-      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-      factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-      factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-      factory.setAttribute(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-
-      Document document = factory.newDocumentBuilder().newDocument();
-
-      JAXBContext jaxbContext = cache.get(event.getClass());
-      jaxbContext.createMarshaller().marshal(event, document);
-
-      entry.payload = document.getDocumentElement();
-
-      return entry;
     }
   }
 }

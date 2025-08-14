@@ -18,6 +18,10 @@ package com.cloudogu.scm.landingpage.myevents;
 
 import com.github.legman.Subscribe;
 import com.google.common.collect.Iterables;
+import jakarta.inject.Inject;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.shiro.SecurityUtils;
@@ -28,11 +32,6 @@ import sonia.scm.repository.PostReceiveRepositoryHookEvent;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryPermissions;
 import sonia.scm.user.User;
-
-import jakarta.inject.Inject;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlRootElement;
 
 @Extension
 @EagerSingleton

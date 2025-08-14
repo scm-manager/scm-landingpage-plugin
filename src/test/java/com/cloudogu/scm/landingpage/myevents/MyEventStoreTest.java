@@ -16,10 +16,10 @@
 
 package com.cloudogu.scm.landingpage.myevents;
 
-import com.google.common.io.Resources;
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ThreadContext;
-import org.junit.jupiter.api.AfterEach;
+import com.cloudogu.scm.landingpage.config.Context;
+import com.cloudogu.scm.landingpage.config.LandingpageConfig;
+import org.github.sdorra.jse.ShiroExtension;
+import org.github.sdorra.jse.SubjectAware;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,192 +27,134 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import sonia.scm.plugin.PluginLoader;
 import sonia.scm.store.ConfigurationStoreFactory;
-import sonia.scm.store.InMemoryConfigurationStoreFactory;
+import sonia.scm.store.InMemoryByteConfigurationStoreFactory;
+import sonia.scm.store.QueryableStoreExtension;
 import sonia.scm.user.User;
 
-import jakarta.xml.bind.JAXB;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.time.Instant;
+import java.util.Iterator;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith({MockitoExtension.class, QueryableStoreExtension.class, ShiroExtension.class})
+@QueryableStoreExtension.QueryableTypes(MyEvent.class)
 class MyEventStoreTest {
 
-  private static final Instant NOW = Instant.now();
+  private MyEventStore myEventStore;
+  private final ConfigurationStoreFactory configStoreFactory = new InMemoryByteConfigurationStoreFactory();
 
-  private MyEventStore store;
-
-  @Mock
-  private Subject subject;
   @Mock
   private PluginLoader pluginLoader;
 
   @BeforeEach
-  void bindSubject() {
-    ThreadContext.bind(subject);
-  }
-
-  @BeforeEach
-  void setUpObjectUnderTesting() {
-    ConfigurationStoreFactory storeFactory = new InMemoryConfigurationStoreFactory();
-    store = new MyEventStore(storeFactory, pluginLoader);
-  }
-
-  @AfterEach
-  void tearDownSubject() {
-    ThreadContext.unbindSubject();
+  void setUpObjectUnderTesting(MyEventStoreFactory eventStoreFactory) {
+    myEventStore = new MyEventStore(eventStoreFactory, pluginLoader, configStoreFactory);
   }
 
   @Test
+  @SubjectAware(value = "Trainer Red", permissions = "allowed")
   void shouldStoreEvent() {
     MyEvent event = new MyEvent(MyEvent.class.getSimpleName(), "allowed");
-    when(subject.isPermitted("allowed")).thenReturn(true);
 
-    store.add(event);
+    myEventStore.add(event);
 
-    List<MyEvent> events = store.getEvents();
-    assertThat(events.size()).isEqualTo(1);
-    assertThat(events.iterator().next()).isEqualTo(event);
+    List<MyEvent> events = myEventStore.getEvents();
+    assertThat(events).hasSize(1);
+    assertThat(events.get(0)).isEqualTo(event);
   }
 
   @Test
+  @SubjectAware(value = "Trainer Red", permissions = "allowed")
   void shouldOnlyGetPermittedEvents() {
     MyEvent event1 = new MyEvent(MyEvent.class.getSimpleName(), "allowed");
-    doReturn(true).when(subject).isPermitted("allowed");
-
     MyEvent event2 = new MyEvent(MyEvent.class.getSimpleName(), "forbidden");
-    doReturn(false).when(subject).isPermitted("forbidden");
 
-    store.add(event1);
-    store.add(event2);
+    myEventStore.add(event1);
+    myEventStore.add(event2);
 
-    List<MyEvent> events = store.getEvents();
-    assertThat(events.size()).isEqualTo(1);
-    assertThat(events.iterator().next()).isEqualTo(event1);
+    List<MyEvent> events = myEventStore.getEvents();
+    assertThat(events).hasSize(1);
+    assertThat(events.get(0)).isEqualTo(event1);
   }
 
   @Test
+  @SubjectAware(value = "Trainer Red", permissions = "allowed")
   void shouldOnlyGet20Events() {
-    when(subject.isPermitted("allowed")).thenReturn(true);
     for (int i = 0; i <= 40; i++) {
       MyEvent event = new MyEvent(MyEvent.class.getSimpleName(), "allowed");
-      store.add(event);
+      myEventStore.add(event);
     }
 
-    List<MyEvent> events = store.getEvents();
-    assertThat(events.size()).isEqualTo(20);
+    List<MyEvent> events = myEventStore.getEvents();
+    assertThat(events).hasSize(20);
   }
 
   @Test
+  @SubjectAware(value = "Trainer Red", permissions = "*")
   void shouldGetLatestEvents() {
-    when(subject.isPermitted(anyString())).thenReturn(true);
     for (int i = 0; i <= 40; i++) {
       MyEvent event = new MyEvent(MyEvent.class.getSimpleName(), "allowed" + i);
-      store.add(event);
+      myEventStore.add(event);
     }
 
-    List<MyEvent> events = store.getEvents();
+    List<MyEvent> events = myEventStore.getEvents();
+    assertThat(events).hasSize(20);
 
-    assertThat(events.iterator().next().getPermission()).isEqualTo("allowed40");
-  }
-
-  @Test
-  void shouldRemoveOldestEntryIfQueueIsFull() {
-    when(subject.isPermitted(anyString())).thenReturn(true);
-    for (int i = 0; i <= 2000; i++) {
-      MyEvent event = new MyEvent(MyEvent.class.getSimpleName(), "allowed" + i);
-      store.add(event);
+    Iterator<MyEvent> iterator = events.iterator();
+    for (int i = 40; i > 20; --i) {
+      assertThat(iterator.next().getPermission()).isEqualTo("allowed" + i);
     }
-
-    List<MyEvent> events = store.getEvents();
-    assertThat(events.size()).isEqualTo(20);
-    assertThat(events.iterator().next().getPermission()).isEqualTo("allowed2000");
   }
 
   @Test
-  void shouldMarshallAndUnmarshallMyEvent() {
-    MyEventStore.StoreEntry entry = new MyEventStore.StoreEntry();
-    entry.getEvents().add(new MyEvent("1", "2"));
-
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    JAXB.marshal(entry, baos);
-    ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-
-    MyEventStore.StoreEntry unmarshalled = JAXB.unmarshal(bais, MyEventStore.StoreEntry.class);
-
-    MyEvent unmarshalledEvent = unmarshalled.getEvents().descendingIterator().next();
-    MyEvent entryEvent = entry.getEvents().descendingIterator().next();
-
-    assertThat(unmarshalledEvent.getPermission()).isEqualTo(entryEvent.getPermission());
-    assertThat(unmarshalledEvent.getType()).isEqualTo(entryEvent.getType());
-  }
-
-  @Test
-  void shouldMarshallAndUnmarshallPushEvent() {
+  @SubjectAware(value = "Trainer Red", permissions = "repository:1:read")
+  void shouldKeepPushEventSpecificProperties() {
     User trillian = new User("trillian", "Trillian", "tricia@hitchhiker.org");
-    MyEventStore.StoreEntry entry = new MyEventStore.StoreEntry();
-    entry.getEvents().add(createPushEvent("repository:1:read", "repo/1", trillian, 1));
-    entry.getEvents().add(createPushEvent("repository:2:read", "repo/2", trillian, 2));
+    myEventStore.add(
+      new RepositoryPushEventSubscriber.PushEvent(
+        "repository:1:read",
+        "repo/1",
+        trillian.getName(),
+        trillian.getDisplayName(),
+        trillian.getMail(),
+        1
+      )
+    );
 
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    JAXB.marshal(entry, baos);
-    ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+    List<MyEvent> events = myEventStore.getEvents();
 
-    MyEventStore.StoreEntry unmarshalled = JAXB.unmarshal(bais, MyEventStore.StoreEntry.class);
+    assertThat(events).hasSize(1);
+    MyEvent event = events.get(0);
+    assertThat(event.getType()).isEqualTo(RepositoryPushEventSubscriber.PushEvent.class.getSimpleName());
+    assertThat(event.getPermission()).isEqualTo("repository:1:read");
 
-    RepositoryPushEventSubscriber.PushEvent unmarshalledEvent = (RepositoryPushEventSubscriber.PushEvent) unmarshalled.getEvents().descendingIterator().next();
-    RepositoryPushEventSubscriber.PushEvent entryEvent = (RepositoryPushEventSubscriber.PushEvent) entry.getEvents().descendingIterator().next();
-
-    assertThat(unmarshalledEvent.getPermission()).isEqualTo(entryEvent.getPermission());
-    assertThat(unmarshalledEvent.getType()).isEqualTo(entryEvent.getType());
-    assertThat(unmarshalledEvent.getAuthorName()).isEqualTo(entryEvent.getAuthorName());
-    assertThat(unmarshalledEvent.getRepository()).isEqualTo(entryEvent.getRepository());
-    assertThat(unmarshalledEvent.getDate()).isEqualTo(entryEvent.getDate());
-    assertThat(unmarshalledEvent.getChangesets()).isEqualTo(entryEvent.getChangesets());
+    assertThat(event).isInstanceOf(RepositoryPushEventSubscriber.PushEvent.class);
+    RepositoryPushEventSubscriber.PushEvent pushEvent = (RepositoryPushEventSubscriber.PushEvent) event;
+    assertThat(pushEvent.getRepository()).isEqualTo("repo/1");
+    assertThat(pushEvent.isDeleted()).isFalse();
+    assertThat(pushEvent.getAuthorName()).isEqualTo(trillian.getName());
+    assertThat(pushEvent.getAuthorDisplayName()).isEqualTo(trillian.getDisplayName());
+    assertThat(pushEvent.getAuthorMail()).isEqualTo(trillian.getMail());
+    assertThat(pushEvent.getChangesets()).isEqualTo(1);
   }
 
 
   @Test
-  void shouldUnmarshallEventsFromFile() throws IOException {
-    URL resource = Resources.getResource("com/cloudogu/scm/landingpage/myevents/myevents.xml");
-    InputStream inputStream = resource.openStream();
-    MyEventStore.StoreEntry unmarshal = JAXB.unmarshal(inputStream, MyEventStore.StoreEntry.class);
-
-    EvictingQueue<MyEvent> events = unmarshal.getEvents();
-
-    assertThat(events.size()).isEqualTo(3);
-
-    MyEvent latestEvent = events.descendingIterator().next();
-    assertThat(latestEvent.getType()).isEqualTo("PushEvent");
-    assertThat(latestEvent.getPermission()).isEqualTo("repository:read:EIRu8Tnsn2");
-  }
-
-  @Test
+  @SubjectAware(value = "Trainer Red", permissions = "allowed")
   void shouldMarkRepositoryEventsAsDeleted() {
     MyEvent event = new MyRepositoryEvent(MyRepositoryEvent.class.getSimpleName(), "allowed", "myRepo");
     MyEvent otherEvent = new MyRepositoryEvent(MyRepositoryEvent.class.getSimpleName(), "allowed", "myOtherRepo");
     MyEvent myRenamedEvent = new RepositoryRenamedEventSubscriber.RepositoryRenamedEvent("allowed", "myRepo", "myOtherRepo", "admin", "admin@scm-manager.org");
     MyEvent myOtherRenamedEvent = new RepositoryRenamedEventSubscriber.RepositoryRenamedEvent("allowed", "myRepoOther", "myRepo", "admin", "admin@scm-manager.org");
 
-    when(subject.isPermitted("allowed")).thenReturn(true);
+    myEventStore.add(event);
+    myEventStore.add(otherEvent);
+    myEventStore.add(myRenamedEvent);
+    myEventStore.add(myOtherRenamedEvent);
 
-    store.add(event);
-    store.add(otherEvent);
-    store.add(myRenamedEvent);
-    store.add(myOtherRenamedEvent);
+    myEventStore.markRepositoryEventsAsDeleted("myOtherRepo");
 
-    store.markRepositoryEventsAsDeleted("myOtherRepo");
-
-    List<MyEvent> events = store.getEvents();
+    List<MyEvent> events = myEventStore.getEvents();
     assertThat(events).contains(
       new MyRepositoryEvent(MyEvent.class.getSimpleName(), "allowed", "myOtherRepo", true),
       new RepositoryRenamedEventSubscriber.RepositoryRenamedEvent("allowed", "myRepo", "myOtherRepo", "admin", "admin@scm-manager.org", true),
@@ -221,8 +163,24 @@ class MyEventStoreTest {
     );
   }
 
-  private RepositoryPushEventSubscriber.PushEvent createPushEvent(String permission, String repository, User user, int changesets) {
-    return new RepositoryPushEventSubscriber.PushEvent(permission, repository , user.getName(), user.getDisplayName(), user.getMail(), changesets);
-  }
+  @Test
+  @SubjectAware(value = "Trainer Red", permissions = "*")
+  void shouldCleanupOldEventsOutsideOfStoreSize() {
+    LandingpageConfig config = new LandingpageConfig();
+    config.setMyEventsStoreSize(10);
+    configStoreFactory.withType(LandingpageConfig.class).withName(Context.STORE_NAME).build().set(config);
 
+    for (int i = 0; i <= config.getMyEventsStoreSize(); i++) {
+      myEventStore.add(new MyRepositoryEvent(MyRepositoryEvent.class.getSimpleName(), "allowed" + i, "myRepo"));
+    }
+    assertThat(myEventStore.getEvents()).hasSize(config.getMyEventsStoreSize() + 1);
+
+    myEventStore.cleanup();
+    List<MyEvent> events = myEventStore.getEvents();
+    assertThat(events).hasSize(config.getMyEventsStoreSize());
+    Iterator<MyEvent> iterator = events.iterator();
+    for (int i = config.getMyEventsStoreSize(); i > 0; --i) {
+      assertThat(iterator.next().getPermission()).isEqualTo("allowed" + i);
+    }
+  }
 }

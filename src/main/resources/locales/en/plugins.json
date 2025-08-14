@@ -10,6 +10,16 @@
           "label": "Instance Name",
           "helpText": "The name of the instance is displayed as the title in the repository overview."
         },
+        "myEventsStoreSize": {
+          "label": "Latest Activities Store Size",
+          "helpText": "The maximum amount of events that are stored for the latest activities widget. Older Events get removed, if the store size is exceeded.",
+          "notInteger": "The store size needs to be an integer",
+          "notPositive": "The store size needs to be a positive number"
+        },
+        "myEventsCleanupExpression": {
+          "label": "Latest Activities Cron Expression",
+          "helpText": "This cron expression defines the moments in time, when the event store for the latest activities gets cleaned up."
+        },
         "submit": "Submit"
       },
       "reloadHint": "(You may have to reload the repository page once after a change to see the new name.)"
