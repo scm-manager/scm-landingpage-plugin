@@ -1,0 +1,80 @@
+<?xml version="1.0" ?>
+<!--
+    Copyright (c) 2020 - present Cloudogu GmbH
+
+    This program is free software: you can redistribute it and/or modify it under
+    the terms of the GNU Affero General Public License as published by the Free
+    Software Foundation, version 3.
+
+    This program is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+    FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
+    details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see https://www.gnu.org/licenses/.
+-->
+
+<storeEntry>
+  <events>
+    <type>com.cloudogu.scm.landingpage.myevents.RepositoryCreatedEventSubscriber$RepositoryCreatedEvent</type>
+    <repositoryCreatedEvent>
+      <type>RepositoryCreatedEvent</type>
+      <permission>repository:read:CdUowj5Au3</permission>
+      <date>2025-06-23T12:24:44.345490489Z</date>
+      <repository>scmadmin/Test</repository>
+      <deleted>false</deleted>
+      <creatorName>scmadmin</creatorName>
+      <creatorDisplayName>SCM Administrator</creatorDisplayName>
+      <creatorMail>scm@example.com</creatorMail>
+    </repositoryCreatedEvent>
+  </events>
+  <events>
+    <type>com.cloudogu.scm.landingpage.myevents.RepositoryPushEventSubscriber$PushEvent</type>
+    <pushEvent>
+      <type>PushEvent</type>
+      <permission>repository:read:CdUowj5Au3</permission>
+      <date>2025-06-23T12:24:47.229727695Z</date>
+      <repository>scmadmin/Test</repository>
+      <deleted>false</deleted>
+      <authorName>scmadmin</authorName>
+      <authorDisplayName>SCM Administrator</authorDisplayName>
+      <authorMail>scm@example.com</authorMail>
+      <changesets>1</changesets>
+    </pushEvent>
+  </events>
+  <events>
+    <type>com.cloudogu.scm.landingpage.myevents.PluginInstalledEventSubscriber$PluginInstalledEvent</type>
+    <pluginInstalledEvent>
+      <type>PluginInstalledEvent</type>
+      <permission>plugin:write</permission>
+      <date>2025-06-23T12:25:05.846355050Z</date>
+      <pluginName>CodeEditor</pluginName>
+      <newPluginVersion>3.0.0</newPluginVersion>
+    </pluginInstalledEvent>
+  </events>
+  <events>
+    <type>com.cloudogu.scm.landingpage.myevents.PluginInstalledEventSubscriber$PluginInstalledEvent</type>
+    <pluginInstalledEvent>
+      <type>PluginInstalledEvent</type>
+      <permission>plugin:write</permission>
+      <date>2025-06-23T12:25:05.989214996Z</date>
+      <pluginName>Editor</pluginName>
+      <newPluginVersion>3.4.0</newPluginVersion>
+    </pluginInstalledEvent>
+  </events>
+  <events>
+    <type>com.cloudogu.scm.landingpage.myevents.RepositoryPushEventSubscriber$PushEvent</type>
+    <pushEvent>
+      <type>PushEvent</type>
+      <permission>repository:read:CdUowj5Au3</permission>
+      <date>2025-06-23T12:25:38.402097920Z</date>
+      <repository>scmadmin/Test</repository>
+      <deleted>false</deleted>
+      <authorName>scmadmin</authorName>
+      <authorDisplayName>SCM Administrator</authorDisplayName>
+      <authorMail>scm@example.com</authorMail>
+      <changesets>1</changesets>
+    </pushEvent>
+  </events>
+</storeEntry>
