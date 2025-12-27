@@ -1,6 +1,6 @@
 {
   "scm-landingpage-plugin": {
-    "title": "mySCM",
+    "title": "MySCM",
     "subtitle": "Repositories, Aufgaben und Aktivitäten",
     "globalConfig": {
       "title": "Landingpage-Konfiguration",
@@ -11,10 +11,10 @@
           "helpText": "Der Name der Instanz wird als Titel in der Repository-Übersicht angezeigt."
         },
         "myEventsStoreSize": {
-          "label": "Anzahl gespeicherten Aktivitäten",
-          "helpText": "Die maximale Anzahl an Events die gespeichert werden, für die letzten Aktivitäten. Ältere Events werden entfernt, sobald diese Anzahl überschritten wird.",
-          "notInteger": "Die Anzahl muss als ganze Zahl definiert werden",
-          "notPositive": "Die Anzahl muss als positive Zahl definiert werden"
+          "label": "Anzahl gespeicherter Aktivitäten",
+          "helpText": "Die maximale Anzahl an zu speichernden Events für die letzten Aktivitäten. Ältere Events werden entfernt, sobald diese Anzahl überschritten wird.",
+          "notInteger": "Die Anzahl muss als Ganzzahl definiert werden.",
+          "notPositive": "Die Anzahl muss als positive (natürliche) Zahl definiert werden."
         },
         "myEventsCleanupExpression": {
           "label": "Cron-Ausdruck zum Aufräumen der letzten Aktivitäten",
@@ -25,10 +25,10 @@
       "reloadHint": "(Die Startseite muss nach der Änderung ggf. einmalig neu geladen werden, damit die Änderungen angezeigt werden.)"
     },
     "config": {
-      "title": "mySCM-Konfiguration",
+      "title": "MySCM-Konfiguration",
       "subtitle": "Angezeigte Inhalte",
       "pageSize": "Seitengröße für Repositories",
-      "pageSizeError": "Die Seitengröße muss eine Zahl zwischen {{min}} und {{max}} sein",
+      "pageSizeError": "Die Seitengröße muss eine Zahl zwischen {{min}} und {{max}} sein.",
       "showArchived": "Archivierte Repositories anzeigen",
       "submit": "Speichern",
       "select": {
@@ -46,11 +46,11 @@
       }
     },
     "emptyMessage": {
-      "default": "Keine Daten vorhanden"
+      "default": "Keine Daten vorhanden."
     },
     "mytasks": {
       "title": "Meine Aufgaben",
-      "noData": "Keine Aufgaben vorhanden"
+      "noData": "Keine Aufgaben vorhanden."
     },
     "favoriteRepository": {
       "title": "Favorisierte Repositories",
@@ -61,8 +61,8 @@
     "tasks": {
       "updatePlugin": {
         "title": "Update plugins",
-        "description": "Neue Version für {{count}} Plugin verfügbar",
-        "description_other": "Neue Versionen für {{count}} Plugins verfügbar"
+        "description": "Neue Version für {{count}} Plugin verfügbar.",
+        "description_other": "Neue Versionen für {{count}} Plugins verfügbar."
       }
     },
     "mytips": {
@@ -70,11 +70,11 @@
     },
     "myevents": {
       "title": "Letzte Aktivitäten",
-      "noData": "Keine Aktivitäten vorhanden",
+      "noData": "Keine Aktivitäten vorhanden.",
       "repositoryPush": {
         "title": "{{count}} Änderung committet: {{repository}}",
         "title_other": "{{count}} Änderungen committet: {{repository}}",
-        "description": "Erstellt von"
+        "description": "Committet von"
       },
       "repositoryCreated": {
         "title": "Neues Repository: {{repository}}",
@@ -94,27 +94,27 @@
         "title": "Repository wurde umbenannt:"
       },
       "pluginInstalled": {
-        "title": "Plugin Installation vorbereitet: {{pluginName}}",
-        "description": "Neue Plugin Version: {{version}}"
+        "title": "Plugin-Installation vorbereitet: {{pluginName}}",
+        "description": "Neue Plugin-Version: {{version}}."
       },
       "pluginUpdated": {
-        "title": "Plugin Aktualisierung vorbereitet: {{pluginName}}",
-        "description": "Von Version {{previousVersion}} auf Version {{version}}"
+        "title": "Plugin-Aktualisierung vorbereitet: {{pluginName}}",
+        "description": "Von Version {{previousVersion}} auf Version {{version}}."
       },
       "pluginInstallationFailed": {
-        "title": "Plugin Installation fehlgeschlagen: {{pluginName}}",
-        "description": "Plugin Version: {{version}}"
+        "title": "Plugin-Installation fehlgeschlagen: {{pluginName}}",
+        "description": "Plugin-Version: {{version}}."
       },
       "pluginCenterNotAvailable": {
         "title": "Plugin-Center nicht erreichbar"
       },
       "healthCheckFailure": {
         "title": "Fehlerhaft: {{repository}}",
-        "description": "Die Integritätsprüfung des Repositories ist fehlgeschlagen"
+        "description": "Die Integritätsprüfung des Repositorys ist fehlgeschlagen."
       },
       "healthCheckSucceeded": {
         "title": "Fehlerfrei: {{repository}}",
-        "description": "Die Integritätsprüfung des Repositories hat keine Fehler festgestellt"
+        "description": "Die Integritätsprüfung des Repositorys hat keine Fehler festgestellt."
       }
     }
   }

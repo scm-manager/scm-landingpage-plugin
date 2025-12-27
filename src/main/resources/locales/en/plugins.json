@@ -1,23 +1,23 @@
 {
   "scm-landingpage-plugin": {
-    "title": "mySCM",
+    "title": "MySCM",
     "subtitle": "Repositories, tasks and events",
     "globalConfig": {
-      "title": "Landingpage Configuration",
+      "title": "Landingpage configuration",
       "link": "Landingpage",
       "form": {
         "instanceName": {
-          "label": "Instance Name",
+          "label": "Instance name",
           "helpText": "The name of the instance is displayed as the title in the repository overview."
         },
         "myEventsStoreSize": {
-          "label": "Latest Activities Store Size",
+          "label": "“Latest activities” store size",
           "helpText": "The maximum amount of events that are stored for the latest activities widget. Older Events get removed, if the store size is exceeded.",
           "notInteger": "The store size needs to be an integer",
           "notPositive": "The store size needs to be a positive number"
         },
         "myEventsCleanupExpression": {
-          "label": "Latest Activities Cron Expression",
+          "label": "Latest activities cron expression",
           "helpText": "This cron expression defines the moments in time, when the event store for the latest activities gets cleaned up."
         },
         "submit": "Submit"
@@ -25,9 +25,9 @@
       "reloadHint": "(You may have to reload the repository page once after a change to see the new name.)"
     },
     "config": {
-      "title": "mySCM Configuration",
-      "subtitle": "Displayed Content",
-      "pageSize": "Repository Page Size",
+      "title": "MySCM Configuration",
+      "subtitle": "Displayed content",
+      "pageSize": "Repository page size",
       "pageSizeError": "Page size has to be a number between {{min}} and {{max}}",
       "showArchived": "Show archived repositories ",
       "submit": "Submit",
@@ -56,7 +56,7 @@
       "title": "Favorite repositories",
       "star": "Star repository",
       "unstar": "Unstar repository",
-      "noData": "No favorite repositories, yet. Mark repositories as favorites to list them here."
+      "noData": "No favorite repositories yet. Mark repositories as favorites to list them here."
     },
     "tasks": {
       "updatePlugin": {
@@ -74,7 +74,7 @@
       "repositoryPush": {
         "title": "{{count}} change committed: {{repository}}",
         "title_other": "{{count}} changes committed: {{repository}}",
-        "description": "Created by"
+        "description": "Committed by"
       },
       "repositoryCreated": {
         "title": "New repository: {{repository}}",
@@ -95,26 +95,26 @@
       },
       "pluginInstalled": {
         "title": "Plugin installation prepared: {{pluginName}}",
-        "description": "New plugin version: {{version}}"
+        "description": "New plugin version: {{version}}."
       },
       "pluginUpdated": {
         "title": "Plugin update prepared: {{pluginName}}",
-        "description": "From version {{previousVersion}} to version {{version}}"
+        "description": "From version {{previousVersion}} to version {{version}}."
       },
       "pluginInstallationFailed": {
         "title": "Plugin Installation failed: {{pluginName}}",
-        "description": "Plugin version: {{version}}"
+        "description": "Plugin version: {{version}}."
       },
       "pluginCenterNotAvailable": {
         "title": "Plugin center not available"
       },
       "healthCheckFailure": {
         "title": "Unhealthy: {{repository}}",
-        "description": "The health check for this repository failed"
+        "description": "The health check for this repository has failed."
       },
       "healthCheckSucceeded": {
         "title": "Healthy: {{repository}}",
-        "description": "The health check for this repository reported no failures any more"
+        "description": "The health check for this repository has not reported failures anymore."
       }
     }
   }
