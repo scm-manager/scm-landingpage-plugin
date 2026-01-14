@@ -82,7 +82,7 @@ public class FavoriteRepositoryResource {
     summary = "Unfavorize repository",
     description = "Unfavorizes a repository for the current user",
     tags = "Landingpage Plugin",
-    operationId = "landingpage_favorize_repo"
+    operationId = "landingpage_unfavorize_repo"
   )
   @ApiResponse(
     responseCode = "204",
@@ -105,14 +105,36 @@ public class FavoriteRepositoryResource {
 
   @GET
   @Path("favorites")
+  @Operation(
+    summary = "Get the favorite repositories",
+    description = "Returns the favorite repositories, the user has selected.",
+    tags = "Landingpage Plugin",
+    operationId = "landingpage_get_favorites"
+  )
+  @ApiResponse(
+    responseCode = "200",
+    description = "success",
+    content = @Content(
+      mediaType = MediaType.APPLICATION_JSON,
+      schema = @Schema(implementation = FavoriteRepositoriesDto.class)
+    )
+  )
+  @ApiResponse(responseCode = "401", description = "not authenticated / invalid credentials")
+  @ApiResponse(
+    responseCode = "500",
+    description = "internal server error",
+    content = @Content(
+      mediaType = VndMediaType.ERROR_TYPE,
+      schema = @Schema(implementation = ErrorDto.class)
+    )
+  )
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getFavoriteRepositories() {
+  public FavoriteRepositoriesDto getFavoriteRepositories() {
     final List<Repository> favoriteRepositories = service.getFavoriteRepositories();
-    return Response.ok().entity(new FavoriteRepositoriesDto(
+    return new FavoriteRepositoriesDto(
       favoriteRepositories.stream()
         .map(mapper::map)
-        .collect(Collectors.toList()))
-    ).build();
+        .collect(Collectors.toList()));
   }
 
 }

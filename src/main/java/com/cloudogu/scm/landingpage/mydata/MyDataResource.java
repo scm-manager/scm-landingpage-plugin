@@ -16,15 +16,18 @@
 
 package com.cloudogu.scm.landingpage.mydata;
 
-import sonia.scm.web.VndMediaType;
-
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
-import jakarta.ws.rs.core.Context;
-import jakarta.ws.rs.core.UriInfo;
+import sonia.scm.api.v2.resources.ErrorDto;
+import sonia.scm.web.VndMediaType;
+
 import java.util.List;
 
 @Path("v2/landingpage/mydata")
@@ -42,7 +45,30 @@ public class MyDataResource {
   @GET
   @Path("")
   @Produces(MEDIATYPE)
-  public MyDataDto getData(@Context UriInfo uriInfo, @QueryParam("disabledTypes") List<String> disabledTypes) {
+  @Operation(
+    summary = "'My Data'",
+    description = "Returns data relevant for the current user",
+    tags = "Landingpage Plugin",
+    operationId = "landingpage_my_data"
+  )
+  @ApiResponse(
+    responseCode = "200",
+    description = "success",
+    content = @Content(
+      mediaType = MEDIATYPE,
+      schema = @Schema(implementation = MyDataDto.class)
+    )
+  )
+  @ApiResponse(responseCode = "401", description = "not authenticated / invalid credentials")
+  @ApiResponse(
+    responseCode = "500",
+    description = "internal server error",
+    content = @Content(
+      mediaType = VndMediaType.ERROR_TYPE,
+      schema = @Schema(implementation = ErrorDto.class)
+    )
+  )
+  public MyDataDto getData(@QueryParam("disabledTypes") List<String> disabledTypes) {
     return new MyDataDto(collector.collect(disabledTypes));
   }
 }

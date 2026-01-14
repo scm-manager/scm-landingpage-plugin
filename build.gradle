@@ -27,4 +27,13 @@ scmPlugin {
   description = "Creates a personal landingpage for each user"
   author = "Cloudogu GmbH"
   category = "Workflow"
+
+  openapi {
+    packages = [
+      "com.cloudogu.scm.landingpage.favorite",
+      "com.cloudogu.scm.landingpage.mydata",
+      "com.cloudogu.scm.landingpage.myevents",
+      "com.cloudogu.scm.landingpage.mytasks",
+    ]
+  }
 }

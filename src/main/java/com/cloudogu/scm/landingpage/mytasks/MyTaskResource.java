@@ -16,14 +16,16 @@
 
 package com.cloudogu.scm.landingpage.mytasks;
 
-import sonia.scm.web.VndMediaType;
-
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.core.Context;
-import jakarta.ws.rs.core.UriInfo;
+import sonia.scm.api.v2.resources.ErrorDto;
+import sonia.scm.web.VndMediaType;
 
 @Path("v2/landingpage/mytasks")
 public class MyTaskResource {
@@ -40,7 +42,30 @@ public class MyTaskResource {
   @GET
   @Path("")
   @Produces(MEDIATYPE)
-  public MyTasksDto getTasks(@Context UriInfo uriInfo) {
+  @Operation(
+    summary = "'My Tasks'",
+    description = "Returns current open tasks for the current user",
+    tags = "Landingpage Plugin",
+    operationId = "landingpage_my_tasks"
+  )
+  @ApiResponse(
+    responseCode = "200",
+    description = "success",
+    content = @Content(
+      mediaType = MEDIATYPE,
+      schema = @Schema(implementation = MyTasksDto.class)
+    )
+  )
+  @ApiResponse(responseCode = "401", description = "not authenticated / invalid credentials")
+  @ApiResponse(
+    responseCode = "500",
+    description = "internal server error",
+    content = @Content(
+      mediaType = VndMediaType.ERROR_TYPE,
+      schema = @Schema(implementation = ErrorDto.class)
+    )
+  )
+  public MyTasksDto getTasks() {
     return new MyTasksDto(collector.collect());
   }
 
