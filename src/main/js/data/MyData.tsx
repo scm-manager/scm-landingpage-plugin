@@ -17,7 +17,7 @@
 import React, { FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useIndexLinks } from "@scm-manager/ui-api";
-import { Loading, Notification } from "@scm-manager/ui-components";
+import { Notification, Loading } from "@scm-manager/ui-core";
 import { binder } from "@scm-manager/ui-extensions";
 import CollapsibleContainer from "../CollapsibleContainer";
 import { Link } from "@scm-manager/ui-types";
@@ -75,11 +75,11 @@ const MyData: FC<{ extensions: Array<MyDataExtension["type"]> }> = ({ extensions
 
   return (
     <>
-      {extensions.map(extension => (
+      {extensions.map((extension) => (
         <MyDataExtensionContainer
           key={extension.type}
           extension={extension}
-          data={data?._embedded.data.filter(entry => entry.type === extension.type)}
+          data={data?._embedded.data.filter((entry) => entry.type === extension.type)}
           error={error}
         />
       ))}
@@ -90,7 +90,10 @@ const MyData: FC<{ extensions: Array<MyDataExtension["type"]> }> = ({ extensions
 const MyDataWrapper: FC = () => {
   const extensions = binder.getExtensions<MyDataExtension>("landingpage.mydata");
   const { isDisabled } = useDisabledCategories();
-  const allDisabled = useMemo(() => extensions.some(extension => isDisabled(extension.type)), [extensions, isDisabled]);
+  const allDisabled = useMemo(
+    () => extensions.some((extension) => isDisabled(extension.type)),
+    [extensions, isDisabled],
+  );
   if (allDisabled) {
     return null;
   }

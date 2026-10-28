@@ -17,7 +17,8 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { AvatarImage, CardColumnSmall, DateFromNow, Icon } from "@scm-manager/ui-components";
+import { AvatarImage, CardColumnSmall } from "@scm-manager/ui-components";
+import { DateFromNow, Icon } from "@scm-manager/ui-core";
 import { binder } from "@scm-manager/ui-extensions";
 import { MyEventComponent, MyEventExtension, MyRepositoryEventType } from "../types";
 import DeletableTitle from "./DeletableTitle";
@@ -43,14 +44,14 @@ const RepositoryPushEvent: MyEventComponent<RepositoryPushEventType> = ({ event 
   const icon = binder.hasExtension("avatar.factory") ? (
     <StyledGravatar person={{ name: event.authorName, mail: event.authorMail }} />
   ) : (
-    <Icon name="exchange-alt" className="fa-fw fa-lg" color="inherit" />
+    <Icon className="is-medium">exchange-alt</Icon>
   );
 
   const content = (
     <DeletableTitle deleted={event.deleted} className="is-marginless">
       {t("scm-landingpage-plugin.myevents.repositoryPush.title", {
         count: event.changesets,
-        repository: event.repository
+        repository: event.repository,
       })}
     </DeletableTitle>
   );

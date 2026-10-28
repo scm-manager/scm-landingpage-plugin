@@ -16,7 +16,7 @@
 
 import { apiClient } from "@scm-manager/ui-components";
 import { Link, Repository } from "@scm-manager/ui-types";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ApiResult, useRequiredIndexLink } from "@scm-manager/ui-api";
 import { FavoriteRepositories } from "../types";
 
@@ -25,30 +25,36 @@ export const useFavoriteRepository = (repository: Repository) => {
 
   const invalidateQueries = () => {
     return Promise.all([
-      queryClient.invalidateQueries(["landingpage", "favoriteRepositories"]),
-      queryClient.invalidateQueries(["repository", repository.namespace, repository.name]),
-      queryClient.invalidateQueries(["repositories"])
+      queryClient.invalidateQueries({ queryKey: ["landingpage", "favoriteRepositories"] }),
+      queryClient.invalidateQueries({ queryKey: ["repository", repository.namespace, repository.name] }),
+      queryClient.invalidateQueries({ queryKey: ["repositories"] }),
     ]).then(() => undefined);
   };
 
-  const { mutate, isLoading, error } = useMutation<unknown, Error, Link>(link => apiClient.post(link.href, {}), {
-    onSuccess: invalidateQueries
+  const {
+    mutate,
+    isPending: isLoading,
+    error,
+  } = useMutation<unknown, Error, Link>({
+    mutationFn: (link) => apiClient.post(link.href, {}),
+    onSuccess: invalidateQueries,
   });
 
   return {
     favorize: repository._links.favorize ? () => mutate(repository._links.favorize as Link) : undefined,
     unfavorize: repository._links.unfavorize ? () => mutate(repository._links.unfavorize as Link) : undefined,
     isLoading,
-    error
+    error,
   };
 };
 
 export const useFavoriteRepositories = (): ApiResult<FavoriteRepositories> => {
   const indexLink = useRequiredIndexLink("favoriteRepositories");
 
-  return useQuery<FavoriteRepositories, Error>(["landingpage", "favoriteRepositories"], () =>
-    apiClient.get(indexLink).then(response => response.json())
-  );
+  return useQuery<FavoriteRepositories, Error>({
+    queryKey: ["landingpage", "favoriteRepositories"],
+    queryFn: () => apiClient.get(indexLink).then((response) => response.json()),
+  });
 };
 
 export type FavoriteRepository = Repository & {

@@ -17,7 +17,8 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { AvatarImage, CardColumnSmall, DateFromNow, Icon } from "@scm-manager/ui-components";
+import { AvatarImage, CardColumnSmall } from "@scm-manager/ui-components";
+import { DateFromNow, Icon } from "@scm-manager/ui-core";
 import { binder } from "@scm-manager/ui-extensions";
 import { MyEventComponent, MyEventExtension, MyRepositoryEventType } from "../types";
 import { Link } from "react-router-dom";
@@ -45,7 +46,7 @@ const RepositoryImportEvent: MyEventComponent<RepositoryImportEventType> = ({ ev
   const icon = binder.hasExtension("avatar.factory") ? (
     <StyledGravatar person={{ name: event.creatorName, mail: event.creatorMail }} />
   ) : (
-    <Icon name="exchange-alt" className="fa-fw fa-lg" color="inherit" />
+    <Icon className="is-medium">exchange-alt</Icon>
   );
 
   const content = (
@@ -55,8 +56,8 @@ const RepositoryImportEvent: MyEventComponent<RepositoryImportEventType> = ({ ev
           ? "scm-landingpage-plugin.myevents.repositoryImport.titleFailed"
           : "scm-landingpage-plugin.myevents.repositoryImport.titleSuccess",
         {
-          repository: event.repository
-        }
+          repository: event.repository,
+        },
       )}
     </DeletableTitle>
   );

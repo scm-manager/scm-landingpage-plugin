@@ -14,7 +14,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "@scm-manager/ui-components";
 import { MyDataEntriesType } from "../types";
 import { useDisabledCategories } from "../config/hooks";
@@ -26,13 +26,14 @@ export const useMyData = (link: string) => {
   if (disabledCategories.length) {
     link += `?disabledTypes=${disabledCategories.join(",")}`;
   }
-  const { error, isLoading, data } = useQuery<MyData, Error>(["landingpage", "myData"], () =>
-    apiClient.get(link).then(response => response.json())
-  );
+  const { error, isLoading, data } = useQuery<MyData, Error>({
+    queryKey: ["landingpage", "myData"],
+    queryFn: () => apiClient.get(link).then((response) => response.json()),
+  });
 
   return {
     error,
     isLoading,
-    data
+    data,
   };
 };

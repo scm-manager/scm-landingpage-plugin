@@ -16,19 +16,16 @@
 
 import React, { FC } from "react";
 import { FavoriteRepository, useFavoriteRepositories } from "./favoriteRepository";
-import { ErrorNotification, GroupEntries, Loading, Notification, RepositoryEntry } from "@scm-manager/ui-components";
+import { GroupEntries, RepositoryEntry } from "@scm-manager/ui-components";
+import { ErrorNotification, Notification, Loading } from "@scm-manager/ui-core";
 import { useTranslation } from "react-i18next";
 import classNames from "classnames";
 import { extensionPoints } from "@scm-manager/ui-extensions";
 import { useLocalStorage } from "@scm-manager/ui-api";
-import { ShowNamespaceInFavoriteOption, useListOptions } from "../config/hooks";
+import { useListOptions } from "../config/hooks";
 import { Repository } from "@scm-manager/ui-types";
 
-const MyFavoriteRepositories: FC<extensionPoints.RepositoryOverviewTopExtension["props"]> = ({
-  page,
-  namespace,
-  search
-}) => {
+const MyFavoriteRepositories: FC<extensionPoints.RepositoryOverviewTop["props"]> = ({ page, namespace, search }) => {
   const { data, error, isLoading } = useFavoriteRepositories();
   const [t] = useTranslation("plugins");
   const [collapsed, setCollapsed] = useLocalStorage<boolean | null>("favoriteRepositories.collapsed", null);
@@ -66,9 +63,9 @@ const MyFavoriteRepositories: FC<extensionPoints.RepositoryOverviewTopExtension[
   const alwaysShowNamespaces = showNamespace === "ALWAYS";
   const showNamespacesForDuplicates = showNamespace === "DUPLICATES_ONLY";
 
-  const allRepositoryNames = data!.repositories.map(repo => repo.name);
+  const allRepositoryNames = data!.repositories.map((repo) => repo.name);
   const duplicateRepositoryNames = allRepositoryNames.filter(
-    (item, index) => allRepositoryNames.indexOf(item) !== index
+    (item, index) => allRepositoryNames.indexOf(item) !== index,
   );
 
   const showNamespaceForRepository = (repository: Repository) => {
@@ -77,7 +74,7 @@ const MyFavoriteRepositories: FC<extensionPoints.RepositoryOverviewTopExtension[
     );
   };
 
-  const entries = data!.repositories.map(repository => (
+  const entries = data!.repositories.map((repository) => (
     <RepositoryEntry
       repository={{ ...repository, showNamespace: showNamespaceForRepository(repository) } as FavoriteRepository}
       key={`${repository.namespace}/${repository.name}`}
@@ -87,7 +84,7 @@ const MyFavoriteRepositories: FC<extensionPoints.RepositoryOverviewTopExtension[
     <GroupEntries
       namespaceHeader={t("scm-landingpage-plugin.favoriteRepository.title")}
       elements={entries}
-      collapsed={collapsed}
+      collapsed={!!collapsed}
       onCollapsedChange={setCollapsed}
     />
   );

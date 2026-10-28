@@ -16,7 +16,8 @@
 
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { CardColumnSmall, Icon, DateFromNow } from "@scm-manager/ui-components";
+import { CardColumnSmall } from "@scm-manager/ui-components";
+import { DateFromNow, Icon } from "@scm-manager/ui-core";
 import { binder } from "@scm-manager/ui-extensions";
 import { MyEventComponent, MyEventType } from "../types";
 
@@ -30,7 +31,7 @@ const PluginInstallationFailedEvent: MyEventComponent<PluginEventType> = ({ even
   const [t] = useTranslation("plugins");
 
   const link = "/admin/plugins/available/";
-  const icon = <Icon name="puzzle-piece" className="fa-fw fa-lg" color="inherit" />;
+  const icon = <Icon className="is-medium">puzzle-piece</Icon>;
   const content = (
     <>
       {" "}
@@ -40,7 +41,7 @@ const PluginInstallationFailedEvent: MyEventComponent<PluginEventType> = ({ even
     </>
   );
   const footer = t("scm-landingpage-plugin.myevents.pluginInstallationFailed.description", {
-    version: event.pluginVersion
+    version: event.pluginVersion,
   });
 
   return (

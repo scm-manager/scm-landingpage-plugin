@@ -17,7 +17,7 @@
 import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
 import CollapsibleContainer from "../CollapsibleContainer";
-import { Loading } from "@scm-manager/ui-components";
+import { Loading } from "@scm-manager/ui-core";
 import MyEvent from "./MyEvent";
 import { Link } from "@scm-manager/ui-types";
 import { useMyEvents } from "./useMyEvents";
@@ -47,9 +47,7 @@ const MyEvents: FC = () => {
       error={error}
       category="myevents"
     >
-      {data?._embedded?.events?.map((event, index) => (
-        <MyEvent key={index} event={event} />
-      ))}
+      {data?._embedded?.events?.map((event, index) => <MyEvent key={index} event={event} />)}
     </CollapsibleContainer>
   );
 };

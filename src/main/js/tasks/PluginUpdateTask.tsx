@@ -18,7 +18,8 @@ import React from "react";
 import { binder } from "@scm-manager/ui-extensions";
 import { MyTaskComponent, MyTaskType } from "../types";
 import { useTranslation } from "react-i18next";
-import { CardColumnSmall, Icon } from "@scm-manager/ui-components";
+import { CardColumnSmall } from "@scm-manager/ui-components";
+import { Icon } from "@scm-manager/ui-core";
 
 type PluginUpdateTaskType = MyTaskType & {
   outdatedPlugins: number;
@@ -32,7 +33,7 @@ const PluginUpdateTask: MyTaskComponent<PluginUpdateTaskType> = ({ task }) => {
   return (
     <CardColumnSmall
       link={link}
-      avatar={<Icon name="puzzle-piece" className="fa-lg fa-fw" color="inherit" />}
+      avatar={<Icon className="is-medium">puzzle-piece</Icon>}
       contentLeft={<strong className="is-marginless">{t("scm-landingpage-plugin.tasks.updatePlugin.title")}</strong>}
       contentRight={""}
       footer={t("scm-landingpage-plugin.tasks.updatePlugin.description", { count: task.outdatedPlugins })}

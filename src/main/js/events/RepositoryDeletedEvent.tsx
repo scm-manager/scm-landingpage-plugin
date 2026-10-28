@@ -17,7 +17,8 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { AvatarImage, CardColumnSmall, DateFromNow, Icon } from "@scm-manager/ui-components";
+import { AvatarImage, CardColumnSmall } from "@scm-manager/ui-components";
+import { DateFromNow, Icon } from "@scm-manager/ui-core";
 import { binder } from "@scm-manager/ui-extensions";
 import { MyEventComponent, MyEventExtension, MyEventType } from "../types";
 
@@ -40,13 +41,13 @@ const RepositoryDeletedEvent: MyEventComponent<RepositoryDeletedEventType> = ({ 
   const icon = binder.hasExtension("avatar.factory") ? (
     <StyledGravatar person={{ name: event.deleterName, mail: event.deleterMail }} />
   ) : (
-    <Icon name="exchange-alt" className="fa-fw fa-lg" color="inherit" />
+    <Icon className="is-medium">exchange-alt</Icon>
   );
 
   const content = (
     <strong className="is-marginless">
       {t("scm-landingpage-plugin.myevents.repositoryDeleted.title", {
-        repository: event.repository
+        repository: event.repository,
       })}
     </strong>
   );

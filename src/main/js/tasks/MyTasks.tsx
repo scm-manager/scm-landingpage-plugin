@@ -17,7 +17,7 @@
 import React, { FC } from "react";
 import CollapsibleContainer from "../CollapsibleContainer";
 import { useTranslation } from "react-i18next";
-import { Loading } from "@scm-manager/ui-components";
+import { Loading } from "@scm-manager/ui-core";
 import MyTask from "./MyTask";
 import { Link } from "@scm-manager/ui-types";
 import { useMyTasks } from "./useMyTasks";
@@ -45,9 +45,7 @@ const MyTasks: FC = () => {
       error={error}
       category="mytasks"
     >
-      {data?._embedded?.tasks.map(task => (
-        <MyTask key={task.type} task={task} />
-      ))}
+      {data?._embedded?.tasks.map((task) => <MyTask key={task.type} task={task} />)}
     </CollapsibleContainer>
   );
 };

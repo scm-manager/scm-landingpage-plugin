@@ -24,9 +24,9 @@ import {
   isShowNamespaceInFavoriteOption,
   showNamespaceInFavoriteOptions,
   useDisabledCategories,
-  useListOptions
+  useListOptions,
 } from "./hooks";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Select } from "@scm-manager/ui-components";
 
 type DisplayOptionProps = {
@@ -55,7 +55,7 @@ const ConfigPage: FC = () => {
   const [showArchivedInput, setShowArchivedInput] = useState(showArchived);
   const [namespaceOption, setNamespaceOption] = useState(showNamespace);
   const extensions = binder.getExtensions<MyDataExtension>("landingpage.mydata");
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const changeExtension = (category: string) => (enabled: boolean) => {
     const newValue = { ...changedCategories, [category]: enabled };
@@ -85,11 +85,11 @@ const ConfigPage: FC = () => {
     setListOptions({
       pageSize: Number(pageSizeInput),
       showArchived: showArchivedInput,
-      showNamespace: namespaceOption
+      showNamespace: namespaceOption,
     });
     setChangedCategories({});
     setOptionsChanged(false);
-    setTimeout(() => history.push("/repos/"));
+    setTimeout(() => navigate("/repos/"));
   };
 
   const changeNamespaceOption = (value: string) => {
@@ -102,7 +102,7 @@ const ConfigPage: FC = () => {
   return (
     <Page title={t("scm-landingpage-plugin.config.title")} subtitle={t("scm-landingpage-plugin.config.subtitle")}>
       <div className={"mb-4"}>
-        {["favoriteRepository", "mytasks", "myevents", "mytips"].map(category => (
+        {["favoriteRepository", "mytasks", "myevents", "mytips"].map((category) => (
           <DisplayOption
             key={category}
             label={t(`scm-landingpage-plugin.${category}.title`)}
@@ -110,7 +110,7 @@ const ConfigPage: FC = () => {
             toggle={changeExtension(category)}
           />
         ))}
-        {extensions.map(extension => (
+        {extensions.map((extension) => (
           <DisplayOption
             key={extension.type}
             label={t(extension.title)}
@@ -125,9 +125,9 @@ const ConfigPage: FC = () => {
         />
         <Select
           defaultValue={namespaceOption}
-          options={showNamespaceInFavoriteOptions.map(option => ({
+          options={showNamespaceInFavoriteOptions.map((option) => ({
             label: t(`scm-landingpage-plugin.config.select.option.${option}`),
-            value: option
+            value: option,
           }))}
           label={t("scm-landingpage-plugin.config.select.label")}
           onChange={changeNamespaceOption}

@@ -16,7 +16,8 @@
 
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { CardColumnSmall, Icon, DateFromNow } from "@scm-manager/ui-components";
+import { CardColumnSmall } from "@scm-manager/ui-components";
+import { DateFromNow, Icon } from "@scm-manager/ui-core";
 import { binder } from "@scm-manager/ui-extensions";
 import { MyEventComponent, MyEventType } from "../types";
 
@@ -31,7 +32,7 @@ const PluginInstalledEvent: MyEventComponent<PluginEventType> = ({ event }) => {
   const [t] = useTranslation("plugins");
 
   const link = "/admin/plugins/available/";
-  const icon = <Icon name="puzzle-piece" className="fa-fw fa-lg" color="inherit" />;
+  const icon = <Icon className="is-medium">puzzle-piece</Icon>;
   const content = (
     <strong className="is-marginless">
       {event.previousPluginVersion
@@ -42,10 +43,10 @@ const PluginInstalledEvent: MyEventComponent<PluginEventType> = ({ event }) => {
   const footer = event.previousPluginVersion
     ? t("scm-landingpage-plugin.myevents.pluginUpdated.description", {
         version: event.newPluginVersion,
-        previousVersion: event.previousPluginVersion
+        previousVersion: event.previousPluginVersion,
       })
     : t("scm-landingpage-plugin.myevents.pluginInstalled.description", {
-        version: event.newPluginVersion
+        version: event.newPluginVersion,
       });
 
   return (

@@ -14,20 +14,21 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "@scm-manager/ui-components";
 import { MyEventsType } from "../types";
 
 type MyEvents = MyEventsType;
 
 export const useMyEvents = (link: string) => {
-  const { error, isLoading, data } = useQuery<MyEvents, Error>(["landingpage", "myEvents"], () =>
-    apiClient.get(link).then(response => response.json())
-  );
+  const { error, isLoading, data } = useQuery<MyEvents, Error>({
+    queryKey: ["landingpage", "myEvents"],
+    queryFn: () => apiClient.get(link).then((response) => response.json()),
+  });
 
   return {
     error,
     isLoading,
-    data
+    data,
   };
 };

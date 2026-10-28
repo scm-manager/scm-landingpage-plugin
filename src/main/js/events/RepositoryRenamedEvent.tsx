@@ -16,7 +16,8 @@
 
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { AvatarImage, CardColumnSmall, DateFromNow, Icon } from "@scm-manager/ui-components";
+import { AvatarImage, CardColumnSmall } from "@scm-manager/ui-components";
+import { DateFromNow, Icon } from "@scm-manager/ui-core";
 import { binder } from "@scm-manager/ui-extensions";
 import { MyEventComponent, MyEventExtension, MyEventType } from "../types";
 import styled from "styled-components";
@@ -31,8 +32,7 @@ type RepositoryRenamedEventType = MyEventType & {
   deleted: boolean;
 };
 
-const RightArrowPadding = styled(Icon)`
-  padding: 0 0.4rem;
+const RightArrow = styled(Icon)`
   font-size: 15px;
 `;
 
@@ -51,7 +51,7 @@ const RepositoryRenamedEvent: MyEventComponent<RepositoryRenamedEventType> = ({ 
   const icon = binder.hasExtension("avatar.factory") ? (
     <StyledGravatar person={{ name: event.username, mail: event.userMail }} />
   ) : (
-    <Icon name="exchange-alt" className="fa-fw fa-lg" color="inherit" />
+    <Icon className="is-medium">exchange-alt</Icon>
   );
   const newRepository = event.deleted ? (
     <StrikeThroughSpan>{event.newRepository}</StrikeThroughSpan>
@@ -60,10 +60,12 @@ const RepositoryRenamedEvent: MyEventComponent<RepositoryRenamedEventType> = ({ 
   );
   const content = (
     <div>
-      <DeletableTitle deleted={event.deleted} className="is-marginless">{t("scm-landingpage-plugin.myevents.repositoryRenamed.title")}</DeletableTitle>
+      <DeletableTitle deleted={event.deleted} className="is-marginless">
+        {t("scm-landingpage-plugin.myevents.repositoryRenamed.title")}
+      </DeletableTitle>
       <p>
         <StrikeThroughSpan>{event.oldRepository}</StrikeThroughSpan>
-        <RightArrowPadding name="arrow-right" />
+        <RightArrow className="has-text-secondary">arrow-right</RightArrow>
         {newRepository}
       </p>
     </div>

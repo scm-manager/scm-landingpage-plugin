@@ -15,12 +15,14 @@
  */
 
 import React, { FC } from "react";
-import { LandingpageConfiguration } from "../types";
-import { ConfigurationForm, Form } from "@scm-manager/ui-forms";
 import { useTranslation } from "react-i18next";
+import { ConfigurationForm, Form } from "@scm-manager/ui-core";
+import { LandingpageConfiguration } from "../types";
+import { useRequiredIndexLink } from "@scm-manager/ui-api";
 
-const GlobalConfigPage: FC<{ link: string }> = ({ link }) => {
+const GlobalConfigPage: FC = () => {
   const [t] = useTranslation("plugins");
+  const link = useRequiredIndexLink("landingpageConfig");
   const validateMyEventsStoreSize = (value: string) => {
     const storeSize = Number(value);
 
@@ -32,7 +34,6 @@ const GlobalConfigPage: FC<{ link: string }> = ({ link }) => {
       return t("scm-landingpage-plugin.globalConfig.form.myEventsStoreSize.notPositive");
     }
   };
-
   return (
     <>
       <ConfigurationForm<LandingpageConfiguration>

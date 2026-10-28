@@ -15,7 +15,7 @@
  */
 
 import React, { FC } from "react";
-import { Icon, Loading } from "@scm-manager/ui-components";
+import { Icon, Loading } from "@scm-manager/ui-core";
 import { useCollapsedState } from "../config/hooks";
 import { Link } from "@scm-manager/ui-types";
 import CollapsibleContainer from "../CollapsibleContainer";
@@ -60,7 +60,7 @@ const MyTips: FC = () => {
         className="p-2 media has-hover-background-blue"
       >
         <figure className="media-left mr-2 mt-1">
-          <Icon name="lightbulb" className="fa-lg fa-fw" color="inherit" />
+          <Icon className="is-medium">lightbulb</Icon>
         </figure>
         <div
           className={classNames(
@@ -69,7 +69,7 @@ const MyTips: FC = () => {
             "is-flex",
             "is-flex-direction-column",
             "is-justify-content-space-around",
-            "is-align-self-stretch"
+            "is-align-self-stretch",
           )}
         >
           <strong className="is-marginless">{loginInfo?.feature?.title}</strong>

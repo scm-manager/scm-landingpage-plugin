@@ -14,15 +14,17 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import { MyEventComponent, MyEventsType } from "../types";
-import { CardColumnSmall, Icon } from "@scm-manager/ui-components";
+import { MyEventComponent, MyEventsType, MyEventType } from "../types";
+import { CardColumnSmall } from "@scm-manager/ui-components";
+import { Icon } from "@scm-manager/ui-core";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { binder } from "@scm-manager/ui-extensions";
 
-type HealthCheckFailureEventType = MyEventsType & {
-  repository: string;
-};
+type HealthCheckFailureEventType = MyEventsType &
+  MyEventType & {
+    repository: string;
+  };
 
 const HealthCheckFailureEvent: MyEventComponent<HealthCheckFailureEventType> = ({ event }) => {
   const [t] = useTranslation("plugins");
@@ -36,7 +38,7 @@ const HealthCheckFailureEvent: MyEventComponent<HealthCheckFailureEventType> = (
   return (
     <CardColumnSmall
       link={link}
-      avatar={<Icon name="exclamation-triangle" className="fa-fw fa-lg" color="inherit" />}
+      avatar={<Icon className="is-medium">exclamation-triangle</Icon>}
       contentLeft={content}
       contentRight={""}
       footer={t("scm-landingpage-plugin.myevents.healthCheckFailure.description")}

@@ -15,13 +15,17 @@
  */
 
 import styled from "styled-components";
-import React, { FC } from "react";
+import React, { FC, PropsWithChildren } from "react";
 
 const StrikeThroughStrong = styled.strong`
   text-decoration: line-through;
 `;
 
-const DeletableTitle: FC<{ deleted: boolean; className: string }> = ({ deleted, children, className }) =>
+const DeletableTitle: FC<PropsWithChildren<{ deleted: boolean; className: string }>> = ({
+  deleted,
+  children,
+  className,
+}) =>
   deleted ? (
     <StrikeThroughStrong className={className}>{children}</StrikeThroughStrong>
   ) : (

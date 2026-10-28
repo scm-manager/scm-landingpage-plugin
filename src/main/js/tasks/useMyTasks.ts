@@ -14,20 +14,21 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "@scm-manager/ui-components";
 import { MyTasksType } from "../types";
 
 type MyTasks = MyTasksType;
 
 export const useMyTasks = (link: string) => {
-  const { error, isLoading, data } = useQuery<MyTasks, Error>(["landingpage", "myTasks"], () =>
-    apiClient.get(link).then(response => response.json())
-  );
+  const { error, isLoading, data } = useQuery<MyTasks, Error>({
+    queryKey: ["landingpage", "myTasks"],
+    queryFn: () => apiClient.get(link).then((response) => response.json()),
+  });
 
   return {
     error,
     isLoading,
-    data
+    data,
   };
 };

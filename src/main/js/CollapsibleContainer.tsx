@@ -14,14 +14,15 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useState, PropsWithChildren } from "react";
 import styled from "styled-components";
-import { devices, ErrorNotification, Icon, Tag } from "@scm-manager/ui-components";
+import { devices, Tag } from "@scm-manager/ui-components";
+import { ErrorNotification, Icon } from "@scm-manager/ui-core";
 import EmptyMessage from "./EmptyMessage";
 import { useDisabledCategories } from "./config/hooks";
 import { useTranslation } from "react-i18next";
 
-type Props = {
+type Props = PropsWithChildren<{
   title: string;
   separatedEntries: boolean;
   emptyMessage?: string;
@@ -31,7 +32,7 @@ type Props = {
   contentWrapper?: React.ElementType;
   error?: Error | null;
   category?: string;
-};
+}>;
 
 const Container = styled.div`
   margin-bottom: 1rem;
@@ -68,7 +69,7 @@ const CollapsibleContainer: FC<Props> = ({
   onCollapseToggle,
   contentWrapper,
   error,
-  category
+  category,
 }) => {
   const [t] = useTranslation("plugins");
   const [collapsed, setCollapsed] = useState<boolean>();
@@ -76,7 +77,7 @@ const CollapsibleContainer: FC<Props> = ({
 
   useEffect(
     () => setCollapsed(initiallyCollapsed ?? window.matchMedia(`(max-width: ${devices.mobile.width}px)`).matches),
-    [initiallyCollapsed]
+    [initiallyCollapsed],
   );
 
   const icon = collapsed ? "angle-right" : "angle-down";
@@ -88,7 +89,7 @@ const CollapsibleContainer: FC<Props> = ({
     if (!childArray || childArray.length === 0) {
       content = <EmptyMessage messageKey={emptyMessage} />;
     } else if (separatedEntries) {
-      content = childArray.map(child => <Content className="p-2">{child}</Content>);
+      content = childArray.map((child) => <Content className="p-2">{child}</Content>);
     } else if (contentWrapper) {
       content = React.createElement(contentWrapper, null, children);
     } else {
@@ -117,7 +118,7 @@ const CollapsibleContainer: FC<Props> = ({
       <div>
         <div className="is-flex is-align-items-center is-justify-content-space-between">
           <Headline className="has-cursor-pointer is-flex-grow-1" onClick={handleCollapseToggle}>
-            <Icon name={icon} color="default" /> {title} {headerSuffix}
+            <Icon className="has-text-default">{icon}</Icon> {title} {headerSuffix}
           </Headline>
           {category ? (
             <button
