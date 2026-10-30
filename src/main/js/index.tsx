@@ -60,7 +60,7 @@ const ConfigRoute = () => ({
 });
 
 const LargeToggleIcon: FC<{ repository: Repository }> = (props) => (
-  <FavoriteRepositoryToggleIcon repository={props.repository} classes="fa-2x" />
+  <FavoriteRepositoryToggleIcon repository={props.repository} classes="is-size-4" />
 );
 
 const Subtitle: FC = () => {

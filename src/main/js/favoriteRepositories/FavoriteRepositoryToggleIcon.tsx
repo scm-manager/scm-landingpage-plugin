@@ -17,6 +17,7 @@
 import React, { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
+import classNames from "classnames";
 import { Repository } from "@scm-manager/ui-types";
 import { useFavoriteRepository } from "./favoriteRepository";
 import { Icon } from "@scm-manager/ui-core";
@@ -27,12 +28,14 @@ type Props = {
 };
 
 const ToggleButton = styled.button`
+  display: flex;
   pointer-events: all;
   cursor: pointer;
   z-index: 1;
   background: none;
   border: none;
   padding: 0;
+  font-size: inherit;
 `;
 
 const FavoriteRepositoryToggleIcon: FC<Props> = ({ repository, classes }) => {
@@ -59,7 +62,7 @@ const FavoriteRepositoryToggleIcon: FC<Props> = ({ repository, classes }) => {
         </span>
         <Icon
           type={hovered ? "fas" : unfavorize ? "fas" : "far"}
-          className={(unfavorize ? "has-text-warning " : "has-text-secondary-more ") + classes}
+          className={classNames(unfavorize ? "has-text-warning" : "has-text-secondary-more", classes)}
         >
           {hovered ? "star-half-alt" : "star"}
         </Icon>
